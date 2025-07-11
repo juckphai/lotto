@@ -1,18 +1,16 @@
-// เปลี่ยนชื่อ Cache ทุกครั้งที่มีการอัปเดตไฟล์ใน urlsToCache
-const CACHE_NAME = 'juck-pwa-cache-v11'; // แนะนำให้เปลี่ยนเวอร์ชันทุกครั้งที่แก้ไฟล์นี้
+// เปลี่ยนชื่อ Cache ทุกครั้งที่มีการอัปเดตไฟล์
+const CACHE_NAME = 'juck-pwa-cache-v12'; // อัปเดตเวอร์ชันเป็น v12
 
-// รายการไฟล์ทั้งหมดที่ต้องการให้แอปทำงานแบบ Offline ได้
+// รายการไฟล์ทั้งหมดที่มีอยู่จริงใน Repository
 const urlsToCache = [
   './',
   './index.html',
-  './style.css',
-  './app.js',
   './manifest.json',
   './192.png',
-  './512.png'  // ตรวจสอบให้แน่ใจว่าคุณมีไฟล์นี้อยู่
+  './512.png'
 ];
 
-// Event: install - ติดตั้ง Service Worker และแคชไฟล์ทั้งหมดที่ระบุไว้
+// Event: install - ติดตั้ง Service Worker และแคชไฟล์ทั้งหมด
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -32,8 +30,9 @@ self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
+        // ค้นหา cache ที่ขึ้นต้นด้วยชื่อที่ถูกต้อง และไม่ใช่เวอร์ชันปัจจุบัน
         cacheNames.filter(cache => {
-          return cache.startsWith('juckim-pwa-cache-') && cache !== CACHE_NAME;
+          return cache.startsWith('juck-pwa-cache-') && cache !== CACHE_NAME;
         }).map(cache => {
           console.log('Service Worker: Clearing old cache:', cache);
           return caches.delete(cache);
@@ -44,13 +43,12 @@ self.addEventListener('activate', event => {
   return self.clients.claim();
 });
 
-// Event: fetch - จัดการ request ทั้งหมดที่เกิดขึ้นจากแอป
+// Event: fetch - จัดการ request ทั้งหมดที่เกิดขึ้นจากแอป (กลยุทธ์ Cache First)
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') {
       return;
   }
   
-  // กลยุทธ์: Cache First
   event.respondWith(
     caches.match(event.request)
       .then(response => {
