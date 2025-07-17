@@ -388,6 +388,7 @@
         .format-modal-buttons button { padding: 15px; font-size: 16px; border-radius: 10px; }
         .format-modal-buttons .btn-csv { background-color: #2E7D32; }
         .format-modal-buttons .btn-display { background-color: #007bff; }
+        .format-modal-buttons .btn-pdf { background-color: #e64a19; } /* NEW PDF Button Color */
         .format-modal-buttons .btn-cancel { background-color: #6c757d; }
         
         /* === NEW: RESET MODAL === */
@@ -1003,6 +1004,129 @@
             /* === END: NEW === */
 
         }
+        
+        /* === START: IMPROVED PRINT STYLES === */
+        @media screen {
+            #print-container {
+                display: none;
+            }
+        }
+
+        @media print {
+            /* --- Base Setup --- */
+            body, html {
+                background: #fff !important;
+                color: #000 !important;
+                font-size: 10pt; /* Base font size for print */
+            }
+            .main-wrapper, body, html {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            /* --- Page Layout --- */
+            @page {
+                size: A4;
+                margin: 15mm; /* Reduced margins for more content space */
+
+                /* USER-REQUEST: Add page number to top right */
+                @top-right {
+                    content: "หน้า " counter(page);
+                    font-family: 'Sarabun', 'Arial', sans-serif;
+                    font-size: 9pt;
+                    color: #888;
+                }
+            }
+
+            /* --- Visibility Control --- */
+            body * {
+                visibility: hidden;
+            }
+            #print-container, #print-container * {
+                visibility: visible;
+                color: #000 !important;
+            }
+            #print-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+            }
+            .modal-overlay, .top-bar, .section-header, .form-actions, button, .modal-close-btn {
+                display: none !important;
+            }
+
+            /* --- Page Break Control (CRITICAL PART) --- */
+            h2, h3, h4 {
+                page-break-after: avoid; /* Avoid breaking a page right after a heading */
+                page-break-inside: avoid; /* Keep headings on one page */
+            }
+            p, table, hr {
+                 page-break-inside: auto; /* Allow breaking inside these elements */
+            }
+            /* Try to keep each major summary section together if it fits */
+            #modalBodyContent > div[style*="text-align:center"] {
+                page-break-inside: avoid;
+            }
+            tr {
+                page-break-inside: avoid !important; /* Keep table rows from splitting */
+            }
+            
+            /* --- Typography and Spacing for Print --- */
+            h2 {
+                font-size: 14pt;
+                margin-top: 1em;
+                margin-bottom: 0.5em;
+                border-bottom: 1px solid #999;
+                padding-bottom: 2px;
+            }
+            p {
+                font-size: 9.5pt;
+                line-height: 1.4;
+                margin: 0.4em 0;
+                orphans: 3; /* Minimum lines at the bottom of a page */
+                widows: 3;  /* Minimum lines at the top of a page */
+            }
+
+            /* --- Table Styling for Print --- */
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 8.5pt; /* Smaller font for dense tables */
+                margin-top: 0.8em;
+            }
+            thead {
+                display: table-header-group; /* Ensures header repeats on new pages */
+            }
+            th, td {
+                border: 1px solid #666 !important;
+                padding: 3px 5px;
+                text-align: left;
+                word-wrap: break-word;
+            }
+            th {
+                background-color: #f0f0f0 !important;
+                font-weight: bold;
+            }
+
+            /* --- Style Resets for Print --- */
+            span[style*="color:red"], span[style*="color:green"], p[style*="color:"] {
+                color: #000 !important;
+                font-weight: normal !important;
+            }
+            strong {
+                 color: #000 !important;
+                 font-weight: bold;
+            }
+            hr {
+                border-top: 1px solid #999;
+                margin: 1em 0;
+            }
+        }
+        /* === END: IMPROVED PRINT STYLES === */
     </style>
 </head>
 <body>
@@ -1102,7 +1226,7 @@
 
     <div id="toast-notification"></div>
     <div id="summaryModal" class="modal-overlay"><div class="modal-content-container"><div id="modalBodyContent"></div><button onclick="App.closeSummaryModal()" class="modal-close-btn">ปิดหน้าต่างนี้</button></div></div>
-    <div id="summaryOutputModal" class="modal-overlay"><div class="format-modal-content"><h3>เลือกรูปแบบการแสดงผลสรุป</h3><div class="format-modal-buttons"><button class="btn-display" onclick="App.handleSummaryOutput('display')">แสดงบนจอ</button><button class="btn-csv" onclick="App.handleSummaryOutput('csv')">ส่งออกเป็น CSV</button><button class="btn-cancel" onclick="App.closeSummaryOutputModal()">ยกเลิก</button></div></div></div>
+    <div id="summaryOutputModal" class="modal-overlay"><div class="format-modal-content"><h3>เลือกรูปแบบการแสดงผลสรุป</h3><div class="format-modal-buttons"><button class="btn-display" onclick="App.handleSummaryOutput('display')">แสดงบนจอ</button><button class="btn-csv" onclick="App.handleSummaryOutput('csv')">ส่งออกเป็น CSV</button><button class="btn-pdf" onclick="App.handleSummaryOutput('pdf')">บันทึกเป็น PDF</button><button class="btn-cancel" onclick="App.closeSummaryOutputModal()">ยกเลิก</button></div></div></div>
     
     <div id="resetModal" class="modal-overlay">
         <div id="reset-modal-content">
@@ -1121,6 +1245,8 @@
             </div>
         </div>
     </div>
+
+<div id="print-container"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -1387,36 +1513,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 this.closeSummaryOutputModal();
                 return;
             }
+            
+            let htmlGenerator;
+            let csvExporter;
+            
+            switch(this.summaryContext.type) {
+                case 'detailed_list':
+                    htmlGenerator = () => this.buildDetailedListHtml(this.summaryContext);
+                    csvExporter = () => this.exportDetailedListToCsv(this.summaryContext);
+                    break;
+                case 'credit':
+                    htmlGenerator = () => this.buildCreditSummaryHtml(this.summaryContext);
+                    csvExporter = () => this.exportCreditSummaryToCsv(this.summaryContext);
+                    break;
+                case 'transfer':
+                    htmlGenerator = () => this.buildTransferSummaryHtml(this.summaryContext);
+                    csvExporter = () => this.exportTransferSummaryToCsv(this.summaryContext);
+                    break;
+                default: // 'aggregated_pos'
+                    htmlGenerator = () => this.buildPosSummaryHtml(this.summaryContext);
+                    csvExporter = () => this.exportPosSummaryToCsv(this.summaryContext);
+                    break;
+            }
 
-            if (this.summaryContext.type === 'detailed_list') {
-                 if (choice === 'display') {
-                    const html = this.buildDetailedListHtml(this.summaryContext);
-                    this.openSummaryModal(html);
-                } else if (choice === 'csv') {
-                    this.exportDetailedListToCsv(this.summaryContext);
-                }
-            } else if (this.summaryContext.type === 'credit') {
-                if (choice === 'display') {
-                    const html = this.buildCreditSummaryHtml(this.summaryContext);
-                    this.openSummaryModal(html);
-                } else if (choice === 'csv') {
-                    this.exportCreditSummaryToCsv(this.summaryContext);
-                }
-            } else if (this.summaryContext.type === 'transfer') {
-                 if (choice === 'display') {
-                    const html = this.buildTransferSummaryHtml(this.summaryContext);
-                    this.openSummaryModal(html);
-                } else if (choice === 'csv') {
-                    this.exportTransferSummaryToCsv(this.summaryContext);
-                }
-            } else { // Fallback for aggregated_pos summary
-                if (choice === 'display') {
-                    const html = this.buildPosSummaryHtml(this.summaryContext);
-                    this.openSummaryModal(html);
-                } else if (choice === 'csv') {
-                    this.exportPosSummaryToCsv(this.summaryContext);
+            if (choice === 'display') {
+                const html = htmlGenerator();
+                this.openSummaryModal(html);
+            } else if (choice === 'csv') {
+                csvExporter();
+            } else if (choice === 'pdf') {
+                const html = htmlGenerator();
+                const printContainer = document.getElementById('print-container');
+                if (printContainer) {
+                    printContainer.innerHTML = html;
+                    window.print();
                 }
             }
+
             this.closeSummaryOutputModal();
         },
 
@@ -4026,7 +4159,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div id="seller-date-inputs" style="grid-column: 1/-1; display:flex; flex-wrap:wrap; gap: 15px; justify-content:center; align-items:flex-end;">
                         <div id="seller-filter-by-date-div" style="display:none;"><label>เลือกวันที่:<input type="date" id="seller-filter-date"></label></div>
-                        <div id="seller-filter-by-range-div" style="display:none; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+			<div id="seller-filter-by-range-div" style="display:none; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
                            <label>จาก:<input type="date" id="seller-filter-start-date"></label>
                            <label>ถึง:<input type="date" id="seller-filter-end-date"></label>
                         </div>
