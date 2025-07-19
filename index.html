@@ -1580,8 +1580,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         _getAdminReportFilters() {
             const sellerId = document.getElementById('summary-seller-select').value;
-            const startDateStr = document.getElementById('summary-start-date').value;
-            const endDateStr = document.getElementById('summary-end-date').value;
+            const startDateStr = document.getElementById('summary-custom-start-date').value;
+            const endDateStr = document.getElementById('summary-custom-end-date').value;
 
             if (!startDateStr || !endDateStr) {
                 this.showToast("กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด", "error");
@@ -1598,6 +1598,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const sellerName = sellerId === 'all' ? 'ผู้ขายทั้งหมด' : (selectedUser ? selectedUser.username : 'ไม่พบผู้ขาย');
 
             return { sellerId, startDate, endDate, startDateStr, endDateStr, sellerName };
+        },
+        
+        _getAdminQuickSummaryFilters() {
+            const sellerId = document.getElementById('summary-seller-select').value;
+            const selectedUser = this.data.users.find(u => u.id == sellerId);
+            const sellerName = sellerId === 'all' ? 'ผู้ขายทั้งหมด' : (selectedUser ? selectedUser.username : 'ไม่พบผู้ขาย');
+            return { sellerId, sellerName };
         },
 
         runAdminDetailedReport() {
@@ -1691,7 +1698,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.openSummaryOutputModal();
         },
         
-        runAdminAggregatedSummary() {
+        runAdminSummaryByCustomRange() {
             const filters = this._getAdminReportFilters();
             if (!filters) return;
             const { sellerId, startDate, endDate, startDateStr, endDateStr, sellerName } = filters;
@@ -1699,6 +1706,51 @@ document.addEventListener('DOMContentLoaded', () => {
             const periodName = `Aggregated_${sellerId}_${startDateStr}_to_${endDateStr}`;
             
             this._runSummary(startDate, endDate, title, periodName, sellerId);
+        },
+
+        runAdminSummaryToday() {
+            const filters = this._getAdminQuickSummaryFilters();
+            if(!filters) return;
+            const { sellerId, sellerName } = filters;
+            const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0); 
+            const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999); 
+            const title = `สรุปยอดขายวันนี้ (${sellerName})`;
+            const periodName = `Admin_Today_${sellerId}`;
+            this._runSummary(todayStart, todayEnd, title, periodName, sellerId);
+        },
+
+        runAdminSummaryByDay() {
+            const filters = this._getAdminQuickSummaryFilters();
+            if(!filters) return;
+            const { sellerId, sellerName } = filters;
+            const dateStr = document.getElementById('admin-summary-date').value; 
+            if (!dateStr) { this.showToast("กรุณาเลือกวันที่", "warning"); return; } 
+            const startDate = new Date(dateStr); startDate.setHours(0, 0, 0, 0); 
+            const endDate = new Date(dateStr); endDate.setHours(23, 59, 59, 999);
+            const title = `สรุปยอดขายวันที่ ${this.formatThaiDateFullYear(startDate)} (${sellerName})`;
+            const periodName = `Admin_Day_${dateStr}_${sellerId}`;
+            this._runSummary(startDate, endDate, title, periodName, sellerId);
+        },
+
+        runAdminSummaryAll() {
+            const filters = this._getAdminQuickSummaryFilters();
+            if(!filters) return;
+            const { sellerId, sellerName } = filters;
+
+            let relevantSales = this.data.sales;
+            if (sellerId !== 'all') {
+                relevantSales = this.data.sales.filter(s => s.sellerId == sellerId);
+            }
+            if (relevantSales.length === 0) { this.showToast(`ไม่พบข้อมูลการขายสำหรับ ${sellerName}`); return; } 
+
+            const allDates = relevantSales.map(s => new Date(s.date)); 
+            const startDate = new Date(Math.min.apply(null, allDates)); startDate.setHours(0, 0, 0, 0); 
+            const endDate = new Date(Math.max.apply(null, allDates)); endDate.setHours(23, 59, 59, 999); 
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const dayCount = Math.round(timeDiff / (1000 * 3600 * 24));
+            const title = `สรุปยอดขายทั้งหมด (${sellerName})`;
+            const periodName = `Admin_All_${sellerId}`;
+            this._runSummary(startDate, endDate, title, periodName, sellerId, { dayCount }); 
         },
 
         runSellerDetailedReport() {
@@ -1800,19 +1852,46 @@ document.addEventListener('DOMContentLoaded', () => {
             this.openSummaryOutputModal();
         },
 
-        _runSummary(startDate, endDate, title, periodName, sellerId = null) { 
+        _runSummary(startDate, endDate, title, periodName, sellerId = null, extraContext = {}) { 
             const summaryResult = this.generatePosSummaryData(startDate, endDate, sellerId); 
             if (summaryResult.salesCount === 0) { this.showToast("ไม่พบข้อมูลการขายในช่วงที่กำหนด"); return; } 
             const isSingleDay = (startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate()); 
             const thaiDateString = isSingleDay ? this.formatThaiDateShortYear(startDate) : `${this.formatThaiDateShortYear(startDate)} ถึง ${this.formatThaiDateShortYear(endDate)}`; 
             const dateString = `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`; 
             this.summaryContext = { type: 'aggregated_pos', summaryResult, title, dateString, thaiDateString, periodName, sellerIdFilter: sellerId, startDate, endDate }; 
+            Object.assign(this.summaryContext, extraContext);
             this.openSummaryOutputModal(); 
         },
-
+        
         summarizeMyToday() { const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0); const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999); this._runSummary(todayStart, todayEnd, `สรุปยอดขายวันนี้ (${this.currentUser.username})`, `MyToday`, this.currentUser.id); },
-        summarizeMyDay() { const dateStr = document.getElementById('my-summary-date').value; if (!dateStr) { this.showToast("กรุณาเลือกวันที่"); return; } const startDate = new Date(dateStr); startDate.setHours(0, 0, 0, 0); const endDate = new Date(dateStr); endDate.setHours(23, 59, 59, 999); this._runSummary(startDate, endDate, `สรุปยอดขายวันที่เลือก (${this.currentUser.username})`, `MyDate_${dateStr}`, this.currentUser.id); },
-        summarizeMyAll() { const mySales = this.data.sales.filter(s => s.sellerId === this.currentUser.id); if (mySales.length === 0) { this.showToast("คุณยังไม่มีข้อมูลการขาย"); return; } const allMyDates = mySales.map(s => new Date(s.date)); const startDate = new Date(Math.min.apply(null, allMyDates)); startDate.setHours(0, 0, 0, 0); const endDate = new Date(); endDate.setHours(23, 59, 59, 999); this._runSummary(startDate, endDate, `สรุปยอดขายทั้งหมด (${this.currentUser.username})`, `MyAll`, this.currentUser.id); },
+        summarizeMyDay() { const dateStr = document.getElementById('my-summary-date').value; if (!dateStr) { this.showToast("กรุณาเลือกวันที่", 'warning'); return; } const startDate = new Date(dateStr); startDate.setHours(0, 0, 0, 0); const endDate = new Date(dateStr); endDate.setHours(23, 59, 59, 999); this._runSummary(startDate, endDate, `สรุปยอดขายวันที่เลือก (${this.currentUser.username})`, `MyDate_${dateStr}`, this.currentUser.id); },
+        
+        summarizeMyRange() {
+            const startDateStr = document.getElementById('my-summary-start-date').value;
+            const endDateStr = document.getElementById('my-summary-end-date').value;
+            if (!startDateStr || !endDateStr) { this.showToast("กรุณาเลือกวันที่เริ่มต้นและสิ้นสุด", "error"); return; }
+            const startDate = new Date(startDateStr); startDate.setHours(0, 0, 0, 0);
+            const endDate = new Date(endDateStr); endDate.setHours(23, 59, 59, 999);
+            if (startDate > endDate) { this.showToast("วันที่เริ่มต้นต้องมาก่อนวันที่สิ้นสุด", "error"); return; }
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const dayCount = Math.round(timeDiff / (1000 * 3600 * 24));
+            const title = `สรุปยอดขายตามช่วงวันที่ (${this.currentUser.username})`;
+            const periodName = `MyRange_${startDateStr}_to_${endDateStr}`;
+            this._runSummary(startDate, endDate, title, periodName, this.currentUser.id, { dayCount });
+        },
+        
+        summarizeMyAll() { 
+            const mySales = this.data.sales.filter(s => s.sellerId === this.currentUser.id); 
+            if (mySales.length === 0) { this.showToast("คุณยังไม่มีข้อมูลการขาย"); return; } 
+            const allMyDates = mySales.map(s => new Date(s.date)); 
+            const startDate = new Date(Math.min.apply(null, allMyDates)); 
+            startDate.setHours(0, 0, 0, 0); 
+            const endDate = new Date(Math.max.apply(null, allMyDates));
+            endDate.setHours(23, 59, 59, 999); 
+            const timeDiff = endDate.getTime() - startDate.getTime();
+            const dayCount = Math.round(timeDiff / (1000 * 3600 * 24));
+            this._runSummary(startDate, endDate, `สรุปยอดขายทั้งหมด (${this.currentUser.username})`, `MyAll`, this.currentUser.id, { dayCount }); 
+        },
         
         buildDetailedListHtml(context) {
             const { filteredSales, title, thaiDateString, sellerId } = context;
@@ -2326,7 +2405,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         
         buildPosSummaryHtml(context) {
-            const { summaryResult, title, thaiDateString, sellerIdFilter, startDate, endDate } = context;
+            const { summaryResult, title, thaiDateString, sellerIdFilter, startDate, endDate, dayCount } = context;
             const isSingleDayReport = startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate();
             const formatCurrency = (num) => this.formatNumberSmart(num);
             
@@ -2334,6 +2413,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isSingleDayReport) {
                 const fullDate = this.formatThaiDateFullYear(startDate);
                 dateDisplayString = ` ${fullDate}`;
+            } else if (dayCount) {
+                dateDisplayString = `${thaiDateString} (รวม ${dayCount} วัน)`;
             }
 
             const summaryTimestamp = this.formatThaiTimestamp(new Date());
@@ -2375,41 +2456,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 let profitOrCommissionHtml;
-                if (isSingleSellerReport) {
-                    const sellerUser = this.data.users.find(u => u.id == sellerId);
+                const user = this.data.users.find(u => u.id == sellerId);
+
+                if (user && user.role === 'seller') {
                     let commission = 0;
                     let commissionText = 'ไม่มีคอมมิชชั่น';
 
-                    if (sellerUser && sellerUser.commissionRate > 0) {
+                    if (user.commissionRate > 0) {
                         let commissionBase = 0;
                         let sources = [];
-                        if (sellerUser.commissionOnCash) {
+                        if (user.commissionOnCash) {
                             commissionBase += sellerData.totalCash;
                             sources.push('เงินสด');
                         }
-                        if (sellerUser.commissionOnTransfer) {
+                        if (user.commissionOnTransfer) {
                             commissionBase += sellerData.totalTransfer;
                             sources.push('เงินโอน');
                         }
-                        if (sellerUser.commissionOnCredit) {
+                        if (user.commissionOnCredit) {
                             commissionBase += sellerData.totalCredit;
                             sources.push('เครดิต');
                         }
                         
-                        commission = commissionBase * (sellerUser.commissionRate / 100);
+                        commission = commissionBase * (user.commissionRate / 100);
                         
                         if (sources.length > 0) {
-                            commissionText = `คิด ${sellerUser.commissionRate}% จากขาย${sources.join('+')} = ${formatCurrency(commission)} บาท`;
+                            commissionText = `คอมมิชชั่น (${user.commissionRate}% จากขาย${sources.join('+')}) = ${formatCurrency(commission)} บาท`;
                         } else {
-                            commissionText = `ตั้งค่าคอมมิชชั่น ${sellerUser.commissionRate}% แต่ไม่ได้เลือกประเภทการขาย`;
+                            commissionText = `ตั้งค่าคอมมิชชั่น ${user.commissionRate}% แต่ไม่ได้เลือกประเภทการขาย`;
                         }
                     }
-                    
                     profitOrCommissionHtml = `<p style="font-weight: bold; color: #007bff;"><strong>${commissionText}</strong></p>`;
-                } else {
+                } else { // For admin or if user not found (legacy sales)
                     const profitColor = sellerData.totalProfit >= 0 ? 'green' : 'red';
                     profitOrCommissionHtml = `<p style="color: ${profitColor};"><strong>กำไรรวม: ${formatCurrency(sellerData.totalProfit)} บาท</strong></p>`;
                 }
+
 
                 let creditDetailsHtml = '';
                 const creditSalesDetails = this.data.sales.filter(s => s.sellerId == sellerId && s.paymentMethod === 'เครดิต' && new Date(s.date) >= startDate && new Date(s.date) <= endDate);
@@ -2499,38 +2581,39 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (!isSingleDayReport) {
                     csvRows.push(['จำนวนวันขายทั้งหมด (วัน)', summaryResult.totalSellingDays]);
                 }
-
-                if (isSingleSellerReport) {
-                    const sellerUser = this.data.users.find(u => u.id == sellerId);
+                
+                const user = this.data.users.find(u => u.id == sellerId);
+                if (user && user.role === 'seller') {
                     let commission = 0;
                     let commissionLabel = 'คอมมิชชั่น (บาท)';
                     
-                    if (sellerUser && sellerUser.commissionRate > 0) {
+                    if (user.commissionRate > 0) {
                         let commissionBase = 0;
                         let sources = [];
-                        if (sellerUser.commissionOnCash) {
+                        if (user.commissionOnCash) {
                             commissionBase += sellerData.totalCash;
                             sources.push('เงินสด');
                         }
-                        if (sellerUser.commissionOnTransfer) {
+                        if (user.commissionOnTransfer) {
                             commissionBase += sellerData.totalTransfer;
                             sources.push('เงินโอน');
                         }
-                        if (sellerUser.commissionOnCredit) {
+                        if (user.commissionOnCredit) {
                             commissionBase += sellerData.totalCredit;
                             sources.push('เครดิต');
                         }
                         
-                        commission = commissionBase * (sellerUser.commissionRate / 100);
+                        commission = commissionBase * (user.commissionRate / 100);
 
                         if (sources.length > 0) {
-                            commissionLabel = `คอมมิชชั่น (${sellerUser.commissionRate}% จาก ${sources.join('+')}) (บาท)`;
+                            commissionLabel = `คอมมิชชั่น (${user.commissionRate}% จาก ${sources.join('+')}) (บาท)`;
                         }
                     }
                     csvRows.push([commissionLabel, this.formatNumberSmart(commission)]);
                 } else {
-                    csvRows.push(['กำไรรวม (บาท)', this.formatNumberSmart(sellerData.totalProfit)]);
+                     csvRows.push(['กำไรรวม (บาท)', this.formatNumberSmart(sellerData.totalProfit)]);
                 }
+
                 
                 csvRows.push([]);
                 csvRows.push(['สินค้า', 'ขาย(เงินสด)', 'ขาย(เงินโอน)', 'ขาย(เครดิต)', 'รวม(หน่วย)', 'ยอดขาย(บาท)', 'สต็อกคงเหลือ']);
@@ -3964,27 +4047,46 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('page-reports').innerHTML = `<h2>รายงานกำไร/ขาดทุน</h2> <form id="report-filter-form"> <label>ตั้งแต่วันที่:<input type="date" id="report-start-date"></label> <label>ถึงวันที่:<input type="date" id="report-end-date"></label> <label>คนขาย:<select id="report-seller"><option value="all">ทั้งหมด</option></select></label> <button type="submit" id="report-generate-btn">สร้างรายงาน</button> </form> <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 20px; text-align: center;"> <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 15px; border-radius: 5px;"> <h3>ยอดขายรวม</h3><p id="report-total-sales" style="font-size: 1.5em; font-weight: bold;">฿0.00</p> </div> <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 15px; border-radius: 5px;"> <h3>ต้นทุนรวม</h3><p id="report-total-cost" style="font-size: 1.5em; font-weight: bold;">฿0.00</p> </div> <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 15px; border-radius: 5px;"> <h3>กำไรสุทธิ</h3><p id="report-net-profit" style="font-size: 1.5em; font-weight: bold; color: var(--success-color);">฿0.00</p> </div> </div>`; 
             document.getElementById('page-summary').innerHTML = `
                 <h2>สรุปข้อมูล (สำหรับแอดมิน)</h2>
-                <div class="summary-section" id="admin-report-filters">
-                    <h3 class="collapsible-bar active" data-target="report-filter-content"><span>1. กำหนดเงื่อนไขการค้นหา</span><span class="arrow" style="transform: rotate(90deg);">▶</span></h3>
-                    <div id="report-filter-content" class="collapsible-content active" style="padding: 20px; background-color: #fafafa; display: grid; gap: 15px;">
-                        <div class="summary-form-inline">
-                            <label for="summary-seller-select">ผู้ขาย:</label>
-                            <select id="summary-seller-select" style="text-align: left;"></select>
+                <div class="summary-section">
+                    <h3 style="text-align:center; border:none; margin-bottom: 15px;">1. เลือกผู้ขาย (จำเป็นสำหรับทุกรายงาน)</h3>
+                    <div class="summary-form-inline" style="justify-content: center;">
+                        <label for="summary-seller-select">ผู้ขาย:</label>
+                        <select id="summary-seller-select" style="text-align: left; max-width: 400px;"></select>
+                    </div>
+                </div>
+
+                <div class="collapsible-bar active" data-target="admin-quick-summary-content" style="background-color: #00B0F0;"><span>สรุปภาพรวมแบบรวดเร็ว</span><span class="arrow" style="transform: rotate(90deg);">▶</span></div>
+                <div id="admin-quick-summary-content" class="collapsible-content active">
+                    <div style="text-align:center;">
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 20px;">
+                            <button id="admin-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button>
+                            <button id="admin-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมด</button>
                         </div>
-                        <div class="summary-form-inline">
-                            <label>จากวันที่:</label>
-                            <input type="date" id="summary-start-date" required>
-                            <label>ถึงวันที่:</label>
-                            <input type="date" id="summary-end-date" required>
+                        <div class="summary-form-inline" style="justify-content: center; flex-direction: column; gap:10px; align-items: stretch; border-top: 1px solid #ddd; padding-top: 20px;">
+                            <label>สรุปยอดขายตามวันที่เลือก: <input type="date" id="admin-summary-date" style="width: auto;"></label>
+                            <button id="admin-summary-by-day-btn" style="background-color: #03a9f4; max-width: 300px; margin: auto;">สร้างรายงานตามวันที่</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="summary-section" id="admin-report-actions">
-                    <h3 style="text-align:center; border:none; margin-bottom: 10px;">2. เลือกรายงานที่ต้องการ</h3>
+                <div class="collapsible-bar" data-target="admin-detailed-reports-content" style="background-color: #00B050;"><span>รายงานขั้นสูง (ตามช่วงเวลา)</span><span class="arrow">▶</span></div>
+                <div id="admin-detailed-reports-content" class="collapsible-content">
+                    <div class="summary-section" id="admin-report-filters" style="border:none; padding: 10px 0;">
+                        <h4 style="text-align:center; margin-top:0;">กำหนดช่วงเวลา</h4>
+                        <div class="summary-form-inline" style="justify-content: center;">
+                            <label>จากวันที่:</label>
+                            <input type="date" id="summary-custom-start-date" required>
+                            <label>ถึงวันที่:</label>
+                            <input type="date" id="summary-custom-end-date" required>
+                        </div>
+                    </div>
                     <div class="report-action-buttons">
+                         <div class="report-action-item">
+                            <p><strong>สรุปภาพรวมตามช่วงเวลา</strong><br><small>(สรุปยอดขาย, กำไร/คอมมิชชั่น, จำนวนสินค้า)</small></p>
+                            <button type="button" id="generate-aggregated-summary-btn" style="background-color: #673ab7;">สร้างรายงานสรุปภาพรวม</button>
+                        </div>
                         <div class="report-action-item">
-                            <p><strong>แจกแจงรายละเอียดการขาย</strong><br><small>(แสดงรายการขายทั้งหมด)</small></p>
+                            <p><strong>แจกแจงรายละเอียดการขาย</strong><br><small>(แสดงรายการขายทั้งหมดในช่วงเวลาที่เลือก)</small></p>
                             <div id="summary-payment-types" style="display: flex; gap: 15px; flex-wrap: wrap; padding: 10px; background-color: #eef5ff; border-radius: 8px; justify-content: center; margin-bottom: 10px;">
                                 <label style="font-weight:normal;"><input type="checkbox" value="เงินสด" checked> เงินสด</label>
                                 <label style="font-weight:normal;"><input type="checkbox" value="เงินโอน" checked> เงินโอน</label>
@@ -3999,10 +4101,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div class="report-action-item">
                             <p><strong>สรุปข้อมูลเงินโอน</strong></p>
                             <button type="button" id="generate-transfer-summary-btn" style="background-color: #007bff;">สร้างรายงานเงินโอน</button>
-                        </div>
-                        <div class="report-action-item">
-                            <p><strong>สรุปภาพรวม (แบบเดิม)</strong><br><small>(สรุปยอดขาย, กำไร, จำนวนสินค้า)</small></p>
-                            <button type="button" id="generate-aggregated-summary-btn" style="background-color: #673ab7;">สร้างรายงานสรุปภาพรวม</button>
                         </div>
                     </div>
                 </div>`;
@@ -4087,7 +4185,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div id="seller-backup-content" class="collapsible-content seller-only"><div style="text-align:center; padding-top: 10px;"><p style="margin-top:0;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn-seller" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn-seller" style="background-color: #007bff;">บันทึกข้อมูลปัจจุบันลงในเบราว์เซอร์</button></div></div>
             
             <div class="collapsible-bar seller-only" data-target="seller-summary-content"><span>รายงานสรุป (สำหรับผู้ใช้ปัจจุบัน)</span><span class="arrow">▶</span></div>
-            <div id="seller-summary-content" class="collapsible-content seller-only"><div style="text-align:center;"><div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"><button id="my-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button><button id="my-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมดของฉัน</button></div><div class="summary-form-inline" style="margin-top: 15px; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><label>เลือกวันที่: <input type="date" id="my-summary-date" style="width:100%;"></label><button id="my-summary-by-day-btn" style="background-color: #03a9f4;">สรุปยอดขายวันที่เลือก</button></div></div></div>
+            <div id="seller-summary-content" class="collapsible-content seller-only"><div style="text-align:center;"><div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"><button id="my-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button><button id="my-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมดของฉัน</button></div><div class="summary-form-inline" style="margin-top: 15px; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><label>เลือกวันที่: <input type="date" id="my-summary-date" style="width:100%;"></label><button id="my-summary-by-day-btn" style="background-color: #03a9f4;">สรุปยอดขายวันที่เลือก</button></div><div class="summary-form-inline" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;"><label>จากวันที่: <input type="date" id="my-summary-start-date"></label><label>ถึงวันที่: <input type="date" id="my-summary-end-date"></label></div><button id="my-summary-by-range-btn" style="background-color: #ff9800;">สรุปยอดขายตามช่วงวันที่</button></div></div></div>
 
             <!-- START: NEW SELLER DETAILED REPORT SECTION -->
             <div class="collapsible-bar seller-only" data-target="seller-detailed-report-content" style="background-color: #ED01ED;"><span>แจกแจงรายละเอียดการขาย</span><span class="arrow">▶</span></div>
@@ -4229,6 +4327,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (content) {
                         collapsibleBar.classList.toggle('active');
                         content.classList.toggle('active');
+                        const arrow = collapsibleBar.querySelector('.arrow');
+                        if (arrow) {
+                           arrow.style.transform = content.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
+                        }
                     }
                 }
                 
@@ -4244,12 +4346,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (e.target.id === 'my-summary-today-btn') this.summarizeMyToday(); 
                 if (e.target.id === 'my-summary-all-btn') this.summarizeMyAll(); 
                 if (e.target.id === 'my-summary-by-day-btn') this.summarizeMyDay(); 
+                if (e.target.id === 'my-summary-by-range-btn') this.summarizeMyRange();
 
-                // New Admin Summary Buttons
+
+                // New/Refactored Admin Summary Buttons
+                if (e.target.id === 'admin-summary-today-btn') this.runAdminSummaryToday();
+                if (e.target.id === 'admin-summary-all-btn') this.runAdminSummaryAll();
+                if (e.target.id === 'admin-summary-by-day-btn') this.runAdminSummaryByDay();
                 if (e.target.id === 'generate-detailed-report-btn') this.runAdminDetailedReport();
                 if (e.target.id === 'generate-credit-summary-btn') this.runAdminCreditSummary();
                 if (e.target.id === 'generate-transfer-summary-btn') this.runAdminTransferSummary();
-                if (e.target.id === 'generate-aggregated-summary-btn') this.runAdminAggregatedSummary();
+                if (e.target.id === 'generate-aggregated-summary-btn') this.runAdminSummaryByCustomRange();
             }); 
 		
             document.body.addEventListener('change', (e) => {
