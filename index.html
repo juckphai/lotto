@@ -1867,42 +1867,36 @@ document.addEventListener('DOMContentLoaded', () => {
             this.openSummaryOutputModal();
         },
 
-        // === START: STOCK CALCULATION FIX ===
-        _runSummary(startDate, endDate, title, periodName, sellerId = null, extraContext = {}) {
-            const summaryResult = this.generatePosSummaryData(startDate, endDate, sellerId);
-            if (summaryResult.salesCount === 0) {
-                this.showToast("ไม่พบข้อมูลการขายในช่วงที่กำหนด");
-                return;
-            }
-
+        _runSummary(startDate, endDate, title, periodName, sellerId = null, extraContext = {}) { 
+            const summaryResult = this.generatePosSummaryData(startDate, endDate, sellerId); 
+            if (summaryResult.salesCount === 0) { this.showToast("ไม่พบข้อมูลการขายในช่วงที่กำหนด"); return; } 
+            
             // Calculate stock as of the end of the report date
             const stockAsOfData = this.calculateStockAsOf(endDate);
             const stockAsOfDateMap = new Map();
             stockAsOfData.forEach(item => {
                 stockAsOfDateMap.set(item.name, item.stock);
             });
+
+            const isSingleDay = (startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate()); 
+            const thaiDateString = isSingleDay ? this.formatThaiDateShortYear(startDate) : `${this.formatThaiDateShortYear(startDate)} ถึง ${this.formatThaiDateShortYear(endDate)}`; 
+            const dateString = `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`; 
             
-            const isSingleDay = (startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate());
-            const thaiDateString = isSingleDay ? this.formatThaiDateShortYear(startDate) : `${this.formatThaiDateShortYear(startDate)} ถึง ${this.formatThaiDateShortYear(endDate)}`;
-            const dateString = `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`;
-            
-            this.summaryContext = {
-                type: 'aggregated_pos',
-                summaryResult,
-                title,
-                dateString,
-                thaiDateString,
-                periodName,
-                sellerIdFilter: sellerId,
-                startDate,
+            this.summaryContext = { 
+                type: 'aggregated_pos', 
+                summaryResult, 
+                title, 
+                dateString, 
+                thaiDateString, 
+                periodName, 
+                sellerIdFilter: sellerId, 
+                startDate, 
                 endDate,
                 stockAsOfDate: stockAsOfDateMap // Pass the correctly calculated stock data
-            };
-            
+            }; 
             Object.assign(this.summaryContext, extraContext);
-            this.openSummaryOutputModal();
+            this.openSummaryOutputModal(); 
         },
-        // === END: STOCK CALCULATION FIX ===
         
         summarizeMyToday() { const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0); const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999); this._runSummary(todayStart, todayEnd, `สรุปยอดขายวันนี้ (${this.currentUser.username})`, `MyToday`, this.currentUser.id); },
         summarizeMyDay() { const dateStr = document.getElementById('my-summary-date').value; if (!dateStr) { this.showToast("กรุณาเลือกวันที่", 'warning'); return; } const startDate = new Date(dateStr); startDate.setHours(0, 0, 0, 0); const endDate = new Date(dateStr); endDate.setHours(23, 59, 59, 999); this._runSummary(startDate, endDate, `สรุปยอดขายวันที่เลือก (${this.currentUser.username})`, `MyDate_${dateStr}`, this.currentUser.id); },
@@ -2420,7 +2414,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     const productId = item.productId;
                     if (!sellerData.productSummary[productId]) {
                         const productInfo = this.data.products.find(p => p.id === productId);
-                        sellerData.productSummary[productId] = { name: item.name, stock: productInfo ? productInfo.stock : 'N/A', unit: productInfo ? productInfo.unit : 'หน่วย', cashQty: 0, creditQty: 0, transferQty: 0, totalQty: 0, totalValue: 0, };
+                        sellerData.productSummary[productId] = { 
+                            name: item.name, 
+                            // This stock value is the LIVE stock, it will be replaced by the calculated one in the display function.
+                            stock: productInfo ? productInfo.stock : 'N/A', 
+                            unit: productInfo ? productInfo.unit : 'หน่วย', 
+                            cashQty: 0, 
+                            creditQty: 0, 
+                            transferQty: 0, 
+                            totalQty: 0, 
+                            totalValue: 0, 
+                        };
                     }
                     const productSum = sellerData.productSummary[productId];
                     productSum.totalQty += item.quantity;
@@ -2445,10 +2449,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return summary;
         },
         
-        // === START: STOCK CALCULATION FIX ===
         buildPosSummaryHtml(context) {
             const { summaryResult, title, thaiDateString, sellerIdFilter, startDate, endDate, dayCount, stockAsOfDate } = context;
-            // === END: STOCK CALCULATION FIX ===
             const isSingleDayReport = startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate();
             const formatCurrency = (num) => this.formatNumberSmart(num);
             
@@ -2469,19 +2471,22 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.currentUser.role === 'admin' && !isSingleSellerReport) {
                 overallSummaryHtml = `
                     <div style="text-align:center;">
-                        <h2>${title}</h2>
-                        <p style="font-size:0.8em; color:#555; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>
-                        <p style="font-size:0.9em; color:#333; font-weight:bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
-                    </div>
-                    <hr><h2>ภาพรวมทั้งหมด</h2>
-                    <p><strong>ยอดเงินสด :</strong> ${formatCurrency(summaryResult.grandTotalCash)} บาท</p>
-                    <p><strong>ยอดเงินโอน :</strong> ${formatCurrency(summaryResult.grandTotalTransfer)} บาท</p>
-                    <p><strong>ยอดเครดิต :</strong> ${formatCurrency(summaryResult.grandTotalCredit)} บาท</p>
-                    <p><strong>ยอดขายรวมทั้งหมด: ${formatCurrency(summaryResult.grandTotalSales)} บาท</strong></p>
-                    ${!isSingleDayReport ? `<p><strong>จำนวนวันขายทั้งหมด : ${summaryResult.totalSellingDays} วัน</strong></p>` : ''}
-                    <p style="font-weight: bold; font-size: 1.2em; color: ${summaryResult.grandTotalProfit >= 0 ? 'green' : 'red'};">
-                        <strong>กำไรสุทธิรวม: ${formatCurrency(summaryResult.grandTotalProfit)} บาท</strong>
-                    </p>`;
+                        <div>
+                            <h2>${title}</h2>
+                            <p style="font-size:0.8em; color:#555; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>
+                            <p style="font-size:0.9em; color:#333; font-weight:bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
+                        </div>
+                        <hr>
+                        <h2>ภาพรวมทั้งหมด</h2>
+                        <p><strong>ยอดเงินสด :</strong> ${formatCurrency(summaryResult.grandTotalCash)} บาท</p>
+                        <p><strong>ยอดเงินโอน :</strong> ${formatCurrency(summaryResult.grandTotalTransfer)} บาท</p>
+                        <p><strong>ยอดเครดิต :</strong> ${formatCurrency(summaryResult.grandTotalCredit)} บาท</p>
+                        <p><strong>ยอดขายรวมทั้งหมด: ${formatCurrency(summaryResult.grandTotalSales)} บาท</strong></p>
+                        ${!isSingleDayReport ? `<p><strong>จำนวนวันขายทั้งหมด : ${summaryResult.totalSellingDays} วัน</strong></p>` : ''}
+                        <p style="font-weight: bold; font-size: 1.2em; color: ${summaryResult.grandTotalProfit >= 0 ? 'green' : 'red'};">
+                            <strong>กำไรสุทธิรวม: ${formatCurrency(summaryResult.grandTotalProfit)} บาท</strong>
+                        </p>
+                    </div>`;
             }
 
             const sellerKeys = Object.keys(summaryResult.sellerSummary);
@@ -2494,10 +2499,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sectionTitle = isSingleSellerReport ? title : `สรุปยอดขาย: ${sellerData.sellerName}`;
                 let productTableRows = '';
                 Object.values(sellerData.productSummary).forEach(p => {
-                    // === START: STOCK CALCULATION FIX ===
                     const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
                     const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
-                    // === END: STOCK CALCULATION FIX ===
                     productTableRows += `<tr><td data-label="สินค้า">${p.name}</td><td data-label="ขายเงินสด">${this.formatNumberSmart(p.cashQty)} ${p.unit}</td><td data-label="ขายเงินโอน">${this.formatNumberSmart(p.transferQty)} ${p.unit}</td><td data-label="ขายเครดิต">${this.formatNumberSmart(p.creditQty)} ${p.unit}</td><td data-label="รวม">${this.formatNumberSmart(p.totalQty)} ${p.unit}</td><td data-label="ยอดขาย (บาท)">${formatCurrency(p.totalValue)}</td><td data-label="สต็อกคงเหลือ">${formattedStock} ${p.unit}</td></tr>`;
                 });
 
@@ -2580,11 +2583,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             return `${overallSummaryHtml}${allSellersHtml || '<p>ไม่พบข้อมูลการขายในช่วงเวลานี้</p>'}`;
         },
-        
-        // === START: STOCK CALCULATION FIX ===
+
         exportPosSummaryToCsv(context) {
             const { summaryResult, title, thaiDateString, periodName, sellerIdFilter, startDate, endDate, stockAsOfDate } = context;
-        // === END: STOCK CALCULATION FIX ===
             const isSingleDayReport = startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate();
             let csvRows = [];
             
@@ -2666,10 +2667,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 csvRows.push([]);
                 csvRows.push(['สินค้า', 'ขาย(เงินสด)', 'ขาย(เงินโอน)', 'ขาย(เครดิต)', 'รวม(หน่วย)', 'ยอดขาย(บาท)', 'สต็อกคงเหลือ']);
                 Object.values(sellerData.productSummary).forEach(p => {
-                    // === START: STOCK CALCULATION FIX ===
                     const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
                     const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
-                    // === END: STOCK CALCULATION FIX ===
                     csvRows.push([p.name, `${this.formatNumberSmart(p.cashQty)} ${p.unit}`, `${this.formatNumberSmart(p.transferQty)} ${p.unit}`, `${this.formatNumberSmart(p.creditQty)} ${p.unit}`, `${this.formatNumberSmart(p.totalQty)} ${p.unit}`, this.formatNumberSmart(p.totalValue), `${formattedStock} ${p.unit}`]);
                 });
             }
@@ -3672,7 +3671,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <td data-label="ทุนต่อหน่วย">${this.formatNumberSmart(si.costPerUnit)}</td>
                                 <td data-label="ยอดรวม">${this.formatNumberSmart(si.quantity * si.costPerUnit)}</td>
                                 <td data-label="จัดการ">
-                                    <div class="action-buttons">
+                                     <div class="action-buttons">
                                         <button class="edit-stock-in-btn" data-id="${si.id}" style="background-color: var(--warning-color);">แก้ไข</button>
                                         <button class="danger delete-stock-in-btn" data-id="${si.id}">ลบ</button>
                                     </div>
@@ -4454,8 +4453,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 
-                if (e.target.id === 'load-from-file-btn') document.getElementById('data-file-input').click(); 
-                if (e.target.id === 'save-to-file-btn' || e.target.id === 'save-to-file-btn-seller') this.saveBackupToFile(); 
+                if (e.target.id === 'load-from-file-btn') document.getElementById('data-file-input').click();if (e.target.id === 'save-to-file-btn' || e.target.id === 'save-to-file-btn-seller') this.saveBackupToFile(); 
                 if (e.target.id === 'save-to-browser-btn' || e.target.id === 'save-to-browser-btn-seller') this.manualSaveToBrowser(); 
                 
                 if (e.target.id === 'open-reset-modal-btn') this.openResetModal();
