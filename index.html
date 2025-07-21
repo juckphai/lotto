@@ -1867,16 +1867,42 @@ document.addEventListener('DOMContentLoaded', () => {
             this.openSummaryOutputModal();
         },
 
-        _runSummary(startDate, endDate, title, periodName, sellerId = null, extraContext = {}) { 
-            const summaryResult = this.generatePosSummaryData(startDate, endDate, sellerId); 
-            if (summaryResult.salesCount === 0) { this.showToast("ไม่พบข้อมูลการขายในช่วงที่กำหนด"); return; } 
-            const isSingleDay = (startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate()); 
-            const thaiDateString = isSingleDay ? this.formatThaiDateShortYear(startDate) : `${this.formatThaiDateShortYear(startDate)} ถึง ${this.formatThaiDateShortYear(endDate)}`; 
-            const dateString = `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`; 
-            this.summaryContext = { type: 'aggregated_pos', summaryResult, title, dateString, thaiDateString, periodName, sellerIdFilter: sellerId, startDate, endDate }; 
+        // === START: STOCK CALCULATION FIX ===
+        _runSummary(startDate, endDate, title, periodName, sellerId = null, extraContext = {}) {
+            const summaryResult = this.generatePosSummaryData(startDate, endDate, sellerId);
+            if (summaryResult.salesCount === 0) {
+                this.showToast("ไม่พบข้อมูลการขายในช่วงที่กำหนด");
+                return;
+            }
+
+            // Calculate stock as of the end of the report date
+            const stockAsOfData = this.calculateStockAsOf(endDate);
+            const stockAsOfDateMap = new Map();
+            stockAsOfData.forEach(item => {
+                stockAsOfDateMap.set(item.name, item.stock);
+            });
+            
+            const isSingleDay = (startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate());
+            const thaiDateString = isSingleDay ? this.formatThaiDateShortYear(startDate) : `${this.formatThaiDateShortYear(startDate)} ถึง ${this.formatThaiDateShortYear(endDate)}`;
+            const dateString = `${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}`;
+            
+            this.summaryContext = {
+                type: 'aggregated_pos',
+                summaryResult,
+                title,
+                dateString,
+                thaiDateString,
+                periodName,
+                sellerIdFilter: sellerId,
+                startDate,
+                endDate,
+                stockAsOfDate: stockAsOfDateMap // Pass the correctly calculated stock data
+            };
+            
             Object.assign(this.summaryContext, extraContext);
-            this.openSummaryOutputModal(); 
+            this.openSummaryOutputModal();
         },
+        // === END: STOCK CALCULATION FIX ===
         
         summarizeMyToday() { const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0); const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999); this._runSummary(todayStart, todayEnd, `สรุปยอดขายวันนี้ (${this.currentUser.username})`, `MyToday`, this.currentUser.id); },
         summarizeMyDay() { const dateStr = document.getElementById('my-summary-date').value; if (!dateStr) { this.showToast("กรุณาเลือกวันที่", 'warning'); return; } const startDate = new Date(dateStr); startDate.setHours(0, 0, 0, 0); const endDate = new Date(dateStr); endDate.setHours(23, 59, 59, 999); this._runSummary(startDate, endDate, `สรุปยอดขายวันที่เลือก (${this.currentUser.username})`, `MyDate_${dateStr}`, this.currentUser.id); },
@@ -2419,8 +2445,10 @@ document.addEventListener('DOMContentLoaded', () => {
             return summary;
         },
         
+        // === START: STOCK CALCULATION FIX ===
         buildPosSummaryHtml(context) {
-            const { summaryResult, title, thaiDateString, sellerIdFilter, startDate, endDate, dayCount } = context;
+            const { summaryResult, title, thaiDateString, sellerIdFilter, startDate, endDate, dayCount, stockAsOfDate } = context;
+            // === END: STOCK CALCULATION FIX ===
             const isSingleDayReport = startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate();
             const formatCurrency = (num) => this.formatNumberSmart(num);
             
@@ -2466,7 +2494,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const sectionTitle = isSingleSellerReport ? title : `สรุปยอดขาย: ${sellerData.sellerName}`;
                 let productTableRows = '';
                 Object.values(sellerData.productSummary).forEach(p => {
-                    const formattedStock = p.stock === 'N/A' ? 'N/A' : this.formatNumberSmart(p.stock);
+                    // === START: STOCK CALCULATION FIX ===
+                    const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
+                    const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
+                    // === END: STOCK CALCULATION FIX ===
                     productTableRows += `<tr><td data-label="สินค้า">${p.name}</td><td data-label="ขายเงินสด">${this.formatNumberSmart(p.cashQty)} ${p.unit}</td><td data-label="ขายเงินโอน">${this.formatNumberSmart(p.transferQty)} ${p.unit}</td><td data-label="ขายเครดิต">${this.formatNumberSmart(p.creditQty)} ${p.unit}</td><td data-label="รวม">${this.formatNumberSmart(p.totalQty)} ${p.unit}</td><td data-label="ยอดขาย (บาท)">${formatCurrency(p.totalValue)}</td><td data-label="สต็อกคงเหลือ">${formattedStock} ${p.unit}</td></tr>`;
                 });
 
@@ -2549,9 +2580,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             return `${overallSummaryHtml}${allSellersHtml || '<p>ไม่พบข้อมูลการขายในช่วงเวลานี้</p>'}`;
         },
-
+        
+        // === START: STOCK CALCULATION FIX ===
         exportPosSummaryToCsv(context) {
-            const { summaryResult, title, thaiDateString, periodName, sellerIdFilter, startDate, endDate } = context;
+            const { summaryResult, title, thaiDateString, periodName, sellerIdFilter, startDate, endDate, stockAsOfDate } = context;
+        // === END: STOCK CALCULATION FIX ===
             const isSingleDayReport = startDate.getFullYear() === endDate.getFullYear() && startDate.getMonth() === endDate.getMonth() && startDate.getDate() === endDate.getDate();
             let csvRows = [];
             
@@ -2633,7 +2666,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 csvRows.push([]);
                 csvRows.push(['สินค้า', 'ขาย(เงินสด)', 'ขาย(เงินโอน)', 'ขาย(เครดิต)', 'รวม(หน่วย)', 'ยอดขาย(บาท)', 'สต็อกคงเหลือ']);
                 Object.values(sellerData.productSummary).forEach(p => {
-                    const formattedStock = p.stock === 'N/A' ? 'N/A' : this.formatNumberSmart(p.stock);
+                    // === START: STOCK CALCULATION FIX ===
+                    const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
+                    const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
+                    // === END: STOCK CALCULATION FIX ===
                     csvRows.push([p.name, `${this.formatNumberSmart(p.cashQty)} ${p.unit}`, `${this.formatNumberSmart(p.transferQty)} ${p.unit}`, `${this.formatNumberSmart(p.creditQty)} ${p.unit}`, `${this.formatNumberSmart(p.totalQty)} ${p.unit}`, this.formatNumberSmart(p.totalValue), `${formattedStock} ${p.unit}`]);
                 });
             }
@@ -3477,6 +3513,75 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         },
 
+        // START: NEW FUNCTIONS FOR YESTERDAY'S STOCK REPORT
+        calculateStockAsOf(cutoffDate) {
+            const stockSummary = [];
+
+            this.data.products.forEach(product => {
+                const totalStockIn = this.data.stockIns
+                    .filter(si => si.productId === product.id && new Date(si.date) <= cutoffDate)
+                    .reduce((sum, si) => sum + si.quantity, 0);
+
+                const totalSold = this.data.sales
+                    .filter(sale => new Date(sale.date) <= cutoffDate)
+                    .flatMap(sale => sale.items)
+                    .filter(item => item.productId === product.id)
+                    .reduce((sum, item) => sum + item.quantity, 0);
+
+                const totalStockOut = this.data.stockOuts
+                    .filter(so => so.productId === product.id && new Date(so.date) <= cutoffDate)
+                    .reduce((sum, so) => sum + so.quantity, 0);
+
+                const calculatedStock = totalStockIn - totalSold - totalStockOut;
+                
+                stockSummary.push({
+                    id: product.id,
+                    name: product.name,
+                    unit: product.unit,
+                    stock: calculatedStock
+                });
+            });
+
+            return stockSummary;
+        },
+
+        renderYesterdayStockSummaryReport() {
+            const container = document.getElementById('stock-summary-report-container');
+            if (!container) return;
+
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            yesterday.setHours(23, 59, 59, 999); // ตั้งเวลาเป็นสิ้นสุดของวันเมื่อวาน
+
+            const stockData = this.calculateStockAsOf(yesterday);
+
+            let tableHTML = `
+                <h3 style="text-align:center;">รายงานสรุปสต็อก ณ สิ้นวันที่ ${this.formatThaiDateFullYear(yesterday)}</h3>
+                <div class="table-container"><table id="yesterday-stock-summary-table">
+                <thead>
+                    <tr>
+                        <th>สินค้า</th>
+                        <th>สต็อกคงเหลือ (ณ สิ้นวัน)</th>
+                    </tr>
+                </thead>
+                <tbody>`;
+            
+            stockData.forEach(product => {
+                tableHTML += `
+                    <tr>
+                        <td data-label="สินค้า">${product.name}</td>
+                        <td data-label="สต็อกคงเหลือ">${this.formatNumberSmart(product.stock)} ${product.unit}</td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `</tbody></table></div>`;
+            
+            container.innerHTML = tableHTML;
+            this.showToast('สร้างรายงานสต็อก ณ สิ้นวันก่อนหน้าสำเร็จ');
+        },
+        // END: NEW FUNCTIONS FOR YESTERDAY'S STOCK REPORT
+
         renderProductTable() {
             const tbody = document.querySelector('#product-table tbody');
             if (!tbody) return;
@@ -4189,7 +4294,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div id="admin-stock-report-content" class="collapsible-content admin-only">
                 <div style="text-align:center; padding: 10px;">
                     <p>รายงานนี้จะเปรียบเทียบสต็อกที่คำนวณได้จากประวัติ (นำเข้า - ขาย - ปรับออก) กับสต็อกที่บันทึกไว้ปัจจุบัน</p>
-                    <button id="generate-stock-report-btn" class="success">สร้างรายงานสต็อก</button>
+                    <button id="generate-stock-report-btn" class="success">สร้างรายงานสต็อก (ปัจจุบัน)</button>
+                    <button id="generate-yesterday-stock-report-btn" style="background-color: #007bff;">รายงานสต็อก (สิ้นวันก่อนหน้า)</button>
                     <button id="recalculate-stock-btn" class="danger">คำนวณสต็อกใหม่ทั้งหมด</button>
                 </div>
                 <div id="stock-summary-report-container" style="margin-top: 15px;"></div>
@@ -4355,6 +4461,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (e.target.id === 'open-reset-modal-btn') this.openResetModal();
 
                 if (e.target.id === 'generate-stock-report-btn') this.renderStockSummaryReport();
+                if (e.target.id === 'generate-yesterday-stock-report-btn') this.renderYesterdayStockSummaryReport();
                 if (e.target.id === 'recalculate-stock-btn') this.handleRecalculateStock();
 
                 if (e.target.id === 'my-summary-today-btn') this.summarizeMyToday(); 
