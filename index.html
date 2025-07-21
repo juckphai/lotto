@@ -357,8 +357,23 @@
         #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; color: white; background-color: var(--success-color); border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.1em; }
         #toast-notification.show { opacity: 1; visibility: visible; }
 
-        /* MODAL STYLES */
-        .modal-overlay { position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; padding: 5px; overflow-y: auto; }
+        /* === START: POPUP STYLE MODIFICATION (USER REQUEST) === */
+        .modal-overlay {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fffde7; /* Changed from dark overlay to light yellow */
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 5px; /* Increased padding for more space from the edge */
+            overflow-y: auto;
+        }
+        /* === END: POPUP STYLE MODIFICATION === */
+        
         .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
         #modalBodyContent { background-color: #FAFAD2; border: 3px solid #4CAF50; border-radius: 10px; padding: 15px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; }
         #modalBodyContent, #modalBodyContent * { color: blue !important; }
@@ -4186,7 +4201,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             <div class="collapsible-bar seller-only" data-target="seller-summary-content"><span>รายงานสรุป (สำหรับผู้ใช้ปัจจุบัน)</span><span class="arrow">▶</span></div>
             <div id="seller-summary-content" class="collapsible-content seller-only"><div style="text-align:center;"><div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"><button id="my-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button><button id="my-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมดของฉัน</button></div><div class="summary-form-inline" style="margin-top: 15px; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><label>เลือกวันที่: <input type="date" id="my-summary-date" style="width:100%;"></label><button id="my-summary-by-day-btn" style="background-color: #03a9f4;">สรุปยอดขายวันที่เลือก</button></div><div class="summary-form-inline" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;"><label>จากวันที่: <input type="date" id="my-summary-start-date"></label><label>ถึงวันที่: <input type="date" id="my-summary-end-date"></label></div><button id="my-summary-by-range-btn" style="background-color: #ff9800;">สรุปยอดขายตามช่วงวันที่</button></div></div></div>
-
             <!-- START: NEW SELLER DETAILED REPORT SECTION -->
             <div class="collapsible-bar seller-only" data-target="seller-detailed-report-content" style="background-color: #ED01ED;"><span>แจกแจงรายละเอียดการขาย</span><span class="arrow">▶</span></div>
             <div id="seller-detailed-report-content" class="collapsible-content seller-only">
