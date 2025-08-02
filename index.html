@@ -1281,6 +1281,7 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryContext: {},
         editingSaleContext: null,
         editingStockInId: null, // For tracking stock-in edits
+        editingStockOutId: null, // For tracking stock-out edits
         
         init() { this.loadData(); this.fillPages(); this.attachEventListeners(); this.checkLoginState(); },
 
@@ -3788,11 +3789,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         renderStockOut() { 
             const productSelect = document.getElementById('stock-out-product'); 
+            if(this.editingStockOutId === null) {
+                document.getElementById('stock-out-form').reset();
+            }
             productSelect.innerHTML = '<option value="">--- เลือกสินค้า ---</option>'; 
             this.data.products.forEach(p => { productSelect.innerHTML += `<option value="${p.id}">${p.name} (คงเหลือ: ${this.formatNumberSmart(p.stock)})</option>`; }); 
             const historyTbody = document.querySelector('#stock-out-history-table tbody'); 
             historyTbody.innerHTML = ''; 
-            [...this.data.stockOuts].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 20).forEach(so => { 
+            [...this.data.stockOuts].sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(so => { 
                 const tr = document.createElement('tr'); 
                 const stockOutDate = new Date(so.date);
                 const dateString = this.formatThaiDateShortYear(so.date);
@@ -3801,48 +3805,112 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <td data-label="เวลา">${timeString}</td>
                                 <td data-label="สินค้า">${so.productName}</td>
                                 <td data-label="จำนวน">${this.formatNumberSmart(so.quantity)}</td>
-                                <td data-label="เหตุผล">${so.reason}</td>`; 
+                                <td data-label="เหตุผล">${so.reason}</td>
+                                <td data-label="จัดการ">
+                                    <div class="action-buttons">
+                                        <button class="edit-stock-out-btn" data-id="${so.id}" style="background-color: var(--warning-color);">แก้ไข</button>
+                                        <button class="danger delete-stock-out-btn" data-id="${so.id}">ลบ</button>
+                                    </div>
+                                </td>`; 
                 historyTbody.appendChild(tr); 
             }); 
         },
         saveStockOut(e) { 
             e.preventDefault(); 
             const productId = document.getElementById('stock-out-product').value; 
-            const quantity = parseInt(document.getElementById('stock-out-quantity').value); 
-            const reason = document.getElementById('stock-out-reason').value.trim();
+            const newQuantity = parseInt(document.getElementById('stock-out-quantity').value); 
+            const newReason = document.getElementById('stock-out-reason').value.trim();
             const product = this.data.products.find(p => p.id == productId); 
 
             if (!product) {
                 this.showToast('ไม่พบสินค้า', 'error');
                 return;
             }
-            if (isNaN(quantity) || quantity <= 0) {
+            if (isNaN(newQuantity) || newQuantity <= 0) {
                 this.showToast('กรุณากรอกจำนวนให้ถูกต้อง', 'error');
                 return;
             }
-            if (!reason) {
+            if (!newReason) {
                 this.showToast('กรุณาระบุเหตุผลในการนำออก', 'error');
                 return;
             }
-            if (quantity > product.stock) {
-                this.showToast('สินค้าในสต็อกไม่เพียงพอที่จะนำออก', 'error');
-                return;
-            }
 
-            product.stock -= quantity; 
-            const stockOutRecord = { 
-                id: Date.now(), 
-                date: new Date().toISOString(), 
-                productId: product.id, 
-                productName: product.name, 
-                quantity, 
-                reason 
-            }; 
-            this.data.stockOuts.push(stockOutRecord); 
+            if (this.editingStockOutId) {
+                const stockOutRecord = this.data.stockOuts.find(so => so.id === parseInt(this.editingStockOutId, 10));
+                if (!stockOutRecord) {
+                    this.showToast('ไม่พบรายการที่จะแก้ไข', 'error');
+                    this.clearStockOutForm();
+                    return;
+                }
+
+                const oldQuantity = stockOutRecord.quantity;
+                const quantityDifference = newQuantity - oldQuantity;
+
+                if (quantityDifference > product.stock) {
+                    this.showToast('สต็อกไม่เพียงพอสำหรับการแก้ไขนี้', 'error');
+                    return;
+                }
+
+                product.stock -= quantityDifference;
+                stockOutRecord.quantity = newQuantity;
+                stockOutRecord.reason = newReason;
+                stockOutRecord.productName = product.name;
+
+                this.showToast(`แก้ไขรายการนำออกของ ${product.name} สำเร็จ`);
+            } else {
+                if (newQuantity > product.stock) {
+                    this.showToast('สินค้าในสต็อกไม่เพียงพอที่จะนำออก', 'error');
+                    return;
+                }
+                product.stock -= newQuantity; 
+                const stockOutRecord = { 
+                    id: Date.now(), 
+                    date: new Date().toISOString(), 
+                    productId: product.id, 
+                    productName: product.name, 
+                    quantity: newQuantity, 
+                    reason: newReason 
+                }; 
+                this.data.stockOuts.push(stockOutRecord); 
+                this.showToast('บันทึกการนำออกสินค้าเรียบร้อย'); 
+            }
+            
             this.saveData(); 
-            this.showToast('บันทึกการนำออกสินค้าเรียบร้อย'); 
-            document.getElementById('stock-out-form').reset(); 
+            this.clearStockOutForm();
             this.renderStockOut(); 
+        },
+        editStockOut(id) {
+            const stockOutRecord = this.data.stockOuts.find(so => so.id == id);
+            if (stockOutRecord) {
+                this.editingStockOutId = id;
+                document.getElementById('stock-out-product').value = stockOutRecord.productId;
+                document.getElementById('stock-out-quantity').value = stockOutRecord.quantity;
+                document.getElementById('stock-out-reason').value = stockOutRecord.reason;
+                document.getElementById('stock-out-product').disabled = true;
+                document.getElementById('stock-out-form').scrollIntoView({ behavior: 'smooth' });
+                this.showToast(`กำลังแก้ไขการนำออกของ: ${stockOutRecord.productName}`, 'warning');
+            }
+        },
+        deleteStockOut(id) {
+            if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการนำออกนี้? สต็อกสินค้าจะถูก **เพิ่มคืน** เข้าระบบ')) return;
+            const stockOutId = parseInt(id, 10);
+            const stockOutIndex = this.data.stockOuts.findIndex(so => so.id === stockOutId);
+            if (stockOutIndex > -1) {
+                const [stockOutToDelete] = this.data.stockOuts.splice(stockOutIndex, 1);
+                const product = this.data.products.find(p => p.id === stockOutToDelete.productId);
+                if (product) {
+                    product.stock += stockOutToDelete.quantity;
+                }
+                this.saveData();
+                this.showToast('ลบรายการนำออกและคืนสต็อกเรียบร้อยแล้ว');
+                this.renderStockOut();
+            }
+        },
+        clearStockOutForm() {
+            this.editingStockOutId = null;
+            const form = document.getElementById('stock-out-form');
+            form.reset();
+            document.getElementById('stock-out-product').disabled = false;
         },
 
         renderReport(e) {
@@ -4145,7 +4213,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             document.getElementById('page-stock-in').innerHTML = `<h2>บันทึกการนำเข้าสินค้า</h2> <p style="text-align:center; margin-top:-15px; margin-bottom:20px;">เมื่อบันทึกการนำเข้า ราคาทุนและราคาขายล่าสุดของสินค้าจะถูกอัปเดตตามข้อมูลที่กรอกในหน้านี้</p><form id="stock-in-form"> <label for="stock-in-product">เลือกสินค้า:</label> <select id="stock-in-product" required></select> <label for="stock-in-quantity">จำนวน:</label> <input type="number" id="stock-in-quantity" min="1" required> <label for="stock-in-cost">ราคาทุนต่อหน่วย:</label> <input type="number" id="stock-in-cost" min="0" step="0.01" required> <label for="stock-in-price">ราคาขายต่อหน่วย:</label> <input type="number" id="stock-in-price" min="0" step="0.01" required> <div class="form-actions"> <button type="submit" class="success">บันทึก</button> <button type="button" id="clear-stock-in-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม / ยกเลิกแก้ไข</button></div> </form> <h3>ประวัติการนำเข้า</h3> <div class="table-container"><table id="stock-in-history-table"> <thead> <tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>ทุนต่อหน่วย</th><th>ยอดรวม</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`; 
             
-            document.getElementById('page-stock-out').innerHTML = `<h2>ปรับสต็อก (นำออก)</h2> <form id="stock-out-form"> <label for="stock-out-product">เลือกสินค้า:</label> <select id="stock-out-product" required></select> <label for="stock-out-quantity">จำนวนที่นำออก:</label> <input type="number" id="stock-out-quantity" min="1" required> <label for="stock-out-reason">เหตุผล:</label> <input type="text" id="stock-out-reason" placeholder="เช่น หมดอายุ, ชำรุด, นับสต็อก" required> <div class="form-actions"> <button type="submit" class="danger">ยืนยันการนำออก</button> </div> </form> <h3>ประวัติการนำออกล่าสุด</h3> <div class="table-container"><table id="stock-out-history-table"> <thead> <tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>เหตุผล</th></tr> </thead> <tbody></tbody> </table></div>`;
+            document.getElementById('page-stock-out').innerHTML = `<h2>ปรับสต็อก (นำออก)</h2> <form id="stock-out-form"> <label for="stock-out-product">เลือกสินค้า:</label> <select id="stock-out-product" required></select> <label for="stock-out-quantity">จำนวนที่นำออก:</label> <input type="number" id="stock-out-quantity" min="1" required> <label for="stock-out-reason">เหตุผล:</label> <input type="text" id="stock-out-reason" placeholder="เช่น หมดอายุ, ชำรุด, นับสต็อก" required> <div class="form-actions"> <button type="submit" class="success">บันทึก</button> <button type="button" id="clear-stock-out-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม / ยกเลิกแก้ไข</button> </div> </form> <h3>ประวัติการนำออกล่าสุด</h3> <div class="table-container"><table id="stock-out-history-table"> <thead> <tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>เหตุผล</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`;
             document.getElementById('page-sales-history').innerHTML = `
                 <h2>รายการขายย้อนหลัง</h2>
                 <div id="sales-history-export-form">
@@ -4300,7 +4368,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div id="stock-summary-report-container" style="margin-top: 15px;"></div>
             </div>
 
-            <!-- Seller Sections: Rebuilt for better filtering -->
+             <!-- Seller Sections: Rebuilt for better filtering -->
             <div class="collapsible-bar seller-only" data-target="seller-backup-content"><span>บันทึกข้อมูล (Backup)</span><span class="arrow">▶</span></div>
             <div id="seller-backup-content" class="collapsible-content seller-only"><div style="text-align:center; padding-top: 10px;"><p style="margin-top:0;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn-seller" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn-seller" style="background-color: #007bff;">บันทึกข้อมูลปัจจุบันลงในเบราว์เซอร์</button></div></div>
             
@@ -4434,6 +4502,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (e.target.classList.contains('edit-stock-in-btn')) this.editStockIn(e.target.dataset.id);
                 if (e.target.classList.contains('delete-stock-in-btn')) this.deleteStockIn(e.target.dataset.id);
                 if (e.target.id === 'clear-stock-in-form-btn') this.clearStockInForm();
+                
+                if (e.target.classList.contains('edit-stock-out-btn')) this.editStockOut(e.target.dataset.id);
+                if (e.target.classList.contains('delete-stock-out-btn')) this.deleteStockOut(e.target.dataset.id);
+                if (e.target.id === 'clear-stock-out-form-btn') this.clearStockOutForm();
 
                 if (e.target.id === 'export-sales-history-csv-btn') {
                     this.exportSalesHistoryToCsv();
