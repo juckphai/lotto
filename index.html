@@ -1006,7 +1006,7 @@
             th, td {
                 border: 1px solid #666 !important;
                 padding: 3px 5px;
-                text-align: center; /* MODIFIED: Changed from left to center */
+                text-align: center; /* MODIFIED: This is the user-requested change */
                 word-wrap: break-word;
             }
             th {
@@ -1315,40 +1315,64 @@ document.addEventListener('DOMContentLoaded', () => {
             this.showPage('page-pos');
         },
         
-        loadData() { 
-            const data = localStorage.getItem('posData'); 
-            if (data) { 
-                this.data = JSON.parse(data); 
-                if (typeof this.data.backupPassword === 'undefined') {
-                    this.data.backupPassword = null;
-                }
-                if (!this.data.stores) { this.data.stores = []; } 
-                if (!this.data.stockOuts) { this.data.stockOuts = []; } 
-                if (this.data.sales && this.data.sales.length > 0) { 
+        loadData() {
+            try {
+                const data = localStorage.getItem('posData'); 
+                if (data) { 
+                    this.data = JSON.parse(data); 
+
+                    // --- START: ROBUST DATA VALIDATION (THE FIX) ---
+                    if (typeof this.data.backupPassword === 'undefined') { this.data.backupPassword = null; }
+                    if (!this.data.stores || !Array.isArray(this.data.stores)) { this.data.stores = []; } 
+                    if (!this.data.stockOuts || !Array.isArray(this.data.stockOuts)) { this.data.stockOuts = []; }
+                    if (!this.data.stockIns || !Array.isArray(this.data.stockIns)) { this.data.stockIns = []; }
+                    if (!this.data.sales || !Array.isArray(this.data.sales)) { this.data.sales = []; }
+                    if (!this.data.products || !Array.isArray(this.data.products)) { this.data.products = []; }
+
+                    // Critical check for users array
+                    if (!this.data.users || !Array.isArray(this.data.users)) {
+                        this.data.users = []; 
+                    }
+                    
+                    if (this.data.users.length === 0) {
+                        this.data.users.push({ id: Date.now(), username: 'admin', password: '123', role: 'admin' });
+                        this.showToast('ไม่พบข้อมูลผู้ใช้, สร้างบัญชี admin เริ่มต้นให้แล้ว (user: admin, pass: 123)', 'warning');
+                    }
+                    // --- END: ROBUST DATA VALIDATION ---
+
+                    // --- Data Migration Logic ---
                     this.data.sales.forEach(sale => { 
                         sale.items.forEach(item => { if (typeof item.isSpecialPrice === 'undefined') { item.isSpecialPrice = false; item.originalPrice = item.price; } }); 
                         if (sale.paymentMethod === 'เครดิต' && typeof sale.creditDueDate === 'undefined') { sale.creditDueDate = null; } 
                         if (typeof sale.transferorName === 'undefined') { sale.transferorName = null; } 
                     }); 
-                } 
-                this.data.users.forEach(u => { 
-                    if (!u.storeId) { u.storeId = null; } 
-                    if (u.role === 'seller') { 
-                        if (!u.assignedProductIds) { u.assignedProductIds = []; } 
-                        if (typeof u.salesStartDate === 'undefined') { u.salesStartDate = null; } 
-                        if (typeof u.salesEndDate === 'undefined') { u.salesEndDate = null; } 
-                        if (typeof u.commissionRate === 'undefined') { u.commissionRate = 0; }
-                        if (typeof u.commissionOnCash === 'undefined') { u.commissionOnCash = false; }
-                        if (typeof u.commissionOnTransfer === 'undefined') { u.commissionOnTransfer = false; }
-                        if (typeof u.commissionOnCredit === 'undefined') { u.commissionOnCredit = false; }
-                        if (typeof u.visibleSalesDays === 'undefined') { u.visibleSalesDays = null; }
-                    } 
-                }); 
-            } else { 
-                this.data.users.push({ id: Date.now(), username: 'admin', password: '123', role: 'admin' }); 
-                this.data.backupPassword = null;
-                this.saveData(); 
-            } 
+
+                    this.data.users.forEach(u => { 
+                        if (!u.storeId) { u.storeId = null; } 
+                        if (u.role === 'seller') { 
+                            if (!u.assignedProductIds) { u.assignedProductIds = []; } 
+                            if (typeof u.salesStartDate === 'undefined') { u.salesStartDate = null; } 
+                            if (typeof u.salesEndDate === 'undefined') { u.salesEndDate = null; } 
+                            if (typeof u.commissionRate === 'undefined') { u.commissionRate = 0; }
+                            if (typeof u.commissionOnCash === 'undefined') { u.commissionOnCash = false; }
+                            if (typeof u.commissionOnTransfer === 'undefined') { u.commissionOnTransfer = false; }
+                            if (typeof u.commissionOnCredit === 'undefined') { u.commissionOnCredit = false; }
+                            if (typeof u.visibleSalesDays === 'undefined') { u.visibleSalesDays = null; }
+                        } 
+                    }); 
+                } else { 
+                    this.data.users.push({ id: Date.now(), username: 'admin', password: '123', role: 'admin' }); 
+                    this.data.backupPassword = null;
+                    this.saveData(); 
+                }
+            } catch (error) {
+                console.error("Fatal error during data load:", error);
+                this.showToast("เกิดข้อผิดพลาดในการโหลดข้อมูล! กำลังรีเซ็ตเป็นค่าเริ่มต้น", "error");
+                // Reset to a known good state if parsing fails
+                this.data = { users: [], products: [], sales: [], stockIns: [], stockOuts: [], stores: [], backupPassword: null };
+                this.data.users.push({ id: Date.now(), username: 'admin', password: '123', role: 'admin' });
+                this.saveData();
+            }
         },
         saveData() { localStorage.setItem('posData', JSON.stringify(this.data)); },
         
