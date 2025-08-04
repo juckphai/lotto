@@ -785,138 +785,25 @@
             #modalBodyContent table tr { display: table-row; }
 
 
-            /* --- Universal Table Layout Rules for ALL Summary Popups --- */
-            #modalBodyContent .credit-details-table,
-            #modalBodyContent .transfer-details-table,
-            #modalBodyContent .product-summary-table,
-            #modalBodyContent .detailed-sales-table { /* ADDED */
-                table-layout: fixed;
-                width: 100%;
+            /* === START: USER REQUEST - POPUP TABLE SINGLE-LINE ADJUSTMENT ON MOBILE === */
+            /* This section ensures that all tables within a popup on mobile view
+               do not wrap their content, allowing for horizontal scrolling instead. */
+            #modalBodyContent table {
+                table-layout: auto; /* Let browser determine column widths based on content */
+                width: auto;        /* Allow table to grow as wide as its content needs */
+                min-width: 100%;    /* Ensure it at least fills the container's initial width */
             }
-            /* Universal TD rule: allow wrapping by default and handle long words. */
-            #modalBodyContent .credit-details-table td,
-            #modalBodyContent .transfer-details-table td,
-            #modalBodyContent .product-summary-table td,
-            #modalBodyContent .detailed-sales-table td { /* ADDED */
-                word-break: break-word;
-                white-space: normal; /* Default to wrapping */
-                overflow: hidden;
-                text-overflow: ellipsis;
+
+            #modalBodyContent table th,
+            #modalBodyContent table td {
+                white-space: nowrap; /* This is the key change: forces all content onto a single line */
+                font-size: 11px;     /* A slightly smaller, fixed font size for mobile popups for consistency */
+                vertical-align: middle;
             }
-            
-            /* --- DETAILED SALES TABLE (NEW) --- */
-            #modalBodyContent .detailed-sales-table th:nth-of-type(1),
-            #modalBodyContent .detailed-sales-table td:nth-of-type(1) { width: 15%; white-space: nowrap; } /* Date */
-            #modalBodyContent .detailed-sales-table th:nth-of-type(2),
-            #modalBodyContent .detailed-sales-table td:nth-of-type(2) { width: 14%; white-space: nowrap; } /* Time */
-            #modalBodyContent .detailed-sales-table th:nth-of-type(3),
-            #modalBodyContent .detailed-sales-table td:nth-of-type(3) { width: 31%; } /* Items */
-            #modalBodyContent .detailed-sales-table th:nth-of-type(4),
-            #modalBodyContent .detailed-sales-table td:nth-of-type(4) { width: 15%; white-space: nowrap; } /* Total */
-            #modalBodyContent .detailed-sales-table th:nth-of-type(5),
-            #modalBodyContent .detailed-sales-table td:nth-of-type(5) { width: 25%; } /* Payment */
-            /* Admin version with profit */
-            #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(1),
-            #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(1) { width: 13%; } /* Date */
-            #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(2),
-            #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(2) { width: 12%; } /* Time */
-            #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(3),
-            #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(3) { width: 25%; } /* Items */
-            #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(4),
-            #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(4) { width: 13%; } /* Total */
-            #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(5),
-            #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(5) { width: 12%; } /* Profit */
-            #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(6),
-            #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(6) { width: 25%; } /* Payment */
+            /* The old, complex percentage-width rules for each table type have been removed in favor of this simpler, more robust solution. */
+            /* === END: USER REQUEST - POPUP TABLE SINGLE-LINE ADJUSTMENT ON MOBILE === */
 
 
-            /* --- PRODUCT SUMMARY Table (For BOTH Admin & Seller) --- */
-            #modalBodyContent .product-summary-table th:nth-of-type(1),
-            #modalBodyContent .product-summary-table td:nth-of-type(1) { width: 30%; } /* Name (wraps) */
-            
-            #modalBodyContent .product-summary-table th:nth-of-type(2),
-            #modalBodyContent .product-summary-table td:nth-of-type(2),
-            #modalBodyContent .product-summary-table th:nth-of-type(3),
-            #modalBodyContent .product-summary-table td:nth-of-type(3),
-            #modalBodyContent .product-summary-table th:nth-of-type(4),
-            #modalBodyContent .product-summary-table td:nth-of-type(4),
-            #modalBodyContent .product-summary-table th:nth-of-type(5),
-            #modalBodyContent .product-summary-table td:nth-of-type(5) { 
-                width: 10%; 
-                white-space: nowrap; /* No wrap for quantities */
-            }
-            
-            #modalBodyContent .product-summary-table th:nth-of-type(6),
-            #modalBodyContent .product-summary-table td:nth-of-type(6) { width: 15%; white-space: nowrap; } /* Value (no wrap) */
-            
-            #modalBodyContent .product-summary-table th:nth-of-type(7),
-            #modalBodyContent .product-summary-table td:nth-of-type(7) { width: 15%; white-space: nowrap; } /* Stock (no wrap) */
-            
-            /* --- 6-COLUMN CREDIT DETAILS Table (For Seller Credit Summary & Admin Credit Summary) --- */
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(1),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(1) { width: 13%; white-space: nowrap; } /* Date */
-            
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(2),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(2) { width: 20%; } /* Buyer (wraps) */
-            
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(3),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(3) { width: 17%; } /* Seller (wraps) */
-            
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(4),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(4) { width: 22%; } /* Items (wraps) */
-            
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(5),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(5) { width: 15%; white-space: nowrap; } /* Amount */
-            
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(6),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(6) { width: 13%; white-space: nowrap; } /* Due Date */
-            
-            /* --- 5-COLUMN CREDIT SUB-TABLE (in Admin POS Summary) --- */
-            #modalBodyContent .credit-details-sub-table th:nth-of-type(1),
-            #modalBodyContent .credit-details-sub-table td:nth-of-type(1) { width: 15%; white-space: nowrap; } /* Date */
-            
-            #modalBodyContent .credit-details-sub-table th:nth-of-type(2),
-            #modalBodyContent .credit-details-sub-table td:nth-of-type(2) { width: 20%; } /* Buyer (wraps) */
-            
-            #modalBodyContent .credit-details-sub-table th:nth-of-type(3),
-            #modalBodyContent .credit-details-sub-table td:nth-of-type(3) { width: 35%; } /* Items (wraps) */
-            
-            #modalBodyContent .credit-details-sub-table th:nth-of-type(4),
-            #modalBodyContent .credit-details-sub-table td:nth-of-type(4) { width: 15%; white-space: nowrap; } /* Amount */
-            
-            #modalBodyContent .credit-details-sub-table th:nth-of-type(5),
-            #modalBodyContent .credit-details-sub-table td:nth-of-type(5) { width: 15%; white-space: nowrap; } /* Due Date */
-            
-            /* --- NEW: 4-COLUMN TRANSFER SUB-TABLE (in Admin POS Summary) --- */
-            #modalBodyContent .transfer-details-sub-table th:nth-of-type(1),
-            #modalBodyContent .transfer-details-sub-table td:nth-of-type(1) { width: 15%; white-space: nowrap; } /* Date */
-            
-            #modalBodyContent .transfer-details-sub-table th:nth-of-type(2),
-            #modalBodyContent .transfer-details-sub-table td:nth-of-type(2) { width: 25%; } /* Transferor (wraps) */
-            
-            #modalBodyContent .transfer-details-sub-table th:nth-of-type(3),
-            #modalBodyContent .transfer-details-sub-table td:nth-of-type(3) { width: 40%; } /* Items (wraps) */
-            
-            #modalBodyContent .transfer-details-sub-table th:nth-of-type(4),
-            #modalBodyContent .transfer-details-sub-table td:nth-of-type(4) { width: 20%; white-space: nowrap; } /* Amount */
-
-
-            /* --- TRANSFER DETAILS Table (For BOTH Admin & Seller) --- */
-            #modalBodyContent .transfer-details-table th:nth-of-type(1),
-            #modalBodyContent .transfer-details-table td:nth-of-type(1) { width: 15%; white-space: nowrap; } /* Date */
-            
-            #modalBodyContent .transfer-details-table th:nth-of-type(2),
-            #modalBodyContent .transfer-details-table td:nth-of-type(2) { width: 25%; } /* Transferor (wraps) */
-            
-            #modalBodyContent .transfer-details-table th:nth-of-type(3),
-            #modalBodyContent .transfer-details-table td:nth-of-type(3) { width: 20%; } /* Seller (wraps) */
-            
-            #modalBodyContent .transfer-details-table th:nth-of-type(4),
-            #modalBodyContent .transfer-details-table td:nth-of-type(4) { width: 25%; } /* Items (wraps) */
-            
-            #modalBodyContent .transfer-details-table th:nth-of-type(5),
-            #modalBodyContent .transfer-details-table td:nth-of-type(5) { width: 15%; white-space: nowrap; } /* Amount */
-            
             #report-filter-form {
                 grid-template-columns: 1fr; /* Stack into a single column on mobile */
                 gap: 10px;
@@ -2502,7 +2389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Object.values(sellerData.productSummary).forEach(p => {
                     const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
                     const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
-                    productTableRows += `<tr><td data-label="สินค้า">${p.name}</td><td data-label="ขายเงินสด">${this.formatNumberSmart(p.cashQty)} ${p.unit}</td><td data-label="ขายเงินโอน">${this.formatNumberSmart(p.transferQty)} ${p.unit}</td><td data-label="ขายเครดิต">${this.formatNumberSmart(p.creditQty)} ${p.unit}</td><td data-label="รวม">${this.formatNumberSmart(p.totalQty)} ${p.unit}</td><td data-label="ยอดขาย (บาท)">${formatCurrency(p.totalValue)}</td><td data-label="สต็อกคงเหลือ">${formattedStock} ${p.unit}</td></tr>`;
+                    productTableRows += `<tr><td data-label="สินค้า">${p.name}</td><td data-label="เงินสด">${this.formatNumberSmart(p.cashQty)} ${p.unit}</td><td data-label="เงินโอน">${this.formatNumberSmart(p.transferQty)} ${p.unit}</td><td data-label="เครดิต">${this.formatNumberSmart(p.creditQty)} ${p.unit}</td><td data-label="รวม">${this.formatNumberSmart(p.totalQty)} ${p.unit}</td><td data-label="ยอดขาย (บาท)">${formatCurrency(p.totalValue)}</td><td data-label="สต็อกคงเหลือ">${formattedStock} ${p.unit}</td></tr>`;
                 });
 
                 let profitOrCommissionHtml;
@@ -2574,7 +2461,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${!isSingleDayReport ? `<p><strong>จำนวนวันขายทั้งหมด : ${summaryResult.totalSellingDays} วัน</strong></p>` : ''}
                         ${profitOrCommissionHtml}
                         <table class="product-summary-table">
-                            <thead><tr><th>สินค้า</th><th>ขายเงินสด</th><th>ขายเงินโอน</th><th>ขายเครดิต</th><th>รวม(หน่วย)</th><th>ยอดขาย(บาท)</th><th>สต็อกคงเหลือ</th></tr></thead>
+                            <thead><tr><th>สินค้า</th><th>เงินสด</th><th>เงินโอน</th><th>เครดิต</th><th>รวม(หน่วย)</th><th>ยอดขาย(บาท)</th><th>สต็อกคงเหลือ</th></tr></thead>
                             <tbody>${productTableRows}</tbody>
                         </table>
                         ${creditDetailsHtml}
