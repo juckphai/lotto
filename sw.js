@@ -1,5 +1,5 @@
 // เปลี่ยนชื่อ Cache ทุกครั้งที่มีการอัปเดตไฟล์
-const CACHE_NAME = 'juck-pwa-cache-v17'; // อัปเดตเวอร์ชันเป็น v14
+const CACHE_NAME = 'juck-pwa-cache-v18'; // อัปเดตเวอร์ชันเป็น v14
 
 // รายการไฟล์ทั้งหมดที่มีอยู่จริงใน Repository
 const urlsToCache = [
