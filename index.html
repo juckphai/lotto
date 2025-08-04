@@ -2389,7 +2389,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 Object.values(sellerData.productSummary).forEach(p => {
                     const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
                     const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
-                    productTableRows += `<tr><td data-label="สินค้า">${p.name}</td><td data-label="เงินสด">${this.formatNumberSmart(p.cashQty)} ${p.unit}</td><td data-label="เงินโอน">${this.formatNumberSmart(p.transferQty)} ${p.unit}</td><td data-label="เครดิต">${this.formatNumberSmart(p.creditQty)} ${p.unit}</td><td data-label="รวม">${this.formatNumberSmart(p.totalQty)} ${p.unit}</td><td data-label="ยอดขาย (บาท)">${formatCurrency(p.totalValue)}</td><td data-label="สต็อกคงเหลือ">${formattedStock} ${p.unit}</td></tr>`;
+                    productTableRows += `<tr><td data-label="สินค้า">${p.name}</td><td data-label="เงินสด">${this.formatNumberSmart(p.cashQty)} ${p.unit}</td><td data-label="เงินโอน">${this.formatNumberSmart(p.transferQty)} ${p.unit}</td><td data-label="เครดิต">${this.formatNumberSmart(p.creditQty)} ${p.unit}</td><td data-label="รวม">${this.formatNumberSmart(p.totalQty)} ${p.unit}</td><td data-label="ยอดขาย (บาท)">${formatCurrency(p.totalValue)}</td><td data-label="คงเหลือ">${formattedStock} ${p.unit}</td></tr>`;
                 });
 
                 let profitOrCommissionHtml;
@@ -2461,7 +2461,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         ${!isSingleDayReport ? `<p><strong>จำนวนวันขายทั้งหมด : ${summaryResult.totalSellingDays} วัน</strong></p>` : ''}
                         ${profitOrCommissionHtml}
                         <table class="product-summary-table">
-                            <thead><tr><th>สินค้า</th><th>เงินสด</th><th>เงินโอน</th><th>เครดิต</th><th>รวม(หน่วย)</th><th>ยอดขาย(บาท)</th><th>สต็อกคงเหลือ</th></tr></thead>
+                            <thead><tr><th>สินค้า</th><th>เงินสด</th><th>เงินโอน</th><th>เครดิต</th><th>รวม(หน่วย)</th><th>ยอดขาย(บาท)</th><th>คงเหลือ</th></tr></thead>
                             <tbody>${productTableRows}</tbody>
                         </table>
                         ${creditDetailsHtml}
@@ -2553,7 +2553,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 
                 csvRows.push([]);
-                csvRows.push(['สินค้า', 'ขาย(เงินสด)', 'ขาย(เงินโอน)', 'ขาย(เครดิต)', 'รวม(หน่วย)', 'ยอดขาย(บาท)', 'สต็อกคงเหลือ']);
+                csvRows.push(['สินค้า', 'ขาย(เงินสด)', 'ขาย(เงินโอน)', 'ขาย(เครดิต)', 'รวม(หน่วย)', 'ยอดขาย(บาท)', 'คงเหลือ']);
                 Object.values(sellerData.productSummary).forEach(p => {
                     const stockAtEndOfDay = stockAsOfDate ? stockAsOfDate.get(p.name) : 'N/A';
                     const formattedStock = (typeof stockAtEndOfDay === 'number') ? this.formatNumberSmart(stockAtEndOfDay) : 'N/A';
