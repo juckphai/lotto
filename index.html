@@ -1540,26 +1540,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const newSaveBtn = saveBtn.cloneNode(true); // Clone to remove old listeners
             saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
 
-            newSaveBtn.addEventListener("click", () => {
+             newSaveBtn.addEventListener("click", () => {
                 const controlsElement = modalContentContainer.querySelector('.modal-controls');
                 
                 if (controlsElement) controlsElement.style.display = 'none';
+
+                // เพิ่มสไตล์ชั่วคราวก่อนถ่ายภาพ
+                modalContentContainer.style.backgroundColor = '#FAFAD2'; 
+                modalContentContainer.style.padding = '10px 5px';
 
                 html2canvas(modalContentContainer, {
                     useCORS: true,
                     scale: 2,
                     backgroundColor: '#FAFAD2'
                 }).then(canvas => {
+                    // --- START: นี่คือส่วนสำคัญที่หายไป ---
                     const link = document.createElement('a');
                     const fileName = `POS_Summary_${this.currentUser.username}_${Date.now()}.png`;
                     link.download = fileName;
                     link.href = canvas.toDataURL("image/png");
                     link.click();
+                    // --- END: ส่วนสำคัญที่หายไป ---
                 }).catch(err => {
                     console.error("Error creating image:", err);
                     this.showToast("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้", "error");
                 }).finally(() => {
                     if (controlsElement) controlsElement.style.display = '';
+
+                    // คืนค่าสไตล์ให้กลับเป็นเหมือนเดิม
+                    modalContentContainer.style.backgroundColor = '';
+                    modalContentContainer.style.padding = '';
                 });
             });
             
