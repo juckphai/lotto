@@ -8,6 +8,9 @@
     <!-- [PWA] Link to Manifest & Theme Color -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#4a90e2">
+
+    <!-- [NEW] Library for saving as image -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         /* === CSS MERGED FROM FILE 10.html AND ADAPTED FOR POS SYSTEM === */
@@ -372,7 +375,6 @@
             padding: 5px; /* Increased padding for more space from the edge */
             overflow-y: auto;
         }
-        /* === END: POPUP STYLE MODIFICATION === */
         
         .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
         #modalBodyContent { background-color: #FAFAD2; border: 1px solid #4CAF50; border-radius: 10px; padding: 15px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; }
@@ -396,7 +398,38 @@
             margin: 15px 0; 
         }
         
-        .modal-close-btn { background-color: #E97132; color: white; padding: 12px 30px; border: none; cursor: pointer; border-radius: 20px; font-size: 16px; margin-top: 10px; transition: background-color 0.3s; }
+        /* === START: [NEW] CSS for Popup Controls === */
+        .modal-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-top: 10px;
+            max-width: 600px;
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .control-group label, .control-group span {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .control-group input[type="range"] {
+            width: 80%;
+            max-width: 300px;
+            margin: 0;
+        }
+        /* === END: [NEW] CSS === */
+
+        .modal-close-btn { background-color: #E97132; color: white; padding: 12px 30px; border: none; cursor: pointer; border-radius: 20px; font-size: 16px; margin-top: 10px; transition: background-color 0.3s; width: 90%; max-width: 250px;}
         .modal-close-btn:hover { background-color: #e64a19; }
         .format-modal-content { background-color: #fff; padding: 20px 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; }
         .format-modal-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
@@ -1127,7 +1160,28 @@
     </div>
 
     <div id="toast-notification"></div>
-    <div id="summaryModal" class="modal-overlay"><div class="modal-content-container"><div id="modalBodyContent"></div><button onclick="App.closeSummaryModal()" class="modal-close-btn">ปิดหน้าต่างนี้</button></div></div>
+
+    <!-- [MODIFIED] Summary Popup with new controls -->
+    <div id="summaryModal" class="modal-overlay">
+        <div class="modal-content-container">
+            <div id="modalBodyContent"></div>
+            <div class="modal-controls">
+                <button id="saveSummaryAsImageBtn" class="modal-close-btn" style="background-color: #007bff; margin-bottom: 15px;">บันทึกเป็นรูปภาพ</button>
+                <div class="control-group">
+                    <label for="summaryFontSizeSlider">ปรับขนาดตัวอักษร:</label>
+                    <input type="range" id="summaryFontSizeSlider" min="0.5" max="1.5" step="0.05" value="1.0">
+                    <span id="summaryFontSizeValue">ขนาด: 100%</span>
+                </div>
+                <div class="control-group">
+                    <label for="summaryLineHeightSlider">ปรับขนาดของบรรทัด:</label>
+                    <input type="range" id="summaryLineHeightSlider" min="1.0" max="3.0" step="0.1" value="1.5">
+                    <span id="summaryLineHeightValue">ความสูงของบรรทัด: 1.5</span>
+                </div>
+                <button onclick="App.closeSummaryModal()" class="modal-close-btn">ปิดหน้าต่างนี้</button>
+            </div>
+        </div>
+    </div>
+
     <div id="summaryOutputModal" class="modal-overlay"><div class="format-modal-content"><h3>เลือกรูปแบบการแสดงผลสรุป</h3><div class="format-modal-buttons"><button class="btn-display" onclick="App.handleSummaryOutput('display')">แสดงบนจอ</button><button class="btn-csv" onclick="App.handleSummaryOutput('csv')">ส่งออกเป็น CSV</button><button class="btn-pdf" onclick="App.handleSummaryOutput('pdf')">บันทึกเป็น PDF</button><button class="btn-cancel" onclick="App.closeSummaryOutputModal()">ยกเลิก</button></div></div></div>
     
     <div id="resetModal" class="modal-overlay">
@@ -1430,7 +1484,91 @@ document.addEventListener('DOMContentLoaded', () => {
 
         showLoginScreen() { document.getElementById('login-screen').style.display = 'block'; document.getElementById('main-app').style.display = 'none'; },
         showToast(message, type = 'success') { const toast = document.getElementById('toast-notification'); if (!toast) return; toast.textContent = message; toast.style.backgroundColor = type === 'error' ? 'var(--danger-color)' : (type === 'warning' ? 'var(--warning-color)' : 'var(--success-color)'); toast.className = 'show'; setTimeout(() => { toast.className = toast.className.replace('show', ''); }, 3000); },
-        openSummaryModal(htmlContent) { const modal = document.getElementById('summaryModal'); const modalBody = document.getElementById('modalBodyContent'); modalBody.innerHTML = htmlContent; modal.style.display = 'flex'; },
+        
+        // --- START: [MODIFIED] Functions for Popup with image saving ---
+        openSummaryModal(htmlContent) {
+            const modal = document.getElementById('summaryModal');
+            const modalBody = document.getElementById('modalBodyContent');
+            modalBody.innerHTML = htmlContent;
+            modal.style.display = 'flex';
+            this.setupSummaryPopupControls(); // Setup controls every time modal opens
+        },
+
+        setupSummaryPopupControls() {
+            const modalContentContainer = document.querySelector("#summaryModal .modal-content-container");
+            const modalBody = document.getElementById("modalBodyContent");
+            if (!modalBody || !modalContentContainer) return;
+
+            // --- Font Size Controls ---
+            const textElements = modalBody.querySelectorAll('p, h2, h3, h4, strong, th, td, span, div');
+            const fsSlider = document.getElementById("summaryFontSizeSlider");
+            const fsValueSpan = document.getElementById("summaryFontSizeValue");
+
+            textElements.forEach(el => {
+                if (!el.dataset.originalSize) {
+                    el.dataset.originalSize = parseFloat(window.getComputedStyle(el).fontSize);
+                }
+            });
+
+            const updateFontSize = () => {
+                const scale = fsSlider.value;
+                textElements.forEach(el => {
+                    const originalSize = parseFloat(el.dataset.originalSize);
+                    if (originalSize) {
+                        el.style.fontSize = (originalSize * scale) + 'px';
+                    }
+                });
+                fsValueSpan.textContent = "ขนาด: " + Math.round(scale * 100) + "%";
+            };
+            fsSlider.removeEventListener("input", updateFontSize); // Prevent duplicate listeners
+            fsSlider.addEventListener("input", updateFontSize);
+
+            // --- Line Height Controls ---
+            const lhSlider = document.getElementById("summaryLineHeightSlider");
+            const lhValueSpan = document.getElementById("summaryLineHeightValue");
+
+            const updateLineHeight = () => {
+                const lineHeight = lhSlider.value;
+                modalBody.style.lineHeight = lineHeight;
+                lhValueSpan.textContent = "ความสูงของบรรทัด: " + lineHeight;
+            };
+            lhSlider.removeEventListener("input", updateLineHeight);
+            lhSlider.addEventListener("input", updateLineHeight);
+
+            // --- Save as Image Button Logic ---
+            const saveBtn = document.getElementById("saveSummaryAsImageBtn");
+            const newSaveBtn = saveBtn.cloneNode(true); // Clone to remove old listeners
+            saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
+
+            newSaveBtn.addEventListener("click", () => {
+                const controlsElement = modalContentContainer.querySelector('.modal-controls');
+                
+                if (controlsElement) controlsElement.style.display = 'none';
+
+                html2canvas(modalContentContainer, {
+                    useCORS: true,
+                    scale: 2,
+                    backgroundColor: '#FAFAD2'
+                }).then(canvas => {
+                    const link = document.createElement('a');
+                    const fileName = `POS_Summary_${this.currentUser.username}_${Date.now()}.png`;
+                    link.download = fileName;
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                }).catch(err => {
+                    console.error("Error creating image:", err);
+                    this.showToast("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้", "error");
+                }).finally(() => {
+                    if (controlsElement) controlsElement.style.display = '';
+                });
+            });
+            
+            // Initial render
+            updateFontSize();
+            updateLineHeight();
+        },
+        // --- END: [MODIFIED] Functions ---
+        
         closeSummaryModal() { document.getElementById('summaryModal').style.display = 'none'; },
         openSummaryOutputModal() { document.getElementById('summaryOutputModal').style.display = 'flex'; },
         closeSummaryOutputModal() { document.getElementById('summaryOutputModal').style.display = 'none'; this.summaryContext = {}; },
@@ -4452,8 +4590,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
                 // New/Refactored Admin Summary Buttons
-                if (e.target.id === 'admin-summary-today-btn') this.runAdminSummaryToday();
-                if (e.target.id === 'admin-summary-all-btn') this.runAdminSummaryAll();
+                if (e.target.id === 'admin-summary-today-btn') this.runAdminSummaryToday();if (e.target.id === 'admin-summary-all-btn') this.runAdminSummaryAll();
                 if (e.target.id === 'admin-summary-by-day-btn') this.runAdminSummaryByDay();
                 if (e.target.id === 'generate-detailed-report-btn') this.runAdminDetailedReport();
                 if (e.target.id === 'generate-credit-summary-btn') this.runAdminCreditSummary();
