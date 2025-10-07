@@ -38,7 +38,7 @@
         .main-wrapper {
             max-width: 1200px; 
             margin: 15px auto; 
-            background-color: #FFFFFF; 
+            background-color: #fffbe6; /* สีเหลืองอ่อน */
             border: 2px solid #ED01ED; 
             padding: 10px; 
             border-radius: 10px; 
@@ -378,7 +378,7 @@
         }
         
         .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
-        #modalBodyContent { background-color: #FFFFFF; border: 1px solid #4CAF50; border-radius: 10px; padding: 15px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; }
+        #modalBodyContent { background-color: #fffbe6; border: 1px solid #4CAF50; border-radius: 10px; padding: 5px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; }
         #modalBodyContent, #modalBodyContent * { color: blue !important; }
         
         #modalBodyContent h2 {
@@ -1180,8 +1180,8 @@
                 </div>
                 <div class="control-group">
                     <label for="summaryLineHeightSlider">ปรับขนาดของบรรทัด:</label>
-                    <input type="range" id="summaryLineHeightSlider" min="0.1" max="2.0" step="0.01" value="0.5">
-                    <span id="summaryLineHeightValue">ความสูงของบรรทัด: 0.5</span>
+                    <input type="range" id="summaryLineHeightSlider" min="0.1" max="2.5" step="0.01" value="1.0">
+                    <span id="summaryLineHeightValue">ความสูงของบรรทัด: 1.0</span>
                 </div>
                 <button onclick="App.closeSummaryModal()" class="modal-close-btn">ปิดหน้าต่างนี้</button>
             </div>
@@ -1198,7 +1198,7 @@
             <button class="btn-cancel" onclick="App.closeSummaryOutputModal()">ยกเลิก</button>
         </div>
     </div>
-</div>>
+</div>
     
     <div id="resetModal" class="modal-overlay">
         <div id="reset-modal-content">
@@ -1259,16 +1259,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!dateStr) return '-';
             try {
                 const date = new Date(dateStr);
-                const year = new Intl.DateTimeFormat('th-TH-u-ca-buddhist', { year: 'numeric' }).format(date);
-                const shortYear = year.slice(-2);
-                const month = String(date.getMonth() + 1).padStart(2, '0');
                 const day = String(date.getDate()).padStart(2, '0');
-                return `${day}/${month}/${shortYear}`;
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear() + 543;
+                return `${day}/${month}/${year}`;
             } catch (e) {
                 console.error("Date formatting error:", e);
                 return '-';
             }
         },
+
 
         formatThaiDateFullYear(dateStr) {
             if (!dateStr) return '-';
@@ -5242,6 +5242,3 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
-
-
-
