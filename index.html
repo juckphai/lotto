@@ -3789,7 +3789,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const dateTimeString = `${year}${month}${day}_${hours}${minutes}`;
             const currentUser = this.currentUser.username;
-            const fullFileName = `pos_backup_${currentUser}_${dateTimeString}.json`;
+            const fullFileName = `บันทึกรายการขาย${currentUser}_${dateTimeString}.json`;
 
             let dataToSaveString;
             const backupPassword = this.data.backupPassword;
@@ -4925,7 +4925,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </form>
                 <p id="password-status" style="font-weight: bold; margin-top: 15px;"></p>
             </div>
-            <div class="data-management-section admin-only"><h3>สำรองข้อมูล (Backup)</h3><p>สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn" style="background-color: #007bff;">บันทึกข้อมูลปัจจุบันลงในเบราว์เซอร์</button></div>
+            <div class="data-management-section admin-only"><h3>สำรองข้อมูล (Backup)</h3><p>สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn" style="background-color: #007bff;">บันทึกชั่วคราวลงในเบราว์เซอร์</button></div>
             <div class="data-management-section admin-only" style="border-color: var(--danger-color);"><h3 style="color: var(--danger-color);">รีเซ็ตข้อมูล (*** การกระทำนี้ไม่สามารถย้อนกลับได้ ***)</h3><p>เลือกเพื่อล้างข้อมูลเฉพาะส่วนที่ต้องการ</p><button id="open-reset-modal-btn" class="danger">เปิดหน้าต่างรีเซ็ตข้อมูล</button></div>
             <div class="collapsible-bar admin-only" data-target="admin-stock-report-content" style="background-color: #00B050;"><span>รายงานสต็อกสินค้า</span><span class="arrow">▶</span></div>
             <div id="admin-stock-report-content" class="collapsible-content admin-only">
@@ -4940,7 +4940,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
              <!-- Seller Sections: Rebuilt for better filtering -->
             <div class="collapsible-bar seller-only" data-target="seller-backup-content"><span>บันทึกข้อมูล (Backup)</span><span class="arrow">▶</span></div>
-            <div id="seller-backup-content" class="collapsible-content seller-only"><div style="text-align:center; padding-top: 10px;"><p style="margin-top:0;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn-seller" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn-seller" style="background-color: #007bff;">บันทึกข้อมูลปัจจุบันลงในเบราว์เซอร์</button></div></div>
+            <div id="seller-backup-content" class="collapsible-content seller-only"><div style="text-align:center; padding-top: 10px;"><p style="margin-top:0;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn-seller" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn-seller" style="background-color: #007bff;">บันทึกข้อมูลชั่วคราวในเบราว์เซอร์</button></div></div>
             
             <div class="collapsible-bar seller-only" data-target="seller-summary-content"><span>รายงานสรุป (สำหรับผู้ใช้ปัจจุบัน)</span><span class="arrow">▶</span></div>
             <div id="seller-summary-content" class="collapsible-content seller-only"><div style="text-align:center;"><div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"><button id="my-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button><button id="my-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมดของฉัน</button></div><div class="summary-form-inline" style="margin-top: 15px; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><label>เลือกวันที่: <input type="date" id="my-summary-date" style="width:100%;"></label><button id="my-summary-by-day-btn" style="background-color: #03a9f4;">สรุปยอดขายวันที่เลือก</button></div><div class="summary-form-inline" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd; justify-content: center; flex-direction: column; gap:10px; align-items: stretch;"><div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;"><label>จากวันที่: <input type="date" id="my-summary-start-date"></label><label>ถึงวันที่: <input type="date" id="my-summary-end-date"></label></div><button id="my-summary-by-range-btn" style="background-color: #ff9800;">สรุปยอดขายตามช่วงวันที่</button></div></div></div>
@@ -5242,3 +5242,4 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 </body>
 </html>
+
