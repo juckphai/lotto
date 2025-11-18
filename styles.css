@@ -4,14 +4,19 @@
             --danger-color: #d0021b;
             --success-color: #28a745;
             --warning-color: #f5a623;
-            --border-color: #BFBFBF; /* Darkened border for better visibility */
+            --border-color: #666666; /* Darkened border for better visibility */
+            --text-color: #000000; /* New: Standard black text */
+            --text-color-light: #333333; /* New: Dark gray for secondary text */
+            --background-color: #ffffff; /* New: White background */
+            --background-alt: #f8f9fa; /* New: Light gray background */
         }
 
         *, *::before, *::after { box-sizing: border-box; }
         
         body { 
             font-family: 'Sarabun', 'Arial', sans-serif; 
-            background-color: #f4f7fb; 
+            background-color: var(--background-color); 
+            color: var(--text-color);
             margin: 0; 
             padding: 0; 
             -webkit-text-size-adjust: 100%; 
@@ -22,7 +27,7 @@
         .main-wrapper {
             max-width: 1200px; 
             margin: 15px auto; 
-            background-color: #fffbe6; /* สีเหลืองอ่อน */
+            background-color: var(--background-color);
             border: 2px solid #ED01ED; 
             padding: 10px; 
             border-radius: 10px; 
@@ -33,14 +38,18 @@
         #login-screen { 
             padding: 40px; 
             text-align: center;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
         #login-screen h1 { 
             margin-top: 0; 
-            color: #333;
+            color: var(--text-color);
             font-size: clamp(1.5rem, 1.5rem + 2vw, 2.8rem);
         }
         #main-app { 
             display: none; 
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
 
         .top-bar {
@@ -54,6 +63,7 @@
         .top-bar h1 {
             margin: 0 0 10px 0;
             font-size: clamp(1.2rem, 1.2rem + 1.5vw, 2.2rem);
+            color: white;
         }
         #user-info-container {
             display: flex;
@@ -62,6 +72,7 @@
             flex-wrap: wrap;
             gap: 10px;
             font-size: 0.9em;
+            color: white;
         }
         #logout-btn {
             background-color: var(--danger-color);
@@ -88,10 +99,10 @@
             border: 3px solid #E97132;
             transition: background-color 0.3s;
         }
-        .section-header:hover { background-color: #B5E6A2; color: #333; }
-        .section-header .arrow { transition: transform 0.3s; }
+        .section-header:hover { background-color: #B5E6A2; color: #000000; } /* Changed to black text on hover */
+        .section-header .arrow { transition: transform 0.3s; color: white; }
         .section-header.active .arrow { transform: rotate(90deg); }
-        .section-header > span:first-child { flex: 1; text-align: left; font-size: 1.1em; }
+        .section-header > span:first-child { flex: 1; text-align: left; font-size: 1.1em; color: white; }
         
         /* === START: ICON STYLES === */
         .section-header i {
@@ -100,10 +111,12 @@
             text-align: center;
             font-size: 1.1em;
             transition: transform 0.3s ease;
+            color: white;
         }
 
         .section-header:hover i {
             transform: scale(1.1);
+            color: #000000;
         }
 
         .section-header.active i {
@@ -128,8 +141,9 @@
             padding: 20px; 
             border: 1px solid #ddd; 
             border-radius: 20px; 
-            background-color: #f9f9f9; 
+            background-color: var(--background-color); 
             margin-bottom: 15px; 
+            color: var(--text-color);
         }
         .section-content.active { display: block; }
         
@@ -152,6 +166,7 @@
         }
         .collapsible-bar .arrow {
             transition: transform 0.3s;
+            color: white;
         }
         .collapsible-bar.active .arrow {
             transform: rotate(90deg);
@@ -162,8 +177,9 @@
             border: 1px solid #ccc;
             border-top: none;
             border-radius: 0 0 8px 8px;
-            background-color: #fafafa;
+            background-color: var(--background-color);
             margin-bottom: 10px;
+            color: var(--text-color);
         }
         .collapsible-content.active {
             display: block;
@@ -172,7 +188,7 @@
 
         h2 { 
             text-align: center; 
-            color: #333; 
+            color: var(--text-color); 
             margin-top: 0; 
             margin-bottom: 25px;
             font-size: clamp(1.2rem, 1rem + 1.5vw, 1.8rem);
@@ -186,11 +202,13 @@
             border: 1px solid var(--border-color);
             border-radius: 5px;
             margin-top: 20px;
+            background-color: var(--background-color);
         }
 
         table {
             border-collapse: collapse;
             width: 100%;
+            background-color: var(--background-color);
         }
         
         th, td {
@@ -200,6 +218,8 @@
             vertical-align: middle;
             white-space: nowrap; 
             font-size: clamp(0.8rem, 1.5vw, 0.9rem); 
+            color: var(--text-color);
+            background-color: var(--background-color);
         }
         
         /* Wrapping for specific long-text columns */
@@ -238,7 +258,9 @@
         }
         
         th {
-            background-color: #f2f2f2;
+            background-color: #e9ecef;
+            color: var(--text-color);
+            font-weight: bold;
         }
         
         .action-buttons button { margin-right: 5px; padding: 5px 10px; font-size: 0.9em; margin-top: 5px;}
@@ -250,19 +272,22 @@
             align-items: center;
             max-width: 600px;
             margin: 0 auto 20px auto;
+            background-color: var(--background-color);
         }
-        form label { text-align: right; font-weight: bold; }
+        form label { text-align: right; font-weight: bold; color: var(--text-color); }
         input, select {
             padding: 10px;
             border-radius: 20px;
-            border: 1px solid #ddd;
+            border: 1px solid #666;
             font-family: inherit;
             font-size: 1em;
             width: 100%;
             box-sizing: border-box;
             text-align: center;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
-        input:disabled, select:disabled { background-color: #eee; cursor: not-allowed; }
+        input:disabled, select:disabled { background-color: #f8f9fa; cursor: not-allowed; color: #666; }
         button { 
             cursor: pointer; 
             color: white; 
@@ -285,10 +310,10 @@
         button#toggle-special-price-btn:hover { background-color: #d8901e; }
         
         #page-pos .pos-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        #cart-summary { background-color: #eef5ff; padding: 15px; border-radius: 8px; }
+        #cart-summary { background-color: #eef5ff; padding: 15px; border-radius: 8px; color: var(--text-color); }
         #cart-total { font-size: clamp(1.5rem, 1.5rem + 2.5vw, 3rem); font-weight: bold; text-align: right; margin-top: 15px; color: #0070C0; }
         #process-sale-btn { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem); width: 100%; }
-        #payment-method-container { margin-top: 20px; padding-top: 15px; border-top: 1px solid #ddd; }
+        #payment-method-container { margin-top: 20px; padding-top: 15px; border-top: 1px solid #666; color: var(--text-color); }
         
         .payment-options-wrapper {
             display: flex;
@@ -296,6 +321,7 @@
             align-items: center;
             margin: 10px 0;
             flex-wrap: wrap; /* Added for better mobile view */
+            color: var(--text-color);
         }
         
         /* --- Change Radio Button Color --- */
@@ -303,7 +329,7 @@
             accent-color: var(--danger-color);
         }
 
-        #credit-fields-container, #transfer-fields-container { margin-top: 10px; display: none; }
+        #credit-fields-container, #transfer-fields-container { margin-top: 10px; display: none; color: var(--text-color); }
 
         #report-filter-form {
             display: grid;
@@ -311,10 +337,12 @@
             gap: 15px;
             max-width: none;
             align-items: end;
+            background-color: var(--background-color);
         }
         #report-filter-form label {
             text-align: left;
             font-weight: normal;
+            color: var(--text-color);
         }
         #report-generate-btn {
             background-color: #009688;
@@ -334,31 +362,54 @@
             border-radius: 8px;
             margin: -10px auto 25px auto;
             border: 1px solid var(--primary-color);
+            color: var(--text-color);
         }
         #sales-history-export-form label {
             font-weight: bold;
             display: flex;
             flex-direction: column;
             gap: 5px;
+            color: var(--text-color);
         }
         #sales-history-export-form input[type="date"] {
             padding: 8px;
             border-radius: 5px;
             min-width: 150px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid #666;
         }
-        #export-sales-history-csv-btn {
-            padding: 10px 20px;
-            font-size: 1em;
-            background-color: #008CBA; /* A different blue */
-        }
+/* ปุ่มส่งออก Excel ในหน้า รายการขายย้อนหลัง */
+#export-sales-history-excel-btn { /* แก้ไข selector ให้ถูกต้อง */
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: #008CFF;    /* ฟ้าชัด */
+    color: #ffffff;               /* ตัวหนังสือสีขาว */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    transition: background-color 0.15s ease, transform 0.08s ease;
+    -webkit-appearance: none;     /* ปรับบนบาง browser */
+    appearance: none;
+}
+
+/* Hover / Active */
+#export-sales-history-excel-btn:hover { /* แก้ไข selector ให้ถูกต้อง */
+    background-color: #0074D4;    /* ฟ้าเข้มขึ้นเมื่อ hover */
+    transform: translateY(-1px);
+}
+#export-sales-history-excel-btn:active { /* แก้ไข selector ให้ถูกต้อง */
+    transform: translateY(0);
+}
 
 
-        .data-management-section { border: 1px solid var(--border-color); padding: 20px; margin-top: 20px; border-radius: 8px; background: #fafafa; text-align: center; }
-        .data-management-section h3 { margin-top: 0; border-bottom: 1px solid #BFBFBF; padding-bottom: 10px; }
+        .data-management-section { border: 1px solid var(--border-color); padding: 20px; margin-top: 20px; border-radius: 8px; background: var(--background-alt); text-align: center; color: var(--text-color); }
+        .data-management-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-color); }
         .data-management-section button { margin: 5px; padding: 10px 15px; }
 
-        .summary-section { border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; background-color: #fdfdfd; }
-        .summary-form-inline { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; }
+        .summary-section { border: 1px solid #666; border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; background-color: var(--background-color); color: var(--text-color); }
+        .summary-form-inline { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; color: var(--text-color); }
         
         #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; color: white; background-color: var(--success-color); border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.1em; }
         #toast-notification.show { opacity: 1; visibility: visible; }
@@ -371,7 +422,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: #fffde7; /* Changed from dark overlay to light yellow */
+            background-color: rgba(255, 253, 231, 0.95); /* Semi-transparent light yellow */
             display: none;
             justify-content: center;
             align-items: center;
@@ -380,25 +431,29 @@
         }
         
         .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
-        #modalBodyContent { background-color: #fffbe6; border: 1px solid #4CAF50; border-radius: 10px; padding: 5px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; }
-        #modalBodyContent, #modalBodyContent * { color: blue !important; }
+        #modalBodyContent { background-color: var(--background-color); border: 2px solid #4CAF50; border-radius: 10px; padding: 5px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; color: #000000 !important; }
+        #modalBodyContent, #modalBodyContent * { color: #000000 !important; }
         
         #modalBodyContent h2 {
             margin-top: 0;
             margin-bottom: 8px; 
             padding-bottom: 5px;
             font-size: 1.2rem;
+            color: #000000 !important;
         }
         #modalBodyContent p {
             margin-top: 4px; 
             margin-bottom: 4px; 
             line-height: 1.0;
+            color: #000000 !important;
         }
         #modalBodyContent table {
             margin-top: 10px; 
+            color: #000000 !important;
         }
         #modalBodyContent hr {
             margin: 15px 0; 
+            border-color: #666;
         }
         
         /* === START: [NEW] CSS for Popup Controls === */
@@ -409,9 +464,10 @@
             width: 100%;
             margin-top: 10px;
             max-width: 600px;
-            background-color: #f0f0f0;
+            background-color: var(--background-alt);
             padding: 15px;
             border-radius: 8px;
+            color: var(--text-color);
         }
         .control-group {
             display: flex;
@@ -419,11 +475,13 @@
             align-items: center;
             width: 100%;
             margin-bottom: 15px;
+            color: var(--text-color);
         }
         .control-group label, .control-group span {
             font-size: 16px;
-            color: #333;
+            color: var(--text-color);
             margin-bottom: 8px;
+            font-weight: bold;
         }
         .control-group input[type="range"] {
             width: 80%;
@@ -434,29 +492,41 @@
 
         .modal-close-btn { background-color: #E97132; color: white; padding: 12px 30px; border: none; cursor: pointer; border-radius: 20px; font-size: 16px; margin-top: 10px; transition: background-color 0.3s; width: 90%; max-width: 250px;}
         .modal-close-btn:hover { background-color: #e64a19; }
-        .format-modal-content { background-color: #fff; padding: 20px 30px; border-radius: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); width: 90%; max-width: 400px; }
+.format-modal-content {
+    background-color: #e0e0e0; /* พื้นหลังสีเทา */
+    padding: 20px 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 400px;
+    color: #0088ff; /* ตัวหนังสือสีฟ้า */
+}
         .format-modal-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
         .format-modal-buttons button { padding: 15px; font-size: 16px; border-radius: 10px; }
         .format-modal-buttons .btn-csv { background-color: #2E7D32; }
         .format-modal-buttons .btn-display { background-color: #007bff; }
         .format-modal-buttons .btn-pdf { background-color: #e64a19; } /* NEW PDF Button Color */
         .format-modal-buttons .btn-cancel { background-color: #6c757d; }
-        .format-modal-buttons .btn-excel {
-            background-color: #217346; /* สีเขียวสำหรับ Excel */
-        }
-        .format-modal-buttons .btn-excel:hover {
-            background-color: #1a5c38;
-        }
+.format-modal-buttons .btn-excel {
+    background-color: #008CFF; /* สีฟ้าชัดเจน */
+    color: white;              /* ตัวอักษรสีขาว */
+}
+
+.format-modal-buttons .btn-excel:hover {
+    background-color: #0074D4; /* สีฟ้าเข้มตอน hover */
+}
         
         /* === NEW: RESET MODAL === */
         #reset-modal-content {
-            background-color: #fff;
+            background-color: var(--background-color);
             padding: 20px 30px;
             border-radius: 15px;
             text-align: left;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             width: 90%;
             max-width: 500px;
+            color: var(--text-color);
         }
         #reset-modal-content h3 {
             text-align: center;
@@ -466,12 +536,14 @@
         #reset-options-container {
             margin-top: 20px;
             margin-bottom: 20px;
+            color: var(--text-color);
         }
         #reset-options-container label {
             display: block;
             margin-bottom: 12px;
             font-size: 1.1em;
             cursor: pointer;
+            color: var(--text-color);
         }
         #reset-options-container input {
             width: auto;
@@ -501,6 +573,7 @@
             background-color: #fffbe6; /* สีเหลืองอ่อน */
             border-color: #f5a623; /* สีส้ม */
             font-weight: bold;
+            color: #000000;
         }
         /* === END: NEW === */
         
@@ -519,12 +592,14 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            background-color: #fff;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
         .report-action-item p {
             margin-top: 0;
             margin-bottom: 15px;
             flex-grow: 1;
+            color: var(--text-color);
         }
         .report-action-item button {
             width: 100%;
@@ -536,13 +611,16 @@
             text-align: right;
             font-weight: bold;
             flex-shrink: 0;
+            color: var(--text-color);
         }
         #admin-report-filters .summary-form-inline select,
         #admin-report-filters .summary-form-inline input {
             flex-grow: 1;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            border: 1px solid #666;
         }
         /* === END: NEW === */
-
 
         /* RESPONSIVE STYLES */
         @media (max-width: 768px) {
@@ -560,6 +638,7 @@
             form label {
                 text-align: left;
                 margin-bottom: -10px;
+                color: var(--text-color);
             }
 
             /* --- NEW: Override for POS form to be two-column on mobile --- */
@@ -571,6 +650,7 @@
                 text-align: right;
                 margin-bottom: 0;
                 white-space: nowrap;
+                color: var(--text-color);
             }
             /* --- END NEW --- */
 
@@ -583,6 +663,7 @@
             #page-data #backup-password-form label {
                 text-align: left;
                 margin-bottom: -10px;
+                color: var(--text-color);
             }
             #page-users #user-form .form-group,
             #page-data #backup-password-form .form-group {
@@ -594,6 +675,7 @@
             #page-users #user-form .form-group label,
             #page-data #backup-password-form .form-group label {
                  margin-bottom: 0;
+                 color: var(--text-color);
             }
             #page-users #user-form #user-commission-sources {
                 display: flex;
@@ -605,6 +687,7 @@
             }
              #page-users #user-form #user-commission-sources label {
                 margin-bottom: 0;
+                color: var(--text-color);
             }
             /* === END: MOBILE USER PAGE FORM OVERRIDES === */
             
@@ -636,6 +719,8 @@
                 font-size: clamp(9px, 2.2vw, 12px); 
                 line-height: 1.0;
                 vertical-align: middle;
+                color: var(--text-color);
+                background-color: var(--background-color);
             }
 
             table td::before {
@@ -700,8 +785,8 @@
 
             /* Ensure header (th) remains with its default style for contrast */
             #page-pos #cart-table th {
-                background-color: #f2f2f2; /* Default from general table style */
-                color: #333; /* Default text color */
+                background-color: #e9ecef; /* Default from general table style */
+                color: var(--text-color); /* Default text color */
                 padding-top: 6px;  /* Keep original padding */
                 padding-bottom: 6px;
             }
@@ -726,6 +811,7 @@
                 margin-bottom: 15px;
                 padding-bottom: 8px;
                 font-size: 1.1rem;
+                color: var(--text-color);
             }
             #page-pos #add-to-cart-form {
                 /* gap is now set in the override rule above */
@@ -735,6 +821,9 @@
             #page-pos #add-to-cart-form select {
                 padding: 8px 10px;
                 font-size: 0.9em;
+                background-color: var(--background-color);
+                color: var(--text-color);
+                border: 1px solid #666;
             }
             #page-pos #add-to-cart-form .form-actions button {
                 padding: 10px;
@@ -748,28 +837,35 @@
             /* --- Cart Summary Compacting Rules --- */
             #page-pos #cart-summary {
                 padding: 10px;
+                background-color: #eef5ff;
+                color: var(--text-color);
             }
             #page-pos #cart-summary h4 {
                 font-size: 1rem;
                 margin-top: 0;
                 margin-bottom: 5px;
+                color: var(--text-color);
             }
             #page-pos #payment-method-container {
                 margin-top: 10px;
                 padding-top: 10px;
                 border-top: none; 
+                color: var(--text-color);
             }
             #page-pos .payment-options-wrapper {
                 margin: 5px 0 10px 0;
                 gap: 15px;
+                color: var(--text-color);
             }
              #page-pos #credit-fields-container,
              #page-pos #transfer-fields-container {
                 margin-top: 5px;
+                color: var(--text-color);
             }
             #page-pos #credit-fields-container > div,
             #page-pos #transfer-fields-container > div {
                 margin-top: 5px;
+                color: var(--text-color);
             }
             
             #page-pos .cart-action-row {
@@ -784,12 +880,14 @@
                 font-size: 1rem;
                 font-weight: bold;
                 white-space: nowrap;
+                color: var(--text-color);
             }
             #page-pos #cart-total {
                 font-size: 1.6rem; 
                 margin: 0;
                 flex-grow: 1;
                 text-align: right;
+                color: #0070C0;
             }
             #page-pos #process-sale-btn {
                 padding: 8px 10px; 
@@ -807,14 +905,17 @@
                 font-size: 1.0rem; 
                 padding-bottom: 4px;
                 margin-bottom: 6px;
+                color: #000000 !important;
             }
             #modalBodyContent table th {
                 font-size: clamp(8px, 2.2vw, 10px); 
                 padding: 2px 3px;
+                color: #000000 !important;
             }
             #modalBodyContent table td {
                 padding: 2px 3px;
                 vertical-align: middle;
+                color: #000000 !important;
             }
             #modalBodyContent table td::before { display: none; }
             #modalBodyContent table thead,
@@ -825,7 +926,6 @@
             }
             #modalBodyContent table thead { display: table-header-group; }
             #modalBodyContent table tr { display: table-row; }
-
 
             /* --- Universal Table Layout Rules for ALL Summary Popups --- */
             #modalBodyContent .credit-details-table,
@@ -870,7 +970,6 @@
             #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(5) { width: 12%; } /* Profit */
             #modalBodyContent .detailed-sales-table.admin-view th:nth-of-type(6),
             #modalBodyContent .detailed-sales-table.admin-view td:nth-of-type(6) { width: 25%; } /* Payment */
-
 
             /* --- PRODUCT SUMMARY Table (For BOTH Admin & Seller) --- */
             #modalBodyContent .product-summary-table th:nth-of-type(1),
@@ -942,7 +1041,6 @@
             #modalBodyContent .transfer-details-sub-table th:nth-of-type(4),
             #modalBodyContent .transfer-details-sub-table td:nth-of-type(4) { width: 20%; white-space: nowrap; } /* Amount */
 
-
             /* --- TRANSFER DETAILS Table (For BOTH Admin & Seller) --- */
             #modalBodyContent .transfer-details-table th:nth-of-type(1),
             #modalBodyContent .transfer-details-table td:nth-of-type(1) { width: 15%; white-space: nowrap; } /* Date */
@@ -975,6 +1073,8 @@
             /* เพิ่มระยะห่างและทำให้เนื้อหาดูโปร่งขึ้น */
             .collapsible-content.seller-only {
                 padding: 20px 15px;
+                background-color: var(--background-color);
+                color: var(--text-color);
             }
 
             /* --- ปรับปรุงส่วนสรุปข้อมูลของผู้ขาย --- */
@@ -997,6 +1097,7 @@
                 font-size: 1.1em;
                 text-align: center;
                 margin-bottom: 5px;
+                color: var(--text-color);
             }
             
             /* --- ปรับปรุงตารางรายการขายของผู้ขาย --- */
@@ -1010,6 +1111,8 @@
             #seller-sales-history-table td {
                 font-size: 16px; /* ขนาดตัวอักษรที่อ่านง่ายบนมือถือ */
                 padding: 12px 8px; /* เพิ่มความสูงของแถว */
+                background-color: var(--background-color);
+                color: var(--text-color);
             }
 
             /* คอลัมน์รายการสินค้า (ทำให้เด่นและอ่านง่าย) */
@@ -1030,6 +1133,7 @@
                 font-size: 1em;
                 line-height: 1.5;
                 margin-bottom: 20px;
+                color: var(--text-color);
             }
              #seller-backup-content div {
                 display: flex;
@@ -1054,6 +1158,7 @@
              #admin-report-filters .summary-form-inline label {
                 text-align: left;
                 margin-bottom: 5px;
+                color: var(--text-color);
             }
             .report-action-buttons {
                 grid-template-columns: 1fr;
@@ -1192,10 +1297,11 @@
     gap: 15px;
     max-width: 800px;
     margin: 0 auto 25px auto;
-    background-color: #f8f9fa;
+    background-color: var(--background-alt);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    color: var(--text-color);
 }
 
 #page-users #user-form label {
@@ -1205,6 +1311,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    color: var(--text-color);
 }
 
 #page-users #user-form input,
@@ -1212,9 +1319,11 @@
     width: 100%;
     padding: 10px 12px;
     border-radius: 6px;
-    border: 1px solid #ced4da;
+    border: 1px solid #666;
     font-size: 1em;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 #page-users #user-form input:focus,
@@ -1250,6 +1359,7 @@
     padding: 5px;
     border-radius: 4px;
     transition: background-color 0.2s;
+    color: var(--text-color);
 }
 
 #page-users #user-form #user-commission-sources label:hover {
@@ -1282,7 +1392,8 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #dee2e6;
+    border: 1px solid #666;
+    background-color: var(--background-color);
 }
 
 #page-users #user-table {
@@ -1307,6 +1418,7 @@
     font-size: 1.05em;
     letter-spacing: 0.5px;
     border-right: 1px solid rgba(0,0,0,0.1);
+    color: #0088ff;
 }
 
 #page-users #user-table th:last-child {
@@ -1349,10 +1461,11 @@
 /* ============ เนื้อหาตาราง ============ */
 #page-users #user-table tbody tr {
     transition: none;
+    background-color: var(--background-color);
 }
 
 #page-users #user-table tbody tr:nth-child(even) {
-    background-color: #f4f4f4;
+    background-color: var(--background-alt);
 }
 
 /* ปิด hover */
@@ -1365,7 +1478,7 @@
     border: none;
     border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
-    color: #333;
+    color: var(--text-color);
 }
 
 /* ปุ่มภายในตาราง */
@@ -1413,6 +1526,7 @@
         border-radius: 8px;
         overflow: hidden;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        background-color: var(--background-color);
     }
 
     #page-users #user-table td {
@@ -1421,6 +1535,7 @@
         border-bottom: 1px solid #e9ecef;
         position: relative;
         padding-left: 45%;
+        color: var(--text-color);
     }
 
     /* label ข้างซ้าย สำหรับมือถือ */

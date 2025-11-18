@@ -1,17 +1,18 @@
 // --- จุดที่แก้ไข (สำคัญมาก) ---
-// 1. เปลี่ยนชื่อ Cache เป็นเวอร์ชันใหม่ (เช่น v2) เพื่อบังคับให้ Service Worker อัปเดตไฟล์ใหม่ทั้งหมด
-const staticCacheName = 'site-static-v2';
+// 1. เปลี่ยนชื่อ Cache เป็นเวอร์ชันใหม่ (เช่น v3) เพื่อบังคับให้ Service Worker อัปเดตไฟล์ใหม่ทั้งหมด
+const staticCacheName = 'site-static-v3';
 
 // 2. แก้ไข path ทั้งหมดใน assets ให้เป็นแบบ Relative (ใช้ './' นำหน้า)
-//    เพื่อให้ Service Worker หาไฟล์เจอเมื่อรันบน GitHub Pages
+//    เพื่อให้ Service Worker หาไฟล์เจอเมื่อรันบน GitHub Pages หรือ Subdirectory
 const assets = [
   './',
   './index.html',
-  './css/style.css',
-  './js/main.js',
-  './img/lotto-192.png',
-  './img/lotto-512.png',
-  './img/screenshot.png'
+  './styles.css', // แก้ไขชื่อไฟล์เป็น styles.css
+  './script.js',  // แก้ไขชื่อไฟล์เป็น script.js
+  './manifest.json', // เพิ่ม manifest.json
+  './192.png', // สมมติชื่อไฟล์ไอคอนตาม index.html
+  './512.png'  // สมมติชื่อไฟล์ไอคอนตาม manifest.json
+  // 'assets/img/screenshot.png' (นำออกเนื่องจากไม่พบในโครงสร้างไฟล์ที่ให้มา)
 ];
 
 // install service worker
@@ -19,7 +20,10 @@ self.addEventListener('install', evt => {
   evt.waitUntil(
     caches.open(staticCacheName).then(cache => {
       console.log('caching shell assets');
-      cache.addAll(assets);
+      // เพิ่ม try-catch เพื่อจัดการข้อผิดพลาดหากไม่สามารถแคชไฟล์ใดไฟล์หนึ่งได้
+      cache.addAll(assets).catch(err => {
+         console.error('Error caching some assets:', err);
+      });
     })
   );
 });
