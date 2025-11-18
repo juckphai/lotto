@@ -232,7 +232,7 @@
                     modal.style.display = 'flex';
                     this.setupSummaryPopupControls(); // Setup controls every time modal opens
                 },
-                setupSummaryPopupControls() {
+    setupSummaryPopupControls() {
                     const modalContentContainer = document.querySelector("#summaryModal .modal-content-container");
                     const modalBody = document.getElementById("modalBodyContent");
                     if (!modalBody || !modalContentContainer) return;
@@ -275,7 +275,8 @@
 
                     // --- Save as Image Button Logic ---
                     const saveBtn = document.getElementById("saveSummaryAsImageBtn");
-                    const newSaveBtn = saveBtn.cloneNode(true); // Clone to remove old listeners
+                    // Clone to remove old listeners before re-attaching
+                    const newSaveBtn = saveBtn.cloneNode(true); 
                     saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
 
                     newSaveBtn.addEventListener("click", () => {
@@ -283,14 +284,14 @@
 
                         if (controlsElement) controlsElement.style.display = 'none';
 
-                        // เพิ่มสไตล์ชั่วคราวก่อนถ่ายภาพ
+                        // กำหนดสีพื้นหลัง #FAFAD2 สำหรับการสร้างภาพ
                         modalContentContainer.style.backgroundColor = '#FAFAD2';
                         modalContentContainer.style.padding = '10px 5px';
 
                         html2canvas(modalContentContainer, {
                             useCORS: true,
                             scale: 4,
-                            backgroundColor: '#FAFAD2'
+                            backgroundColor: '#FAFAD2' // ใช้สีพื้นหลังที่ร้องขอสำหรับการสร้างภาพ
                         }).then(canvas => {
                             const link = document.createElement('a');
                             const fileName = `POS_Summary_${this.currentUser.username}_${Date.now()}.png`;
@@ -2144,7 +2145,7 @@
                 },
 
                 // --- POS (POINT OF SALE) ---
-                renderPos(payload = null) {
+renderPos(payload = null) {
                     this.editingSaleContext = null;
                     const productSelect = document.getElementById('pos-product');
                     if (!productSelect) return;
@@ -2170,7 +2171,12 @@
                         productSelect.classList.remove('single-product-seller');
                     }
 
-                    if (payload) { // For editing a sale
+                    // --- กำหนดค่าเริ่มต้นสำหรับ Date/Time ---
+                    const now = new Date();
+                    const dateString = now.toISOString().split('T')[0];
+                    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                    
+                    if (payload) { // โหมดแก้ไขรายการขาย
                         this.editingSaleContext = {
                             sellerId: payload.sellerId,
                             sellerName: payload.sellerName,
@@ -2217,9 +2223,15 @@
                         const d = new Date(payload.date);
                         document.getElementById('pos-time').value = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
                     } else {
+                        const dateInput = document.getElementById('pos-date');
+                        const timeInput = document.getElementById('pos-time');
+                        
+                        // กำหนดค่าเริ่มต้นเป็น วันที่/เวลาปัจจุบัน
+                        if (!dateInput.value) { dateInput.value = dateString; }
+                        if (!timeInput.value) { timeInput.value = timeString; }
+                        
+                        // หากเป็นการเริ่มทำรายการใหม่ (ตะกร้าว่าง)
                         if (this.cart.length === 0) {
-                            document.getElementById('pos-date').value = '';
-                            document.getElementById('pos-time').value = '';
                             document.querySelector('input[name="payment-method"][value="เงินสด"]').checked = true;
                             document.getElementById('pos-date').classList.remove('backdating-active');
                             document.getElementById('pos-time').classList.remove('backdating-active');
