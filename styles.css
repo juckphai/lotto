@@ -440,9 +440,9 @@
         /* กำหนดสีพื้นหลัง, เส้นขอบ, และสีตัวอักษรหลักทั้งหมดใน Modal Body */
         #modalBodyContent { 
             background-color: var(--background-color); 
-            border: 2px solid #4CAF50; /* เส้นขอบหนาขึ้นสีเขียว */
+            border: 1px solid #4CAF50; /* เส้นขอบหนาขึ้นสีเขียว */
             border-radius: 8px; 
-            padding: 10px; 
+            padding: 5px; 
             width: 100%; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             max-height: 90vh; 
@@ -452,19 +452,22 @@
         
         /* บังคับให้ข้อความภายในเป็นสีดำตามค่าเริ่มต้น */
         #modalBodyContent, #modalBodyContent * { 
-            color: #000000 !important; 
+            color: #007bff !important; 
         }
         
-        /* กำหนดสีฟ้าสำหรับหัวข้อ (h2) และตัวหนา (strong) */
-        #modalBodyContent h2, #modalBodyContent strong {
-            color: #007bff !important; /* สีฟ้า */
-        }
+/* กำหนดสีฟ้า และลดขนาดตัวอักษรเฉพาะ strong เป็น 16px */
+#modalBodyContent strong {
+    color: #007bff !important; /* สีฟ้า */
+    font-size: 16px !important; /* ขนาดตัวอักษร */
+}
+
+
         
         /* ปรับสไตล์ตารางและเส้นขอบให้เป็นสีเขียว */
         #modalBodyContent table {
             margin-top: 10px; 
             color: #000000 !important;
-            border: 2px solid #4CAF50 !important; /* เส้นขอบตารางหลัก */
+            border: 1px solid #4CAF50 !important; /* เส้นขอบตารางหลัก */
         }
         
         #modalBodyContent table th, 
@@ -473,7 +476,7 @@
             padding: 4px 6px; 
             text-align: center;
             vertical-align: middle;
-            color: #000000 !important;
+            color: #007bff !important;
         }
         
         #modalBodyContent table th {
@@ -483,7 +486,7 @@
         }
         
         #modalBodyContent hr {
-            margin: 10px 0; 
+            margin: 5px 0; 
             border-color: #4CAF50; /* เปลี่ยนสีเส้นคั่นเป็นสีเขียว */
         }
         
@@ -493,7 +496,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: 8px; /* ลด margin */
+            margin-top: 6px; /* ลด margin */
             max-width: 600px;
             background-color: var(--background-alt);
             padding: 10px; /* ลด padding */
@@ -664,7 +667,8 @@
         #page-pos #add-to-cart-form .date-time-group input {
             flex-grow: 1;
             min-width: 0;
-            padding: 8px; /* ลด padding */
+            font-size: clamp(0.75rem, 1.5vw, 0.9em); 
+            padding: 6px 8px;  /* ลด padding */
         }
         /* === END NEW === */
 
