@@ -25,10 +25,10 @@
         }
 
         .main-wrapper {
-            max-width: 1200px; 
+            max-width: 900px; 
             margin: 5px auto; /* ลด margin ด้านบน/ล่าง */
             background-color: var(--background-color);
-            border: 2px solid #ED01ED; 
+            border: 1.5px solid #ED01ED; 
             padding: 5px; /* ลด padding โดยรวม */
             border-radius: 8px; /* ลด radius เล็กน้อย */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ลดขนาดเงา */
@@ -440,14 +440,14 @@
         /* กำหนดสีพื้นหลัง, เส้นขอบ, และสีตัวอักษรหลักทั้งหมดใน Modal Body */
         #modalBodyContent { 
             background-color: var(--background-color); 
-            border: 1px solid #4CAF50; /* เส้นขอบหนาขึ้นสีเขียว */
+            border: 1.5px solid #ED01ED; 
             border-radius: 8px; 
             padding: 5px; 
             width: 100%; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             max-height: 90vh; 
             overflow-y: auto; 
-            color: #000000 !important; /* ตัวอักษรหลักเป็นสีดำ */
+            color: #007bff !important; /* ตัวอักษรหลักเป็นสีดำ */
         }
         
         /* บังคับให้ข้อความภายในเป็นสีดำตามค่าเริ่มต้น */
@@ -465,8 +465,8 @@
         
         /* ปรับสไตล์ตารางและเส้นขอบให้เป็นสีเขียว */
         #modalBodyContent table {
-            margin-top: 10px; 
-            color: #000000 !important;
+            margin-top: 5px; 
+            color: #007bff !important;
             border: 1px solid #4CAF50 !important; /* เส้นขอบตารางหลัก */
         }
         
@@ -894,7 +894,7 @@
             }
             #page-pos #add-to-cart-form .date-time-group input {
                 padding: 6px 8px; /* ลด padding */
-                font-size: 0.85em; /* ลด font size */
+                font-size: clamp(0.55rem, 1.0vw, 0.9em); 
             }
             /* --- END NEW --- */
 
