@@ -457,13 +457,14 @@
             border-collapse: collapse; /* เพิ่ม: ให้เส้นขอบรวมกัน */
             border: 0.5px solid #333; /* ปรับ: เส้นขอบตารางหลักให้คมชัด */
         }
-        #modalBodyContent table th, 
-        #modalBodyContent table td {
-            border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบเซลล์ให้คมชัด */
-            padding: 2px 4px !important; /* ปรับ: ลด padding ให้เล็กและคมชัดขึ้น */
-            font-size: 0.8em; /* ปรับ: ลดขนาดตัวอักษรเล็กน้อย */
-            text-align: center; /* รักษาการจัดกลาง */
-        }
+#modalBodyContent table th,
+#modalBodyContent table td {
+    border: 0.5px solid #333 !important;
+    padding: 1px 2px !important;
+    font-size: clamp(10px, 1.2vw, 14px); /* ใช้ clamp */
+    text-align: center;
+}
+
         #modalBodyContent hr {
             margin: 10px 0; /* ลด margin */
             border-color: #0088ff;
@@ -956,7 +957,7 @@
                 border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบเซลล์ให้คมชัด */
             }
             #modalBodyContent table td {
-                padding: 2px 3px; /* ปรับ: ลด padding */
+                padding: 1px 2px; /* ปรับ: ลด padding */
                 vertical-align: middle;
                 color: #0088ff !important;
                 border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบเซลล์ให้คมชัด */
