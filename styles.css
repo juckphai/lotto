@@ -1,4 +1,4 @@
-/* === CSS MERGED AND ADAPTED FOR POS SYSTEM === */
+/* === CSS MERGED AND ADAPTED FOR POS SYSTEM (COMPACT VERSION) === */
         :root {
             --primary-color: #4a90e2;
             --danger-color: #d0021b;
@@ -26,17 +26,17 @@
 
         .main-wrapper {
             max-width: 1200px; 
-            margin: 15px auto; 
+            margin: 5px auto; /* ลด margin ด้านบน/ล่าง */
             background-color: var(--background-color);
             border: 2px solid #ED01ED; 
-            padding: 10px; 
-            border-radius: 10px; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-            width: 95%;
+            padding: 5px; /* ลด padding โดยรวม */
+            border-radius: 8px; /* ลด radius เล็กน้อย */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ลดขนาดเงา */
+            width: 98%; /* เพิ่มความกว้างเล็กน้อย */
         }
 
         #login-screen { 
-            padding: 40px; 
+            padding: 20px; /* ลด padding */
             text-align: center;
             background-color: var(--background-color);
             color: var(--text-color);
@@ -55,14 +55,14 @@
         .top-bar {
             background-color: var(--primary-color);
             color: white;
-            padding: 15px 20px;
-            border-radius: 8px 8px 0 0;
-            margin-bottom: 10px;
+            padding: 10px 15px; /* ลด padding */
+            border-radius: 6px 6px 0 0;
+            margin-bottom: 5px; /* ลด margin */
             text-align: center;
         }
         .top-bar h1 {
-            margin: 0 0 10px 0;
-            font-size: clamp(1.2rem, 1.2rem + 1.5vw, 2.2rem);
+            margin: 0 0 5px 0; /* ลด margin */
+            font-size: clamp(1.1rem, 1.1rem + 1.5vw, 1.8rem); /* ลด font size */
             color: white;
         }
         .top-bar h1 span {
@@ -75,15 +75,15 @@
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
-            font-size: 0.9em;
+            font-size: 0.85em; /* ลด font size เล็กน้อย */
             color: white;
         }
         #logout-btn {
             background-color: var(--danger-color);
             border: none;
             color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
+            padding: 6px 12px; /* ลด padding */
+            border-radius: 15px;
             cursor: pointer;
             transition: background-color 0.2s;
         }
@@ -93,20 +93,20 @@
         
         .section-header { 
             color: white; 
-            padding: 12px 15px; 
-            border-radius: 20px; 
-            margin-bottom: 10px; 
+            padding: 8px 12px; /* ลด padding */
+            border-radius: 15px; /* ลด radius */
+            margin-bottom: 5px; /* ลด margin */
             cursor: pointer; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            border: 3px solid #E97132;
+            border: 2px solid #E97132; /* ลดขนาดเส้นขอบ */
             transition: background-color 0.3s;
         }
         .section-header:hover { background-color: #B5E6A2; color: #000000; } /* Changed to black text on hover */
         .section-header .arrow { transition: transform 0.3s; color: white; }
         .section-header.active .arrow { transform: rotate(90deg); }
-        .section-header > span:first-child { flex: 1; text-align: left; font-size: 1.1em; color: white; }
+        .section-header > span:first-child { flex: 1; text-align: left; font-size: 1.0em; /* ลด font size เล็กน้อย */ color: white; }
         
         /* === START: ICON STYLES === */
         .section-header i {
@@ -142,11 +142,11 @@
         
         .section-content { 
             display: none; 
-            padding: 20px; 
+            padding: 10px; /* ลด padding */
             border: 1px solid #ddd; 
-            border-radius: 20px; 
+            border-radius: 10px; /* ลด radius */
             background-color: var(--background-color); 
-            margin-bottom: 15px; 
+            margin-bottom: 8px; /* ลด margin */
             color: var(--text-color);
         }
         .section-content.active { display: block; }
@@ -155,9 +155,9 @@
         .collapsible-bar {
             background-color: #78909c;
             color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin-top: 15px;
+            padding: 8px 12px; /* ลด padding */
+            border-radius: 6px;
+            margin-top: 10px; /* ลด margin */
             margin-bottom: 0;
             cursor: pointer;
             display: flex;
@@ -177,12 +177,12 @@
         }
         .collapsible-content {
             display: none;
-            padding: 15px;
+            padding: 10px; /* ลด padding */
             border: 1px solid #ccc;
             border-top: none;
-            border-radius: 0 0 8px 8px;
+            border-radius: 0 0 6px 6px;
             background-color: var(--background-color);
-            margin-bottom: 10px;
+            margin-bottom: 8px; /* ลด margin */
             color: var(--text-color);
         }
         .collapsible-content.active {
@@ -194,10 +194,10 @@
             text-align: center; 
             color: var(--text-color); 
             margin-top: 0; 
-            margin-bottom: 25px;
-            font-size: clamp(1.2rem, 1rem + 1.5vw, 1.8rem);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 10px;
+            margin-bottom: 15px; /* ลด margin */
+            font-size: clamp(1.1rem, 1rem + 1.2vw, 1.6rem); /* ลด font size */
+            border-bottom: 1px solid var(--primary-color); /* ลดขนาดเส้นขอบ */
+            padding-bottom: 5px; /* ลด padding */
         }
         
         /* --- TABLE STYLES (Desktop) --- */
@@ -205,7 +205,7 @@
             overflow-x: auto;
             border: 1px solid var(--border-color);
             border-radius: 5px;
-            margin-top: 20px;
+            margin-top: 15px; /* ลด margin */
             background-color: var(--background-color);
         }
 
@@ -217,11 +217,11 @@
         
         th, td {
             border: 1px solid var(--border-color);
-            padding: 6px 8px; 
+            padding: 4px 6px; /* ลด padding */
             text-align: center; 
             vertical-align: middle;
             white-space: nowrap; 
-            font-size: clamp(0.8rem, 1.5vw, 0.9rem); 
+            font-size: clamp(0.75rem, 1.4vw, 0.85rem); /* ลด font size */
             color: var(--text-color);
             background-color: var(--background-color);
         }
@@ -239,7 +239,7 @@
         #page-users #user-table td:nth-child(5) { /* New */
              white-space: normal;
              word-break: break-word;
-             min-width: 120px;
+             min-width: 100px; /* ลด min-width */
         }
 
         /* min-width for number columns (REMOVED text-align: right) */
@@ -254,10 +254,10 @@
         #page-stock-in #stock-in-history-table td:nth-child(5), /* Cost */
         #page-stock-in #stock-in-history-table td:nth-child(6), /* Total */
         #page-stock-out #stock-out-history-table td:nth-child(4) { /* Qty */
-            min-width: 70px;
+            min-width: 60px; /* ลด min-width */
         }
         .action-buttons {
-             min-width: 100px;
+             min-width: 80px; /* ลด min-width */
              white-space: nowrap;
         }
         
@@ -267,24 +267,24 @@
             font-weight: bold;
         }
         
-        .action-buttons button { margin-right: 5px; padding: 5px 10px; font-size: 0.9em; margin-top: 5px;}
+        .action-buttons button { margin-right: 3px; padding: 4px 8px; font-size: 0.8em; margin-top: 3px;}
 
         form {
             display: grid;
             grid-template-columns: 150px 1fr;
-            gap: 15px;
+            gap: 10px; /* ลด gap */
             align-items: center;
             max-width: 600px;
-            margin: 0 auto 20px auto;
+            margin: 0 auto 10px auto; /* ลด margin */
             background-color: var(--background-color);
         }
         form label { text-align: right; font-weight: bold; color: var(--text-color); }
         input, select {
-            padding: 10px;
-            border-radius: 20px;
+            padding: 8px; /* ลด padding */
+            border-radius: 15px; /* ลด radius */
             border: 1px solid #666;
             font-family: inherit;
-            font-size: 1em;
+            font-size: 0.9em; /* ลด font size */
             width: 100%;
             box-sizing: border-box;
             text-align: center;
@@ -297,13 +297,13 @@
             color: white; 
             border: none;
             font-size: 1em;
-            padding: 12px;
-            border-radius: 50px;
+            padding: 8px; /* ลด padding */
+            border-radius: 20px; /* ลด radius */
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
         button:hover { transform: translateY(-2px); }
 
-        .form-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .form-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; /* ลด gap */ justify-content: center; }
         .form-actions button { flex-grow: 1; max-width: 250px; }
         
         button.success, #process-sale-btn { background-color: var(--success-color); }
@@ -313,17 +313,17 @@
         button#toggle-special-price-btn { background-color: var(--warning-color); }
         button#toggle-special-price-btn:hover { background-color: #d8901e; }
         
-        #page-pos .pos-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        #cart-summary { background-color: #eef5ff; padding: 15px; border-radius: 8px; color: var(--text-color); }
-        #cart-total { font-size: clamp(1.5rem, 1.5rem + 2.5vw, 3rem); font-weight: bold; text-align: right; margin-top: 15px; color: #0070C0; }
-        #process-sale-btn { font-size: clamp(1.1rem, 1rem + 0.5vw, 1.4rem); width: 100%; }
-        #payment-method-container { margin-top: 20px; padding-top: 15px; border-top: 1px solid #666; color: var(--text-color); }
+        #page-pos .pos-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; /* ลด gap */ }
+        #cart-summary { background-color: #eef5ff; padding: 10px; /* ลด padding */ border-radius: 8px; color: var(--text-color); }
+        #cart-total { font-size: clamp(1.2rem, 1.2rem + 2vw, 2.5rem); /* ลด font size */ font-weight: bold; text-align: right; margin-top: 10px; /* ลด margin */ color: #0070C0; }
+        #process-sale-btn { font-size: clamp(1.0rem, 1rem + 0.5vw, 1.2rem); /* ลด font size */ width: 100%; }
+        #payment-method-container { margin-top: 10px; /* ลด margin */ padding-top: 10px; /* ลด padding */ border-top: 1px solid #666; color: var(--text-color); }
         
         .payment-options-wrapper {
             display: flex;
-            gap: 20px;
+            gap: 15px; /* ลด gap */
             align-items: center;
-            margin: 10px 0;
+            margin: 8px 0; /* ลด margin */
             flex-wrap: wrap; /* Added for better mobile view */
             color: var(--text-color);
         }
@@ -333,12 +333,12 @@
             accent-color: var(--danger-color);
         }
 
-        #credit-fields-container, #transfer-fields-container { margin-top: 10px; display: none; color: var(--text-color); }
+        #credit-fields-container, #transfer-fields-container { margin-top: 8px; /* ลด margin */ display: none; color: var(--text-color); }
 
         #report-filter-form {
             display: grid;
             grid-template-columns: auto auto auto 1fr; /* Default for desktop */
-            gap: 15px;
+            gap: 10px; /* ลด gap */
             max-width: none;
             align-items: end;
             background-color: var(--background-color);
@@ -358,13 +358,13 @@
         #sales-history-export-form {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 10px; /* ลด gap */
             align-items: flex-end;
             justify-content: center;
             background-color: #eef5ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin: -10px auto 25px auto;
+            padding: 10px; /* ลด padding */
+            border-radius: 6px;
+            margin: -5px auto 15px auto; /* ลด margin */
             border: 1px solid var(--primary-color);
             color: var(--text-color);
         }
@@ -372,27 +372,27 @@
             font-weight: bold;
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 3px; /* ลด gap */
             color: var(--text-color);
         }
         #sales-history-export-form input[type="date"] {
-            padding: 8px;
+            padding: 6px; /* ลด padding */
             border-radius: 5px;
-            min-width: 150px;
+            min-width: 140px;
             background-color: var(--background-color);
             color: var(--text-color);
             border: 1px solid #666;
         }
 /* ปุ่มส่งออก Excel ในหน้า รายการขายย้อนหลัง */
 #export-sales-history-excel-btn { /* แก้ไข selector ให้ถูกต้อง */
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 8px 15px; /* ลด padding */
+    font-size: 0.95rem; /* ลด font size */
     background-color: #008CFF;    /* ฟ้าชัด */
     color: #ffffff;               /* ตัวหนังสือสีขาว */
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12); /* ลดขนาดเงา */
     transition: background-color 0.15s ease, transform 0.08s ease;
     -webkit-appearance: none;     /* ปรับบนบาง browser */
     appearance: none;
@@ -408,14 +408,14 @@
 }
 
 
-        .data-management-section { border: 1px solid var(--border-color); padding: 20px; margin-top: 20px; border-radius: 8px; background: var(--background-alt); text-align: center; color: var(--text-color); }
-        .data-management-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-color); }
-        .data-management-section button { margin: 5px; padding: 10px 15px; }
+        .data-management-section { border: 1px solid var(--border-color); padding: 10px; /* ลด padding */ margin-top: 10px; /* ลด margin */ border-radius: 6px; background: var(--background-alt); text-align: center; color: var(--text-color); }
+        .data-management-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; /* ลด padding */ color: var(--text-color); }
+        .data-management-section button { margin: 3px; /* ลด margin */ padding: 8px 12px; /* ลด padding */ }
 
-        .summary-section { border: 1px solid #666; border-radius: 8px; padding: 15px 20px; margin-bottom: 20px; background-color: var(--background-color); color: var(--text-color); }
-        .summary-form-inline { display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end; color: var(--text-color); }
+        .summary-section { border: 1px solid #666; border-radius: 6px; padding: 10px 15px; /* ลด padding */ margin-bottom: 10px; /* ลด margin */ background-color: var(--background-color); color: var(--text-color); }
+        .summary-form-inline { display: flex; flex-wrap: wrap; gap: 10px; /* ลด gap */ align-items: flex-end; color: var(--text-color); }
         
-        #toast-notification { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); padding: 12px 24px; color: white; background-color: var(--success-color); border-radius: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.1em; }
+        #toast-notification { position: fixed; bottom: 15px; /* ลดระยะห่าง */ left: 50%; transform: translateX(-50%); padding: 8px 16px; /* ลด padding */ color: white; background-color: var(--success-color); border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.0em; /* ลด font size */ }
         #toast-notification.show { opacity: 1; visibility: visible; }
 
         /* === START: POPUP STYLE MODIFICATION (USER REQUEST) === */
@@ -430,33 +430,33 @@
             display: none;
             justify-content: center;
             align-items: center;
-            padding: 5px; /* Increased padding for more space from the edge */
+            padding: 5px; 
             overflow-y: auto;
         }
         
         .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
-        #modalBodyContent { background-color: var(--background-color); border: 2px solid #4CAF50; border-radius: 10px; padding: 5px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.25); max-height: 85vh; overflow-y: auto; color: #000000 !important; }
+        #modalBodyContent { background-color: var(--background-color); border: 1px solid #4CAF50; /* ลดขนาดเส้นขอบ */ border-radius: 8px; /* ลด radius */ padding: 5px; /* ลด padding */ width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* ลดขนาดเงา */ max-height: 90vh; /* เพิ่ม max height */ overflow-y: auto; color: #000000 !important; }
         #modalBodyContent, #modalBodyContent * { color: #000000 !important; }
         
         #modalBodyContent h2 {
             margin-top: 0;
-            margin-bottom: 8px; 
-            padding-bottom: 5px;
-            font-size: 1.2rem;
+            margin-bottom: 5px; /* ลด margin */
+            padding-bottom: 3px;
+            font-size: 1.1rem; /* ลด font size */
             color: #000000 !important;
         }
         #modalBodyContent p {
-            margin-top: 4px; 
-            margin-bottom: 4px; 
+            margin-top: 2px; /* ลด margin */
+            margin-bottom: 2px; /* ลด margin */
             line-height: 1.0;
             color: #000000 !important;
         }
         #modalBodyContent table {
-            margin-top: 10px; 
+            margin-top: 5px; /* ลด margin */
             color: #000000 !important;
         }
         #modalBodyContent hr {
-            margin: 15px 0; 
+            margin: 10px 0; /* ลด margin */
             border-color: #666;
         }
         
@@ -466,11 +466,11 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: 10px;
+            margin-top: 8px; /* ลด margin */
             max-width: 600px;
             background-color: var(--background-alt);
-            padding: 15px;
-            border-radius: 8px;
+            padding: 10px; /* ลด padding */
+            border-radius: 6px;
             color: var(--text-color);
         }
         .control-group {
@@ -478,13 +478,13 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* ลด margin */
             color: var(--text-color);
         }
         .control-group label, .control-group span {
-            font-size: 16px;
+            font-size: 15px; /* ลด font size */
             color: var(--text-color);
-            margin-bottom: 8px;
+            margin-bottom: 5px; /* ลด margin */
             font-weight: bold;
         }
         .control-group input[type="range"] {
@@ -494,20 +494,20 @@
         }
         /* === END: [NEW] CSS === */
 
-        .modal-close-btn { background-color: #E97132; color: white; padding: 12px 30px; border: none; cursor: pointer; border-radius: 20px; font-size: 16px; margin-top: 10px; transition: background-color 0.3s; width: 90%; max-width: 250px;}
+        .modal-close-btn { background-color: #E97132; color: white; padding: 8px 20px; /* ลด padding */ border: none; cursor: pointer; border-radius: 15px; /* ลด radius */ font-size: 15px; /* ลด font size */ margin-top: 8px; /* ลด margin */ transition: background-color 0.3s; width: 90%; max-width: 250px;}
         .modal-close-btn:hover { background-color: #e64a19; }
 .format-modal-content {
     background-color: #e0e0e0; /* พื้นหลังสีเทา */
-    padding: 20px 30px;
-    border-radius: 15px;
+    padding: 15px 20px; /* ลด padding */
+    border-radius: 10px;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3); /* ลดขนาดเงา */
     width: 90%;
     max-width: 400px;
     color: #0088ff; /* ตัวหนังสือสีฟ้า */
 }
-        .format-modal-buttons { display: flex; flex-direction: column; gap: 15px; margin-top: 20px; }
-        .format-modal-buttons button { padding: 15px; font-size: 16px; border-radius: 10px; }
+        .format-modal-buttons { display: flex; flex-direction: column; gap: 10px; /* ลด gap */ margin-top: 15px; /* ลด margin */ }
+        .format-modal-buttons button { padding: 10px; /* ลด padding */ font-size: 15px; /* ลด font size */ border-radius: 8px; }
         .format-modal-buttons .btn-csv { background-color: #2E7D32; }
         .format-modal-buttons .btn-display { background-color: #007bff; }
         .format-modal-buttons .btn-pdf { background-color: #e64a19; } /* NEW PDF Button Color */
@@ -524,10 +524,10 @@
         /* === NEW: RESET MODAL === */
         #reset-modal-content {
             background-color: var(--background-color);
-            padding: 20px 30px;
-            border-radius: 15px;
+            padding: 15px 20px; /* ลด padding */
+            border-radius: 10px;
             text-align: left;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3); /* ลดขนาดเงา */
             width: 90%;
             max-width: 500px;
             color: var(--text-color);
@@ -536,16 +536,17 @@
             text-align: center;
             color: var(--danger-color);
             margin-top: 0;
+            font-size: 1.2em; /* ลด font size */
         }
         #reset-options-container {
-            margin-top: 20px;
-            margin-bottom: 20px;
+            margin-top: 10px; /* ลด margin */
+            margin-bottom: 10px; /* ลด margin */
             color: var(--text-color);
         }
         #reset-options-container label {
             display: block;
-            margin-bottom: 12px;
-            font-size: 1.1em;
+            margin-bottom: 8px; /* ลด margin */
+            font-size: 1.0em; /* ลด font size */
             cursor: pointer;
             color: var(--text-color);
         }
@@ -555,9 +556,9 @@
         }
         #reset-modal-actions {
             display: flex;
-            gap: 15px;
+            gap: 10px; /* ลด gap */
             justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 10px; /* ลด margin */
         }
 
         /* === START: USER REQUEST - Style for single-product seller view in POS === */
@@ -584,14 +585,14 @@
         /* === START: NEW - Admin Summary Page Styles === */
         .report-action-buttons {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* ลด minmax */
+            gap: 10px; /* ลด gap */
+            margin-top: 10px; /* ลด margin */
         }
         .report-action-item {
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px 20px;
+            border-radius: 6px;
+            padding: 10px 15px; /* ลด padding */
             text-align: center;
             display: flex;
             flex-direction: column;
@@ -601,14 +602,15 @@
         }
         .report-action-item p {
             margin-top: 0;
-            margin-bottom: 15px;
+            margin-bottom: 8px; /* ลด margin */
             flex-grow: 1;
+            font-size: 0.9em;
             color: var(--text-color);
         }
         .report-action-item button {
             width: 100%;
-            padding: 14px;
-            font-size: 1.1em;
+            padding: 10px; /* ลด padding */
+            font-size: 1.0em; /* ลด font size */
             font-weight: bold;
         }
         #admin-report-filters .summary-form-inline label {
@@ -635,7 +637,7 @@
         #page-pos #add-to-cart-form .date-time-group input {
             flex-grow: 1;
             min-width: 0;
-            padding: 10px; /* Use default padding for better look on desktop */
+            padding: 8px; /* ลด padding */
         }
         /* === END NEW === */
 
@@ -647,21 +649,22 @@
                 border-radius: 0;
                 border: none;
                 min-height: 100vh;
+                padding: 3px; /* ลด padding อีก */
             }
             form {
                 grid-template-columns: 1fr;
-                gap: 15px;
+                gap: 10px; /* ลด gap */
             }
             form label {
                 text-align: left;
-                margin-bottom: -10px;
+                margin-bottom: -5px; /* ลด margin */
                 color: var(--text-color);
             }
 
             /* --- NEW: Override for POS form to be two-column on mobile --- */
             #page-pos #add-to-cart-form {
                 grid-template-columns: auto 1fr;
-                gap: 10px 8px; /* row-gap column-gap */
+                gap: 8px 6px; /* ลด gap */
             }
             #page-pos #add-to-cart-form label {
                 text-align: right;
@@ -679,7 +682,7 @@
             #page-users #user-form label,
             #page-data #backup-password-form label {
                 text-align: left;
-                margin-bottom: -10px;
+                margin-bottom: -5px;
                 color: var(--text-color);
             }
             #page-users #user-form .form-group,
@@ -687,7 +690,7 @@
                 grid-column: 1 / -1;
                 display: flex;
                 flex-direction: column;
-                gap: 5px;
+                gap: 3px; /* ลด gap */
             }
             #page-users #user-form .form-group label,
             #page-data #backup-password-form .form-group label {
@@ -697,10 +700,10 @@
             #page-users #user-form #user-commission-sources {
                 display: flex;
                 flex-wrap: wrap;
-                gap: 10px 20px;
-                padding: 10px;
+                gap: 8px 15px; /* ลด gap */
+                padding: 8px; /* ลด padding */
                 background: #f0f8ff;
-                border-radius: 8px;
+                border-radius: 6px;
             }
              #page-users #user-form #user-commission-sources label {
                 margin-bottom: 0;
@@ -732,7 +735,7 @@
             table th, table td {
                 display: table-cell;
                 border: 1px solid var(--border-color);
-                padding: 4px 5px; 
+                padding: 3px 4px; /* ลด padding */
                 font-size: clamp(9px, 2.2vw, 12px); 
                 line-height: 1.0;
                 vertical-align: middle;
@@ -778,7 +781,7 @@
                 min-width: auto;
             }
             #page-pos #cart-table .action-buttons button { /* Smaller delete button */
-                padding: 4px 6px;
+                padding: 3px 5px; /* ลด padding */
                 font-size: 0.8em;
                 margin: 0;
             }
@@ -811,115 +814,115 @@
             @media (max-width: 768px) {
                 /* Double the vertical padding for height increase (Mobile) */
                 #page-pos #cart-table tbody td {
-                    padding-top: 16px;
-                    padding-bottom: 16px;
-		    font-size: 16px;
+                    padding-top: 10px; /* ลด padding */
+                    padding-bottom: 10px; /* ลด padding */
+		    font-size: 15px; /* ลด font size */
                 }
                 /* Keep original mobile padding for header */
                  #page-pos #cart-table th {
-                    padding-top: 4px;
-                    padding-bottom: 4px;
+                    padding-top: 3px; /* ลด padding */
+                    padding-bottom: 3px; /* ลด padding */
                 }
             }
             /* === END: USER REQUEST === */
 
             /* === POS Page Mobile Compacting Rules === */
             #page-pos h2, #page-pos h3 {
-                margin-bottom: 15px;
-                padding-bottom: 8px;
-                font-size: 1.1rem;
+                margin-bottom: 10px; /* ลด margin */
+                padding-bottom: 5px; /* ลด padding */
+                font-size: 1.0rem; /* ลด font size */
                 color: var(--text-color);
             }
             #page-pos #add-to-cart-form {
                 /* gap is now set in the override rule above */
-                margin-bottom: 15px;
+                margin-bottom: 10px; /* ลด margin */
             }
             #page-pos #add-to-cart-form input,
             #page-pos #add-to-cart-form select {
-                padding: 8px 10px;
-                font-size: 0.9em;
+                padding: 6px 8px; /* ลด padding */
+                font-size: 0.85em; /* ลด font size */
                 background-color: var(--background-color);
                 color: var(--text-color);
                 border: 1px solid #666;
             }
             #page-pos #add-to-cart-form .form-actions button {
-                padding: 10px;
-                font-size: 0.95em;
+                padding: 8px; /* ลด padding */
+                font-size: 0.9em; /* ลด font size */
             }
             #page-pos #special-price-container {
                  grid-template-columns: 100px 1fr;
-                 gap: 8px;
+                 gap: 6px; /* ลด gap */
             }
             
             /* --- NEW: Mobile adjustment for Date/Time Grouping --- */
             #page-pos #add-to-cart-form .date-time-group {
                 grid-column: 2 / -1; /* Make sure the date/time group spans the second column */
-                gap: 8px;
+                gap: 6px; /* ลด gap */
             }
             #page-pos #add-to-cart-form .date-time-group input {
-                padding: 8px 10px;
-                font-size: 0.9em;
+                padding: 6px 8px; /* ลด padding */
+                font-size: 0.85em; /* ลด font size */
             }
             /* --- END NEW --- */
 
             /* --- Cart Summary Compacting Rules --- */
             #page-pos #cart-summary {
-                padding: 10px;
+                padding: 8px; /* ลด padding */
                 background-color: #eef5ff;
                 color: var(--text-color);
             }
             #page-pos #cart-summary h4 {
-                font-size: 1rem;
+                font-size: 0.95rem; /* ลด font size */
                 margin-top: 0;
-                margin-bottom: 5px;
+                margin-bottom: 3px; /* ลด margin */
                 color: var(--text-color);
             }
             #page-pos #payment-method-container {
-                margin-top: 10px;
-                padding-top: 10px;
+                margin-top: 8px; /* ลด margin */
+                padding-top: 8px; /* ลด padding */
                 border-top: none; 
                 color: var(--text-color);
             }
             #page-pos .payment-options-wrapper {
-                margin: 5px 0 10px 0;
-                gap: 15px;
+                margin: 3px 0 8px 0; /* ลด margin */
+                gap: 10px; /* ลด gap */
                 color: var(--text-color);
             }
              #page-pos #credit-fields-container,
              #page-pos #transfer-fields-container {
-                margin-top: 5px;
+                margin-top: 3px; /* ลด margin */
                 color: var(--text-color);
             }
             #page-pos #credit-fields-container > div,
             #page-pos #transfer-fields-container > div {
-                margin-top: 5px;
+                margin-top: 3px; /* ลด margin */
                 color: var(--text-color);
             }
             
             #page-pos .cart-action-row {
                 display: flex;
                 align-items: center;
-                gap: 10px;
-                margin-top: 15px;
-                padding-top: 10px;
+                gap: 8px; /* ลด gap */
+                margin-top: 10px; /* ลด margin */
+                padding-top: 8px; /* ลด padding */
                 border-top: none;
             }
             #page-pos .cart-total-label {
-                font-size: 1rem;
+                font-size: 0.95rem; /* ลด font size */
                 font-weight: bold;
                 white-space: nowrap;
                 color: var(--text-color);
             }
             #page-pos #cart-total {
-                font-size: 1.6rem; 
+                font-size: 1.4rem; /* ลด font size */
                 margin: 0;
                 flex-grow: 1;
                 text-align: right;
                 color: #0070C0;
             }
             #page-pos #process-sale-btn {
-                padding: 8px 10px; 
-                font-size: 1.0em; 
+                padding: 6px 8px; /* ลด padding */
+                font-size: 0.9em; /* ลด font size */
                 margin: 0;
                 flex-shrink: 0;
                 width: auto; 
@@ -928,20 +931,20 @@
             /* MODAL (POPUP) RESPONSIVE STYLES */
             
             /* --- General Compactness --- */
-            #modalBodyContent { padding: 10px; }
+            #modalBodyContent { padding: 5px; }
             #modalBodyContent h2 {
                 font-size: 1.0rem; 
-                padding-bottom: 4px;
-                margin-bottom: 6px;
+                padding-bottom: 2px; /* ลด padding */
+                margin-bottom: 4px; /* ลด margin */
                 color: #000000 !important;
             }
             #modalBodyContent table th {
-                font-size: clamp(8px, 2.2vw, 10px); 
-                padding: 2px 3px;
+                font-size: clamp(8px, 2.0vw, 9px); /* ลด font size */
+                padding: 1px 2px; /* ลด padding */
                 color: #000000 !important;
             }
             #modalBodyContent table td {
-                padding: 2px 3px;
+                padding: 1px 2px; /* ลด padding */
                 vertical-align: middle;
                 color: #000000 !important;
             }
@@ -1087,7 +1090,7 @@
             
             #report-filter-form {
                 grid-template-columns: 1fr; /* Stack into a single column on mobile */
-                gap: 10px;
+                gap: 8px; /* ลด gap */
             }
 
             #report-generate-btn {
@@ -1100,7 +1103,7 @@
             
             /* เพิ่มระยะห่างและทำให้เนื้อหาดูโปร่งขึ้น */
             .collapsible-content.seller-only {
-                padding: 20px 15px;
+                padding: 10px 8px; /* ลด padding */
                 background-color: var(--background-color);
                 color: var(--text-color);
             }
@@ -1109,11 +1112,11 @@
             #seller-summary-content div:first-of-type {
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
+                gap: 8px; /* ลด gap */
             }
              #seller-summary-content button {
-                padding: 14px;
-                font-size: 1.1em;
+                padding: 10px; /* ลด padding */
+                font-size: 1.0em; /* ลด font size */
                 font-weight: bold;
                 width: 100%;
             }
@@ -1122,9 +1125,9 @@
                 align-items: stretch;
             }
              #seller-summary-content .summary-form-inline label {
-                font-size: 1.1em;
+                font-size: 1.0em; /* ลด font size */
                 text-align: center;
-                margin-bottom: 5px;
+                margin-bottom: 3px; /* ลด margin */
                 color: var(--text-color);
             }
             
@@ -1132,13 +1135,13 @@
             #seller-sales-history-table th {
                 background-color: var(--primary-color); /* ใช้สีหลักของเว็บ */
                 color: white;
-                font-size: 15px;
+                font-size: 14px; /* ลด font size */
                 font-weight: bold;
-                padding: 10px 8px;
+                padding: 8px 6px; /* ลด padding */
             }
             #seller-sales-history-table td {
-                font-size: 16px; /* ขนาดตัวอักษรที่อ่านง่ายบนมือถือ */
-                padding: 12px 8px; /* เพิ่มความสูงของแถว */
+                font-size: 15px; /* ลด font size */
+                padding: 8px 6px; /* ลด padding */
                 background-color: var(--background-color);
                 color: var(--text-color);
             }
@@ -1146,7 +1149,7 @@
             /* คอลัมน์รายการสินค้า (ทำให้เด่นและอ่านง่าย) */
             #seller-sales-history-table td:nth-child(3) {
                 text-align: left;
-                line-height: 1.4;
+                line-height: 1.3; /* ลด line height */
                 font-weight: 500; /* หนาขึ้นเล็กน้อย */
             }
             
@@ -1158,20 +1161,20 @@
 
             /* --- ปรับปรุงส่วน Backup ข้อมูลของผู้ขาย --- */
             #seller-backup-content p {
-                font-size: 1em;
-                line-height: 1.5;
-                margin-bottom: 20px;
+                font-size: 0.95em; /* ลด font size */
+                line-height: 1.4; /* ลด line height */
+                margin-bottom: 10px; /* ลด margin */
                 color: var(--text-color);
             }
              #seller-backup-content div {
                 display: flex;
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px; /* ลด gap */
             }
             #seller-backup-content button {
                 width: 100%;
-                padding: 14px;
-                font-size: 1.1em;
+                padding: 10px; /* ลด padding */
+                font-size: 1.0em; /* ลด font size */
                 font-weight: bold;
             }
 
@@ -1181,11 +1184,11 @@
             #admin-report-filters .summary-form-inline {
                 flex-direction: column;
                 align-items: stretch;
-                gap: 5px;
+                gap: 3px; /* ลด gap */
             }
              #admin-report-filters .summary-form-inline label {
                 text-align: left;
-                margin-bottom: 5px;
+                margin-bottom: 3px; /* ลด margin */
                 color: var(--text-color);
             }
             .report-action-buttons {
@@ -1316,26 +1319,26 @@
             }
         }
 
-/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" === */
+/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
 
 /* ปรับปรุงฟอร์มจัดการผู้ใช้ */
 #page-users #user-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    gap: 10px; /* ลด gap */
     max-width: 800px;
-    margin: 0 auto 25px auto;
+    margin: 0 auto 15px auto; /* ลด margin */
     background-color: var(--background-alt);
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    padding: 15px; /* ลด padding */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     color: var(--text-color);
 }
 
 #page-users #user-form label {
     text-align: right;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 3px; /* ลด margin */
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -1345,10 +1348,10 @@
 #page-users #user-form input,
 #page-users #user-form select {
     width: 100%;
-    padding: 10px 12px;
-    border-radius: 6px;
+    padding: 8px 10px; /* ลด padding */
+    border-radius: 4px; /* ลด radius */
     border: 1px solid #666;
-    font-size: 1em;
+    font-size: 0.95em; /* ลด font size */
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     background-color: var(--background-color);
     color: var(--text-color);
@@ -1364,16 +1367,16 @@
 /* ปรับปรุงส่วนของ Commission Sources */
 #page-users #user-form .form-group {
     grid-column: 1 / -1;
-    margin-top: 10px;
+    margin-top: 8px; /* ลด margin */
 }
 
 #page-users #user-form #user-commission-sources {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 10px;
-    padding: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ลด minmax */
+    gap: 8px; /* ลด gap */
+    padding: 10px; /* ลด padding */
     background: #e9f7fe;
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid #b8e2f5;
 }
 
@@ -1384,7 +1387,7 @@
     font-weight: normal;
     margin-bottom: 0;
     cursor: pointer;
-    padding: 5px;
+    padding: 3px; /* ลด padding */
     border-radius: 4px;
     transition: background-color 0.2s;
     color: var(--text-color);
@@ -1396,7 +1399,7 @@
 
 #page-users #user-form #user-commission-sources input {
     width: auto;
-    margin-right: 8px;
+    margin-right: 6px; /* ลด margin */
 }
 
 /* ปรับปรุงปุ่มในฟอร์ม */
@@ -1404,20 +1407,20 @@
     grid-column: 1 / -1;
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin-top: 20px;
+    gap: 10px; /* ลด gap */
+    margin-top: 15px; /* ลด margin */
 }
 
 #page-users #user-form .form-actions button {
-    min-width: 140px;
-    padding: 12px 20px;
+    min-width: 120px;
+    padding: 10px 15px; /* ลด padding */
     font-weight: bold;
 }
 
 /* ปรับปรุงตารางผู้ใช้ - แก้ไขปัญหาสีหัวข้อตาราง */
 #page-users .table-container {
-    margin-top: 20px;
-    border-radius: 8px;
+    margin-top: 15px; /* ลด margin */
+    border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     border: 1px solid #666;
@@ -1433,17 +1436,17 @@
 #page-users #user-table thead {
     background: #e0e0e0; 
     color: #0088ff;
-    border-bottom: 2px solid #bfbfbf;
+    border-bottom: 1px solid #bfbfbf; /* ลดขนาดเส้นขอบ */
 }
 
 #page-users #user-table th {
-    padding: 14px 15px;
+    padding: 10px 10px; /* ลด padding */
     text-align: center;
     font-weight: 700;
     border: none;
     cursor: default;
     transition: none;
-    font-size: 1.05em;
+    font-size: 1.0em; /* ลด font size */
     letter-spacing: 0.5px;
     border-right: 1px solid rgba(0,0,0,0.1);
     color: #0088ff;
@@ -1463,8 +1466,8 @@
 /* สัญลักษณ์ sort ยังมี */
 #page-users #user-table th.sortable::after {
     content: "↕";
-    margin-left: 8px;
-    font-size: 0.9em;
+    margin-left: 6px; /* ลด margin */
+    font-size: 0.8em; /* ลด font size */
     opacity: 0.8;
 }
 
@@ -1502,7 +1505,7 @@
 }
 
 #page-users #user-table td {
-    padding: 12px 15px;
+    padding: 8px 10px; /* ลด padding */
     border: none;
     border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
@@ -1513,20 +1516,20 @@
 #page-users #user-table .action-buttons {
     display: flex;
     justify-content: center;
-    gap: 8px;
-    min-width: 150px;
+    gap: 5px; /* ลด gap */
+    min-width: 120px;
 }
 
 #page-users #user-table .action-buttons button {
-    padding: 6px 12px;
-    font-size: 0.85em;
+    padding: 5px 10px; /* ลด padding */
+    font-size: 0.8em; /* ลด font size */
     border-radius: 4px;
     transition: all 0.2s;
 }
 
 #page-users #user-table .action-buttons button:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
 /* ===== มือถือ ===== */
@@ -1549,9 +1552,9 @@
     }
 
     #page-users #user-table tr {
-        margin-bottom: 15px;
+        margin-bottom: 10px; /* ลด margin */
         border: 1px solid #e9ecef;
-        border-radius: 8px;
+        border-radius: 6px;
         overflow: hidden;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         background-color: var(--background-color);
@@ -1559,7 +1562,7 @@
 
     #page-users #user-table td {
         text-align: left;
-        padding: 10px 15px;
+        padding: 8px 10px; /* ลด padding */
         border-bottom: 1px solid #e9ecef;
         position: relative;
         padding-left: 45%;
@@ -1570,12 +1573,12 @@
     #page-users #user-table td:before {
         content: attr(data-label);
         position: absolute;
-        left: 15px;
+        left: 10px; /* ลด left */
         width: 40%;
         font-weight: 600;
         color: #0088ff;
         background-color: #e0e0e0;
-        padding: 4px 8px;
+        padding: 2px 6px; /* ลด padding */
         border-radius: 4px;
     }
 
@@ -1588,22 +1591,22 @@
     }
 
     #page-users #user-table td.action-buttons {
-        padding-left: 15px !important;
+        padding-left: 10px !important; /* ลด padding */
     }
 }
 
 /* ===== แท็บเล็ต ===== */
 @media (min-width: 769px) and (max-width: 1024px) {
     #page-users #user-table th {
-        padding: 12px 12px;
-        font-size: 1.02em;
+        padding: 8px 8px; /* ลด padding */
+        font-size: 0.95em;
     }
 }
 
 /* ===== จอใหญ่ ===== */
 @media (min-width: 1200px) {
     #page-users #user-table th {
-        padding: 16px 15px;
-        font-size: 1.1em;
+        padding: 10px 10px; /* ลด padding */
+        font-size: 1.0em;
     }
 }
