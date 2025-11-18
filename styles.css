@@ -412,7 +412,7 @@
         .data-management-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; /* ลด padding */ color: var(--text-color); }
         .data-management-section button { margin: 3px; /* ลด margin */ padding: 8px 12px; /* ลด padding */ }
 
-        .summary-section { border: 1px solid #666; border-radius: 6px; padding: 10px 15px; /* ลด padding */ margin-bottom: 10px; /* ลด margin */ background-color: var(--background-color); color: var(--text-color); }
+        .summary-section { border: 1px solid #0088ff; border-radius: 6px; padding: 10px 15px; /* ลด padding */ margin-bottom: 10px; /* ลด margin */ background-color: var(--background-color); color: var(--text-color); }
         .summary-form-inline { display: flex; flex-wrap: wrap; gap: 10px; /* ลด gap */ align-items: flex-end; color: var(--text-color); }
         
         #toast-notification { position: fixed; bottom: 15px; /* ลดระยะห่าง */ left: 50%; transform: translateX(-50%); padding: 8px 16px; /* ลด padding */ color: white; background-color: var(--success-color); border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.0em; /* ลด font size */ }
@@ -457,7 +457,7 @@
         }
         #modalBodyContent hr {
             margin: 10px 0; /* ลด margin */
-            border-color: #666;
+            border-color: #0088ff;
         }
         
         /* === START: [NEW] CSS for Popup Controls === */
@@ -637,7 +637,7 @@
         #page-pos #add-to-cart-form .date-time-group input {
             flex-grow: 1;
             min-width: 0;
-            font-size: clamp(0.65rem, 1.2vw, 0.9em); 
+            font-size: clamp(0.65rem, 1.0vw, 0.9em); 
             padding: 6px 8px; /* ลด padding */
         }
         /* === END NEW === */
@@ -937,17 +937,17 @@
                 font-size: 1.0rem; 
                 padding-bottom: 2px; /* ลด padding */
                 margin-bottom: 4px; /* ลด margin */
-                color: #000000 !important;
+                color: #0088ff; !important;
             }
             #modalBodyContent table th {
                 font-size: clamp(8px, 2.0vw, 9px); /* ลด font size */
                 padding: 1px 2px; /* ลด padding */
-                color: #000000 !important;
+                color: #0088ff; !important;
             }
             #modalBodyContent table td {
                 padding: 1px 2px; /* ลด padding */
                 vertical-align: middle;
-                color: #000000 !important;
+                ccolor: #0088ff; !important;
             }
             #modalBodyContent table td::before { display: none; }
             #modalBodyContent table thead,
