@@ -1827,8 +1827,8 @@
                             <div style="text-align:center;">
                                 <div>
                                     <h2>${title}</h2>
-                                    <p style="font-size:0.8em; color:#555; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>
-                                    <p style="font-size:0.9em; color:#333; font-weight:bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
+                                    <p style="font-size:0.8em; color: #0088ff; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>
+                                    <p style="font-size:0.9em; color: #0088ff; font-weight:bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
                                 </div>
                                 <hr>
                                 <h2>ภาพรวมทั้งหมด</h2>
@@ -1928,9 +1928,9 @@
                         allSellersHtml += `
                             <div style="text-align:center; ${!isSingleSellerReport ? 'margin-top: 20px;' : ''}">
                                 <h2>${sectionTitle}</h2>
-                                ${isSingleSellerReport ? `<p style="font-size:0.8em; color:#555; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>` : ''}
-                                <p style="font-size: 0.9em; color: #333; font-weight: bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
-                                <p style="margin-bottom: 8px;"><strong>ยอดขายรวม : ${formatCurrency(sellerData.totalSales)} บาท</strong> <br><span style="font-size:0.9em; color:#555;">(เงินสด : ${formatCurrency(sellerData.totalCash)} | เงินโอน : ${formatCurrency(sellerData.totalTransfer)} | เครดิต : ${formatCurrency(sellerData.totalCredit)})</span></p>
+                                ${isSingleSellerReport ? `<p style="font-size:0.8em; color: #0088ff; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>` : ''}
+                                <p style="font-size: 0.9em; color: #0088ff; font-weight: bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
+                                <p style="margin-bottom: 8px;"><strong>ยอดขายรวม : ${formatCurrency(sellerData.totalSales)} บาท</strong> <br><span style="font-size:0.9em; color: #0088ff;">(เงินสด : ${formatCurrency(sellerData.totalCash)} | เงินโอน : ${formatCurrency(sellerData.totalTransfer)} | เครดิต : ${formatCurrency(sellerData.totalCredit)})</span></p>
                                 ${!isSingleDayReport ? `<p><strong>จำนวนวันขายทั้งหมด : ${summaryResult.totalSellingDays} วัน</strong></p>` : ''}
                                 ${profitOrCommissionHtml}
                                 <table class="product-summary-table">

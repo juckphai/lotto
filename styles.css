@@ -28,7 +28,7 @@
             max-width: 900px; 
             margin: 5px auto; /* ลด margin ด้านบน/ล่าง */
             background-color: var(--background-color);
-            border: 1.5px solid #ED01ED; 
+            border: 1px solid #ED01ED; 
             padding: 5px; /* ลด padding โดยรวม */
             border-radius: 8px; /* ลด radius เล็กน้อย */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ลดขนาดเงา */
@@ -418,7 +418,7 @@
         #toast-notification { position: fixed; bottom: 15px; /* ลดระยะห่าง */ left: 50%; transform: translateX(-50%); padding: 8px 16px; /* ลด padding */ color: white; background-color: var(--success-color); border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.0em; /* ลด font size */ }
         #toast-notification.show { opacity: 1; visibility: visible; }
 
-        /* === START: POPUP STYLE MODIFICATION (ปรับปรุงตามที่ร้องขอ) === */
+        /* === START: POPUP STYLE MODIFICATION (USER REQUEST) === */
         .modal-overlay {
             position: fixed;
             z-index: 1000;
@@ -426,8 +426,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            /* เปลี่ยนพื้นหลังหลักเป็นสีเหลืองอ่อนที่ระบุ */
-            background-color: #FAFAD2; 
+            background-color: rgba(255, 253, 231, 0.95); /* Semi-transparent light yellow */
             display: none;
             justify-content: center;
             align-items: center;
@@ -436,58 +435,29 @@
         }
         
         .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
+        #modalBodyContent { background-color: var(--background-color); border: 1px solid #4CAF50; /* ลดขนาดเส้นขอบ */ border-radius: 8px; /* ลด radius */ padding: 5px; /* ลด padding */ width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* ลดขนาดเงา */ max-height: 90vh; /* เพิ่ม max height */ overflow-y: auto; color: #0088ff; !important; }
+        #modalBodyContent, #modalBodyContent * { color: #0088ff; !important; }
         
-        /* กำหนดสีพื้นหลัง, เส้นขอบ, และสีตัวอักษรหลักทั้งหมดใน Modal Body */
-        #modalBodyContent { 
-            background-color: var(--background-color); 
-            border: 1.5px solid #ED01ED; 
-            border-radius: 8px; 
-            padding: 5px; 
-            width: 100%; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            max-height: 90vh; 
-            overflow-y: auto; 
-            color: #007bff !important; /* ตัวอักษรหลักเป็นสีดำ */
+        #modalBodyContent h2 {
+            margin-top: 0;
+            margin-bottom: 5px; /* ลด margin */
+            padding-bottom: 3px;
+            font-size: 1.1rem; /* ลด font size */
+            color: #0088ff; !important;
         }
-        
-        /* บังคับให้ข้อความภายในเป็นสีดำตามค่าเริ่มต้น */
-        #modalBodyContent, #modalBodyContent * { 
-            color: #007bff !important; 
+        #modalBodyContent p {
+            margin-top: 2px; /* ลด margin */
+            margin-bottom: 2px; /* ลด margin */
+            line-height: 1.0;
+            color: #0088ff; !important;
         }
-        
-/* กำหนดสีฟ้า และลดขนาดตัวอักษรเฉพาะ strong เป็น 16px */
-#modalBodyContent strong {
-    color: #007bff !important; /* สีฟ้า */
-    font-size: 16px !important; /* ขนาดตัวอักษร */
-}
-
-
-        
-        /* ปรับสไตล์ตารางและเส้นขอบให้เป็นสีเขียว */
         #modalBodyContent table {
-            margin-top: 5px; 
-            color: #007bff !important;
-            border: 1px solid #4CAF50 !important; /* เส้นขอบตารางหลัก */
+            margin-top: 5px; /* ลด margin */
+            color: #0088ff; !important;
         }
-        
-        #modalBodyContent table th, 
-        #modalBodyContent table td {
-            border: 1px solid #4CAF50 !important; /* เส้นขอบ cell เป็นสีเขียว */
-            padding: 4px 6px; 
-            text-align: center;
-            vertical-align: middle;
-            color: #007bff !important;
-        }
-        
-        #modalBodyContent table th {
-            background-color: #e6ffe6 !important; /* พื้นหลังหัวตารางสีเขียวอ่อน */
-            color: #005000 !important; /* สีตัวอักษรหัวตารางเป็นสีเขียวเข้ม */
-            font-weight: bold;
-        }
-        
         #modalBodyContent hr {
-            margin: 5px 0; 
-            border-color: #4CAF50; /* เปลี่ยนสีเส้นคั่นเป็นสีเขียว */
+            margin: 10px 0; /* ลด margin */
+            border-color: #666;
         }
         
         /* === START: [NEW] CSS for Popup Controls === */
@@ -496,7 +466,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: 6px; /* ลด margin */
+            margin-top: 8px; /* ลด margin */
             max-width: 600px;
             background-color: var(--background-alt);
             padding: 10px; /* ลด padding */
@@ -667,8 +637,8 @@
         #page-pos #add-to-cart-form .date-time-group input {
             flex-grow: 1;
             min-width: 0;
-            font-size: clamp(0.75rem, 1.5vw, 0.9em); 
-            padding: 6px 8px;  /* ลด padding */
+            font-size: clamp(0.65rem, 1.2vw, 0.9em); 
+            padding: 6px 8px; /* ลด padding */
         }
         /* === END NEW === */
 
@@ -778,8 +748,6 @@
                 display: none;
             }
             
-            /* table thead, table tbody, table tr { display: revert; } */
-
             /* === START: *** REFINED & MORE FORCEFUL *** RULES FOR POS CART TABLE ON MOBILE === */
             #page-pos #cart-table {
                 table-layout: fixed;
@@ -894,7 +862,7 @@
             }
             #page-pos #add-to-cart-form .date-time-group input {
                 padding: 6px 8px; /* ลด padding */
-                font-size: clamp(0.55rem, 1.0vw, 0.9em); 
+                font-size: 0.85em; /* ลด font size */
             }
             /* --- END NEW --- */
 
