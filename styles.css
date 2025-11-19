@@ -109,23 +109,33 @@
         .section-header > span:first-child { flex: 1; text-align: left; font-size: 1.0em; /* ลด font size เล็กน้อย */ color: white; }
         
         /* === START: ICON STYLES === */
-        .section-header i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-            font-size: 1.1em;
-            transition: transform 0.3s ease;
-            color: white;
-        }
+.section-header .icon {
+    margin-right: 8px;
+    display: inline-block;
+    font-style: normal; /* ป้องกัน Emoji เอียง */
+    font-size: 1.4em; /* เพิ่มขนาด Emoji ให้ใหญ่ขึ้นเล็กน้อย */
+    line-height: 1;
+    vertical-align: middle;
+    transition: transform 0.3s ease;
+}
 
-        .section-header:hover i {
-            transform: scale(1.1);
-            color: #000000;
-        }
+.section-header:hover .icon {
+    transform: scale(1.2); /* ขยายใหญ่ขึ้นเมื่อเอาเมาส์ชี้ */
+}
 
-        .section-header.active i {
-            transform: rotate(15deg);
-        }
+.section-header.active .icon {
+    transform: rotate(15deg); /* เอียงเล็กน้อยเมื่อเปิดเมนู */
+}
+
+/* ปรับขนาดตัวอักษรของหัวข้อให้สมดุลกับ Emoji */
+.section-header > span:first-child {
+    flex: 1;
+    text-align: left;
+    font-size: 1.05em; 
+    color: white;
+    display: flex;
+    align-items: center; /* จัดให้ Emoji กับข้อความอยู่กึ่งกลางบรรทัด */
+}
         /* === END: ICON STYLES === */
         
         /* --- Colors for each section header --- */

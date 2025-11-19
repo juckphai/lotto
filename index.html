@@ -13,40 +13,38 @@
   <link rel="apple-touch-icon" href="./192.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <link rel="stylesheet" href="styles.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
 </head>
 <body>
     <div class="main-wrapper">
         <div id="login-screen">
-            <h1>บัญชีขาย</h1>
+            <h1>🏪 บัญชีขาย</h1>
             <p>กรุณาเข้าสู่ระบบ</p>
             <form id="login-form" style="display: inline-grid; max-width: 350px;">
-                <label for="username">ชื่อผู้ใช้:</label>
+                <label for="username">👤 ชื่อผู้ใช้:</label>
                 <input type="text" id="username" required>
-                <label for="password">รหัสผ่าน:</label>
+                <label for="password">🔑 รหัสผ่าน:</label>
                 <input type="password" id="password" required>
                 
                 <div style="grid-column: 1 / -1; text-align: left; margin: 0 0 10px 0;">
                     <label style="font-weight: normal; cursor: pointer;">
                         <input type="checkbox" id="show-password-login">
-                        แสดงรหัสผ่าน
+                        👁️ แสดงรหัสผ่าน
                     </label>
                 </div>
                 
                 <div style="grid-column: 1 / -1; text-align: left; margin: 5px 0 10px 0;">
                     <label style="font-weight: normal; cursor: pointer;">
                         <input type="checkbox" id="remember-me">
-                        จดจำการเข้าสู่ระบบในครั้งถัดไป
+                        📝 จดจำการเข้าสู่ระบบในครั้งถัดไป
                     </label>
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="success">เข้าสู่ระบบ</button>
+                    <button type="submit" class="success">🔓 เข้าสู่ระบบ</button>
                 </div>
             </form>
             <p id="login-error" style="color: var(--danger-color);"></p>
@@ -55,61 +53,61 @@
         <div id="main-app">
             <div class="top-bar">
                 <h1 style="font-size: 16px; font-style: normal;">
-                    บัญชีขาย <span id="store-display-name" style="color: #FFD700; font-style: normal;"></span>
+                    🏪 บัญชีขาย <span id="store-display-name" style="color: #FFD700; font-style: normal;"></span>
                 </h1>
                 <div id="user-info-container">
                     <span id="user-info"></span>
-                    <button id="logout-btn">ออกจากระบบ</button>
+                    <button id="logout-btn">🚪 ออกจากระบบ</button>
                 </div>
             </div>
 
             <div class="section-header header-pos" onclick="App.showPage('page-pos')">
-                <span><i class="fas fa-cash-register"></i>ขายสินค้า (POS)</span><span class="arrow">▶</span>
+                <span><span class="icon">🛒</span> ขายสินค้า (POS)</span><span class="arrow">▶</span>
             </div>
             <div id="page-pos" class="section-content"></div>
 
             <div class="section-header header-products admin-only" onclick="App.showPage('page-products')">
-                <span><i class="fas fa-boxes"></i>จัดการสินค้า</span><span class="arrow">▶</span>
+                <span><span class="icon">📦</span> จัดการสินค้า</span><span class="arrow">▶</span>
             </div>
             <div id="page-products" class="section-content admin-only"></div>
 
             <div class="section-header header-stock admin-only" onclick="App.showPage('page-stock-in')">
-                <span><i class="fas fa-arrow-down"></i>นำเข้าสินค้า</span><span class="arrow">▶</span>
+                <span><span class="icon">📥</span> นำเข้าสินค้า</span><span class="arrow">▶</span>
             </div>
             <div id="page-stock-in" class="section-content admin-only"></div>
 
             <div class="section-header header-stock-out admin-only" onclick="App.showPage('page-stock-out')">
-                <span><i class="fas fa-arrow-up"></i>ปรับสต็อก (นำออก)</span><span class="arrow">▶</span>
+                <span><span class="icon">📤</span> ปรับสต็อก (นำออก)</span><span class="arrow">▶</span>
             </div>
             <div id="page-stock-out" class="section-content admin-only"></div>
 
             <div class="section-header header-history admin-only" onclick="App.showPage('page-sales-history')">
-                <span><i class="fas fa-history"></i>รายการขายย้อนหลัง</span><span class="arrow">▶</span>
+                <span><span class="icon">📜</span> รายการขายย้อนหลัง</span><span class="arrow">▶</span>
             </div>
             <div id="page-sales-history" class="section-content admin-only"></div>
 
             <div class="section-header header-reports admin-only" onclick="App.showPage('page-reports')">
-                <span><i class="fas fa-chart-line"></i>รายงานกำไร/ขาดทุน</span><span class="arrow">▶</span>
+                <span><span class="icon">📈</span> รายงานกำไร/ขาดทุน</span><span class="arrow">▶</span>
             </div>
             <div id="page-reports" class="section-content admin-only"></div>
 
             <div class="section-header header-summary admin-only" onclick="App.showPage('page-summary')">
-                <span><i class="fas fa-chart-pie"></i>สรุปข้อมูล</span><span class="arrow">▶</span>
+                <span><span class="icon">📊</span> สรุปข้อมูล</span><span class="arrow">▶</span>
             </div>
             <div id="page-summary" class="section-content admin-only"></div>
             
             <div class="section-header header-stores admin-only" onclick="App.showPage('page-stores')">
-                <span><i class="fas fa-store"></i>จัดการร้านค้า</span><span class="arrow">▶</span>
+                <span><span class="icon">🏪</span> จัดการร้านค้า</span><span class="arrow">▶</span>
             </div>
             <div id="page-stores" class="section-content admin-only"></div>
 
             <div class="section-header header-users admin-only" onclick="App.showPage('page-users')">
-                <span><i class="fas fa-users"></i>จัดการผู้ใช้</span><span class="arrow">▶</span>
+                <span><span class="icon">👥</span> จัดการผู้ใช้</span><span class="arrow">▶</span>
             </div>
             <div id="page-users" class="section-content admin-only"></div>
 
             <div class="section-header header-data" onclick="App.showPage('page-data')">
-                <span><i class="fas fa-database"></i>จัดการข้อมูล</span><span class="arrow">▶</span>
+                <span><span class="icon">💾</span> จัดการข้อมูล</span><span class="arrow">▶</span>
             </div>
             <div id="page-data" class="section-content"></div>
         </div>
@@ -121,48 +119,48 @@
         <div class="modal-content-container">
             <div id="modalBodyContent"></div>
             <div class="modal-controls">
-                <button id="saveSummaryAsImageBtn" class="modal-close-btn" style="background-color: #007bff; margin-bottom: 15px;">บันทึกเป็นรูปภาพ</button>
+                <button id="saveSummaryAsImageBtn" class="modal-close-btn" style="background-color: #007bff; margin-bottom: 15px;">🖼️ บันทึกเป็นรูปภาพ</button>
                 <div class="control-group">
-                    <label for="summaryFontSizeSlider">ปรับขนาดตัวอักษร:</label>
+                    <label for="summaryFontSizeSlider">🔠 ปรับขนาดตัวอักษร:</label>
                     <input type="range" id="summaryFontSizeSlider" min="0.5" max="1.5" step="0.05" value="1.0">
                     <span id="summaryFontSizeValue">ขนาด: 100%</span>
                 </div>
                 <div class="control-group">
-                    <label for="summaryLineHeightSlider">ปรับขนาดของบรรทัด:</label>
+                    <label for="summaryLineHeightSlider">↕️ ปรับขนาดของบรรทัด:</label>
                     <input type="range" id="summaryLineHeightSlider" min="0.1" max="2.5" step="0.01" value="1.0">
                     <span id="summaryLineHeightValue">ความสูงของบรรทัด: 1.0</span>
                 </div>
-                <button onclick="App.closeSummaryModal()" class="modal-close-btn">ปิดหน้าต่างนี้</button>
+                <button onclick="App.closeSummaryModal()" class="modal-close-btn">❌ ปิดหน้าต่างนี้</button>
             </div>
         </div>
     </div>
 
     <div id="summaryOutputModal" class="modal-overlay">
         <div class="format-modal-content">
-            <h3>เลือกรูปแบบการแสดงผลสรุป</h3>
+            <h3>📊 เลือกรูปแบบการแสดงผลสรุป</h3>
             <div class="format-modal-buttons">
-                <button class="btn-display" onclick="App.handleSummaryOutput('display')">แสดงบนจอ</button>
-                <button class="btn-excel" onclick="App.handleSummaryOutput('excel')">ส่งออกเป็น Excel</button>
-                <button class="btn-pdf" onclick="App.handleSummaryOutput('pdf')">บันทึกเป็น PDF</button>
-                <button class="btn-cancel" onclick="App.closeSummaryOutputModal()">ยกเลิก</button>
+                <button class="btn-display" onclick="App.handleSummaryOutput('display')">📺 แสดงบนจอ</button>
+                <button class="btn-excel" onclick="App.handleSummaryOutput('excel')">📊 ส่งออกเป็น Excel</button>
+                <button class="btn-pdf" onclick="App.handleSummaryOutput('pdf')">📄 บันทึกเป็น PDF</button>
+                <button class="btn-cancel" onclick="App.closeSummaryOutputModal()">❌ ยกเลิก</button>
             </div>
         </div>
     </div>
     
     <div id="resetModal" class="modal-overlay">
         <div id="reset-modal-content">
-            <h3>เลือกข้อมูลที่จะรีเซ็ต</h3>
+            <h3>⚠️ เลือกข้อมูลที่จะรีเซ็ต</h3>
             <p style="color: var(--danger-color); font-weight: bold;">คำเตือน: การกระทำนี้ไม่สามารถย้อนกลับได้! โปรดเลือกด้วยความระมัดระวัง</p>
             <div id="reset-options-container">
-                <label><input type="checkbox" id="reset-sales-checkbox"> ลบประวัติการขายทั้งหมด (Sales)</label>
-                <label><input type="checkbox" id="reset-stockins-checkbox"> ลบประวัติการนำเข้าทั้งหมด (Stock-ins)</label>
-                <label><input type="checkbox" id="reset-products-checkbox"> ลบสินค้าทั้งหมด (Products)</label>
-                <label style="color: var(--danger-color);"><input type="checkbox" id="reset-sellers-checkbox"> ลบผู้ขายทั้งหมด (Sellers - ยกเว้น Admin)</label>
-                <label style="color: var(--danger-color);"><input type="checkbox" id="reset-stores-checkbox"> ลบร้านค้าทั้งหมด (Stores)</label>
+                <label><input type="checkbox" id="reset-sales-checkbox"> 🛒 ลบประวัติการขายทั้งหมด (Sales)</label>
+                <label><input type="checkbox" id="reset-stockins-checkbox"> 📦 ลบประวัติการนำเข้าทั้งหมด (Stock-ins)</label>
+                <label><input type="checkbox" id="reset-products-checkbox"> 🏷️ ลบสินค้าทั้งหมด (Products)</label>
+                <label style="color: var(--danger-color);"><input type="checkbox" id="reset-sellers-checkbox"> 👤 ลบผู้ขายทั้งหมด (Sellers - ยกเว้น Admin)</label>
+                <label style="color: var(--danger-color);"><input type="checkbox" id="reset-stores-checkbox"> 🏪 ลบร้านค้าทั้งหมด (Stores)</label>
             </div>
             <div id="reset-modal-actions">
-                <button type="button" id="cancel-reset-btn" style="background-color: #6c757d;">ยกเลิก</button>
-                <button type="button" id="confirm-selective-reset-btn" class="danger">ยืนยันการรีเซ็ต</button>
+                <button type="button" id="cancel-reset-btn" style="background-color: #6c757d;">❌ ยกเลิก</button>
+                <button type="button" id="confirm-selective-reset-btn" class="danger">🗑️ ยืนยันการรีเซ็ต</button>
             </div>
         </div>
     </div>
