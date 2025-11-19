@@ -460,7 +460,8 @@
 #modalBodyContent table th,
 #modalBodyContent table td {
     border: 0.5px solid #333 !important;
-    padding: 1px 2px !important;
+    /* แก้ไข padding สำหรับ Desktop เพื่อเพิ่มความสูงของแถวตามคำแนะนำ */
+    padding: 3px 5px !important; 
     font-size: clamp(10px, 1.2vw, 14px); /* ใช้ clamp */
     text-align: center;
 }
@@ -953,12 +954,12 @@
             }
             #modalBodyContent table th {
                 font-size: clamp(7px, 1.8vw, 8.5px); /* ปรับ: ลด font size อีกเล็กน้อย */
-                padding: 2px 3px; /* ปรับ: ลด padding */
+                padding: 5px 3px; /* ปรับ: เพิ่ม padding-top/bottom เพื่อเพิ่มความสูงของแถวตามคำแนะนำ */
                 color: #0088ff !important;
                 border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบเซลล์ให้คมชัด */
             }
             #modalBodyContent table td {
-                padding: 1px 2px; /* ปรับ: ลด padding */
+                padding: 4px 2px; /* ปรับ: เพิ่ม padding-top/bottom เพื่อเพิ่มความสูงของแถวตามคำแนะนำ */
                 vertical-align: middle;
                 color: #0088ff !important;
                 border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบเซลล์ให้คมชัด */
