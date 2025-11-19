@@ -408,15 +408,68 @@
 }
 
 
-        .data-management-section { border: 1px solid var(--border-color); padding: 10px; /* ลด padding */ margin-top: 10px; /* ลด margin */ border-radius: 6px; background: var(--background-alt); text-align: center; color: var(--text-color); }
-        .data-management-section h3 { margin-top: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; /* ลด padding */ color: var(--text-color); }
-        .data-management-section button { margin: 3px; /* ลด margin */ padding: 8px 12px; /* ลด padding */ }
+.data-management-section {
+    border: 1px solid var(--border-color);
+    padding: 10px;          /* ลด padding */
+    margin-top: 10px;       /* ลด margin */
+    border-radius: 6px;
+    background: var(--background-alt);
+    text-align: center;
+    color: var(--text-color);
+}
 
-        .summary-section { border: 1px solid #0088ff; border-radius: 6px; padding: 10px 15px; /* ลด padding */ margin-bottom: 10px; /* ลด margin */ background-color: var(--background-color); color: var(--text-color); }
-        .summary-form-inline { display: flex; flex-wrap: wrap; gap: 10px; /* ลด gap */ align-items: flex-end; color: var(--text-color); }
+.data-management-section h3 {
+    margin-top: 0;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 5px;    /* ลด padding */
+    color: var(--text-color);
+}
+
+.data-management-section button {
+    margin: 3px;            /* ลด margin */
+    padding: 8px 12px;      /* ลด padding */
+}
+
+.summary-section {
+    border: 1px solid #0088ff;
+    border-radius: 6px;
+    padding: 10px 15px;     /* ลด padding */
+    margin-bottom: 10px;    /* ลด margin */
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.summary-form-inline {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;              /* ลด gap */
+    align-items: flex-end;
+    color: var(--text-color);
+}
+
         
-        #toast-notification { position: fixed; bottom: 15px; /* ลดระยะห่าง */ left: 50%; transform: translateX(-50%); padding: 8px 16px; /* ลด padding */ color: white; background-color: var(--success-color); border-radius: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.2); z-index: 1001; opacity: 0; visibility: hidden; transition: opacity 0.5s, visibility 0.5s, transform 0.5s; font-size: 1.0em; /* ลด font size */ }
-        #toast-notification.show { opacity: 1; visibility: visible; }
+#toast-notification {
+    position: fixed;
+    bottom: 15px;                 /* ลดระยะห่าง */
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 16px;            /* ลด padding */
+    color: white;
+    background-color: var(--success-color);
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
+    font-size: 1.0em;             /* ลด font size */
+}
+
+#toast-notification.show {
+    opacity: 1;
+    visibility: visible;
+}
+
 
         /* === START: POPUP STYLE MODIFICATION (USER REQUEST) === */
         .modal-overlay {
@@ -434,8 +487,31 @@
             overflow-y: auto;
         }
         
-        .modal-content-container { background-color: transparent; padding: 0; border: none; box-shadow: none; display: flex; flex-direction: column; align-items: center; margin: auto 0; width: 100%; max-width: 950px; }
-        #modalBodyContent { background-color: var(--background-color); border: 1px solid #4CAF50; /* ลดขนาดเส้นขอบ */ border-radius: 8px; /* ลด radius */ padding: 5px; /* ลด padding */ width: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* ลดขนาดเงา */ max-height: 90vh; /* เพิ่ม max height */ overflow-y: auto; color: #0088ff !important; }
+.modal-content-container {
+    background-color: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto 0;
+    width: 100%;
+    max-width: 950px;
+}
+
+#modalBodyContent {
+    background-color: var(--background-color);
+    border: 1px solid #4CAF50; /* ลดขนาดเส้นขอบ */
+    border-radius: 8px;        /* ลด radius */
+    padding: 15px 5px;
+    width: 100%;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* ลดขนาดเงา */
+    max-height: 90vh;          /* เพิ่ม max height */
+    overflow-y: auto;
+    color: #0088ff !important;
+}
+
         #modalBodyContent, #modalBodyContent * { color: #0088ff !important; }
         
         #modalBodyContent h2 {
