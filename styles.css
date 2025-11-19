@@ -653,6 +653,45 @@
         }
         /* === END NEW === */
 
+/* === START: ปรับปรุงฟอร์มรหัสผ่านสำรอง (User Request) === */
+#page-data #backup-password-form {
+    /* กำหนดให้ฟอร์มใช้ Grid 1 คอลัมน์ (สำหรับ Desktop) */
+    grid-template-columns: 1fr;
+    /* ลดขนาดสูงสุดของฟอร์มเพื่อควบคุมความกว้าง */
+    max-width: 350px !important; /* ปรับขนาดให้แคบลงและกำหนดให้มีความสำคัญสูง */
+    margin: 10px auto 10px auto !important; /* จัดให้อยู่ตรงกลาง */
+    padding: 10px;
+    border: 1px solid var(--border-color); /* เพิ่มเส้นขอบเล็กน้อย */
+    border-radius: 6px;
+    background-color: var(--background-alt); /* ใช้สีพื้นหลังทางเลือก */
+    gap: 10px; /* เพิ่มระยะห่างระหว่างกลุ่ม */
+}
+
+#page-data #backup-password-form .form-group {
+    /* ทำให้แต่ละ label/input เป็นแถวเดียวกัน (Stacked) */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* ยืดให้ความกว้างเท่ากัน */
+    gap: 3px;
+    grid-column: 1 / -1; /* ครอบคลุมความกว้างเต็ม Grid */
+}
+
+#page-data #backup-password-form label {
+    /* ปรับ label ให้อยู่ด้านบนซ้ายของ input */
+    text-align: left !important;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+#page-data #backup-password-form input[type="password"] {
+    /* ให้ input มีความกว้างเต็มพื้นที่ที่กำหนดใน max-width */
+    width: 100% !important;
+    max-width: none !important; 
+    text-align: left !important; /* จัดข้อความให้อยู่ด้านซ้าย */
+    padding: 8px 10px !important; 
+}
+/* === END: ปรับปรุงฟอร์มรหัสผ่านสำรอง === */
+
         /* RESPONSIVE STYLES */
         @media (max-width: 768px) {
             .main-wrapper {
@@ -1113,6 +1152,13 @@
                 width: 100%;
                 max-width: none; /* Override desktop max-width */
                 justify-self: stretch; /* Make it fill the grid cell */
+            }
+            
+            /* ===== มือถือ ===== */
+            @media (max-width: 768px) {
+                #page-data #backup-password-form {
+                    max-width: 95% !important; /* ให้ฟอร์มกว้างเกือบเต็มจอสำหรับมือถือ */
+                }
             }
 
             /* === START: SELLER VIEW MOBILE ENHANCEMENTS (USER REQUEST) === */
