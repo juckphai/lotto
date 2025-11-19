@@ -939,7 +939,13 @@
                 padding-top: 6px;  /* Keep original padding */
                 padding-bottom: 6px;
             }
-
+@media (max-width: 768px) {
+    /* ... ส่วนอื่น ... */
+    #modalBodyContent { 
+        padding: 10px 2px; /* ตัวอย่าง: บน/ล่าง 10px, ซ้าย/ขวา 3px สำหรับมือถือ */ 
+    }
+    /* ... ส่วนอื่น ... */
+}
             @media (max-width: 768px) {
                 /* Double the vertical padding for height increase (Mobile) */
                 #page-pos #cart-table tbody td {
@@ -1060,7 +1066,7 @@
             /* MODAL (POPUP) RESPONSIVE STYLES */
             
             /* --- General Compactness --- */
-            #modalBodyContent { padding: 3px; } /* ปรับ: ลด padding โดยรอบของเนื้อหา modal */
+            #modalBodyContent { padding: 10px 2px; } /* ปรับ: ลด padding โดยรอบของเนื้อหา modal */
             #modalBodyContent h2 {
                 font-size: 1.0rem; 
                 padding-bottom: 2px; /* ลด padding */
