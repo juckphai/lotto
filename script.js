@@ -279,32 +279,90 @@
                     const newSaveBtn = saveBtn.cloneNode(true); 
                     saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
 
-                    newSaveBtn.addEventListener("click", () => {
-                        const controlsElement = modalContentContainer.querySelector('.modal-controls');
+  newSaveBtn.addEventListener("click", () => {
+                        // 1. ระบุ Element และเตรียมการ
+                        const pinkFrame = modalBody; // กำหนดให้ modalBodyContent เป็น Element เป้าหมาย
+                        if (!pinkFrame) {
+                            this.showToast('ไม่พบเนื้อหาสรุปสำหรับบันทึก', 'error');
+                            return;
+                        }
 
+                        const controlsElement = modalContentContainer.querySelector('.modal-controls');
                         if (controlsElement) controlsElement.style.display = 'none';
 
-                        // กำหนดสีพื้นหลัง #FAFAD2 สำหรับการสร้างภาพ
-                        modalContentContainer.style.backgroundColor = '#FAFAD2';
-                        modalContentContainer.style.padding = '10px 5px';
+                        // บันทึก style เดิมของ modalBody และ modalContentContainer
+                        const originalStyles = {
+                            modalContentContainerMargin: modalContentContainer.style.margin,
+                            modalContentContainerBoxSizing: modalContentContainer.style.boxSizing,
+                            modalContentContainerMaxWidth: modalContentContainer.style.maxWidth,
+                            modalBodyMaxHeight: pinkFrame.style.maxHeight,
+                            modalBodyOverflowY: pinkFrame.style.overflowY,
+                            modalBodyBoxSizing: pinkFrame.style.boxSizing,
+                            modalBodyPadding: pinkFrame.style.padding
+                        };
 
-                        html2canvas(modalContentContainer, {
+                        // 2. ปรับ Style เพื่อให้แน่ใจว่า Canvas จับภาพได้ทั้งหมด (อ้างอิงหลักการจากไฟล์ 01.txt)
+                        // Note: ไฟล์ 01.txt ใช้การปรับ margin และ content-box เพื่อเพิ่มขอบขาว
+                        // ในโค้ดใหม่ เราจะเน้นที่การยกเลิกข้อจำกัดด้านความสูงและการ Scroll
+
+                        // ยกเลิกข้อจำกัดความสูงและการ Scroll เพื่อจับภาพเต็ม
+                        pinkFrame.style.maxHeight = 'none';
+                        pinkFrame.style.overflowY = 'visible';
+                        pinkFrame.style.boxSizing = 'content-box';
+                        
+                        // ปรับให้กรอบนอกกว้างเต็มที่เพื่อรองรับเนื้อหา
+                        modalContentContainer.style.maxWidth = 'none';
+                        modalContentContainer.style.margin = '2px';
+                        modalContentContainer.style.boxSizing = 'content-box';
+
+                        // 3. ใช้ html2canvas แปลง Element เป็น Canvas
+                        html2canvas(pinkFrame, { // จับภาพที่ modalBodyContent
+                            scale: 2, // ลด scale ลงเพื่อความเร็วในการประมวลผล แต่ยังคงคุณภาพ
                             useCORS: true,
-                            scale: 4,
-                            backgroundColor: '#FAFAD2' // ใช้สีพื้นหลังที่ร้องขอสำหรับการสร้างภาพ
+                            allowTaint: true,
+                            backgroundColor: '#FAFAD2', // ใช้สีพื้นหลังตามที่กำหนดในโค้ดเดิม
+                            logging: false
                         }).then(canvas => {
+                            // 4. สร้าง Canvas ใหม่เพื่อเพิ่มขอบสีขาวรอบๆ ภาพ (ตามหลักการไฟล์ 01.txt)
+                            const finalCanvas = document.createElement('canvas');
+                            const finalCtx = finalCanvas.getContext('2d');
+                            const borderSize = 2; // ขอบขาว 2px
+
+                            finalCanvas.width = canvas.width + (borderSize * 2);
+                            finalCanvas.height = canvas.height + (borderSize * 2);
+
+                            // วาดพื้นหลังสีขาว
+                            finalCtx.fillStyle = '#FFFFFF';
+                            finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+                            // วาดภาพที่ได้จาก html2canvas ลงบน Canvas สุดท้าย
+                            finalCtx.drawImage(canvas, borderSize, borderSize);
+
+                            // 5. เตรียมชื่อไฟล์และดาวน์โหลด
                             const link = document.createElement('a');
                             const fileName = `POS_Summary_${this.currentUser.username}_${Date.now()}.png`;
                             link.download = fileName;
-                            link.href = canvas.toDataURL("image/png");
+                            link.href = finalCanvas.toDataURL("image/png");
                             link.click();
+                            this.showToast('บันทึกรูปภาพเรียบร้อยแล้ว', 'success');
+
                         }).catch(err => {
                             console.error("Error creating image:", err);
-                            this.showToast("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้", "error");
+                            this.showToast("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้: " + err.message, "error");
                         }).finally(() => {
+                            // 6. คืนค่า Style เดิมทั้งหมด
                             if (controlsElement) controlsElement.style.display = '';
 
-                            // คืนค่าสไตล์ให้กลับเป็นเหมือนเดิม
+                            pinkFrame.style.maxHeight = originalStyles.modalBodyMaxHeight;
+                            pinkFrame.style.overflowY = originalStyles.modalBodyOverflowY;
+                            pinkFrame.style.boxSizing = originalStyles.modalBodyBoxSizing;
+                            pinkFrame.style.padding = originalStyles.modalBodyPadding;
+
+                            modalContentContainer.style.margin = originalStyles.modalContentContainerMargin;
+                            modalContentContainer.style.boxSizing = originalStyles.modalContentContainerBoxSizing;
+                            modalContentContainer.style.maxWidth = originalStyles.modalContentContainerMaxWidth;
+                            
+                            // คืนค่าสไตล์ที่ตั้งในโค้ดเดิมที่ไม่จำเป็นต้องใช้แล้ว
                             modalContentContainer.style.backgroundColor = '';
                             modalContentContainer.style.padding = '';
                         });
