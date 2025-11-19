@@ -1,6 +1,6 @@
 // --- จุดที่แก้ไข (สำคัญมาก) ---
 // 1. เปลี่ยนชื่อ Cache เป็นเวอร์ชันใหม่ (เช่น v113) เพื่อบังคับให้ Service Worker อัปเดตไฟล์ใหม่ทั้งหมด
-const staticCacheName = 'site-static-v113';
+const staticCacheName = 'site-static-v123';
 
 // 2. แก้ไข path ทั้งหมดใน assets ให้เป็นแบบ Relative (ใช้ './' นำหน้า)
 //    เพื่อให้ Service Worker หาไฟล์เจอเมื่อรันบน GitHub Pages หรือ Subdirectory

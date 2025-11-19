@@ -703,6 +703,7 @@
                 flex-direction: column;
                 gap: 3px; /* ลด gap */
             }
+
             #page-users #user-form .form-group label,
             #page-data #backup-password-form .form-group label {
                  margin-bottom: 0;
