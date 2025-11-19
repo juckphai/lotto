@@ -511,13 +511,13 @@
 }
 
 #modalBodyContent {
-    background-color: var(--background-color);
-    border: 1px solid #4CAF50; /* ลดขนาดเส้นขอบ */
-    border-radius: 8px;        /* ลด radius */
+    background-color: #FAFAD2; /* ✅ ปรับพื้นหลังเป็นสีเหลืองอ่อน */
+    border: clamp(1px, 0.3vw, 3px) solid #ED01ED; /* ✅ ปรับเส้นขอบเป็นสีชมพู */
+    border-radius: 8px;
     padding: 15px 5px;
     width: 100%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25); /* ลดขนาดเงา */
-    max-height: 90vh;          /* เพิ่ม max height */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    max-height: 90vh;
     overflow-y: auto;
     color: #0088ff !important;
 }
