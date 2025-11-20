@@ -213,7 +213,7 @@
         /* --- TABLE STYLES (Desktop) --- */
         .table-container {
             overflow-x: auto;
-            border: 1px solid var(--border-color);
+            border: 1:px solid var(--border-color);
             border-radius: 5px;
             margin-top: 15px; /* ลด margin */
             background-color: var(--background-color);
@@ -1080,16 +1080,20 @@
             .table-container {
                 overflow-x: auto !important;
             }
-
+            
             table {
+                /* บังคับให้ตารางใช้รูปแบบตารางปกติและยืดความกว้างตามเนื้อหา (ถ้าจำเป็น) */
                 table-layout: auto !important; 
+                width: 100% !important; 
             }
             
             table thead, table tbody, table tr {
+                /* ยืนยันว่า Header/Body/Row แสดงผลเป็นองค์ประกอบของตาราง */
                 display: revert; 
             }
 
             table th, table td {
+                /* บังคับให้เป็น table cell เสมอเพื่อรักษาโครงสร้างตาราง */
                 display: table-cell;
                 border: 1px solid var(--border-color);
                 padding: 3px 4px; /* ลด padding */
@@ -1102,6 +1106,7 @@
             }
 
             table td::before {
+                /* ลบ label ข้างเซลล์ (ที่ใช้ใน Card View) */
                 display: none;
             }
             /* === END: MOBILE TABLE OVERRIDES (UNIFIED HORIZONTAL LAYOUT) === */
