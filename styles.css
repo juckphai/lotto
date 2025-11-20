@@ -861,7 +861,7 @@
                 grid-template-columns: 1fr;
             }
 
-            /* --- TABLE STYLES (Mobile - UNIFIED HORIZONTAL LAYOUT) --- */
+            /* --- TABLE STYLES (Mobile - UNIFIED HORIZONTAL LAYOUT from 5.txt) --- */
             table {
                 table-layout: auto !important; 
             }
@@ -1106,6 +1106,9 @@
             #modalBodyContent table tr { display: table-row; }
 
             /* --- Universal Table Layout Rules for ALL Summary Popups --- */
+            /* NOTE: This section for modal popups is kept for desktop and specific cases,
+               but overridden by the single-line rule below for mobile popups.
+            */
             #modalBodyContent .credit-details-table,
             #modalBodyContent .transfer-details-table,
             #modalBodyContent .product-summary-table,
@@ -1188,7 +1191,7 @@
             #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(5) { width: 15%; white-space: nowrap; } /* Amount */
             
             #modalBodyContent .credit-details-table:not(.credit-details-sub-table) th:nth-of-type(6),
-            #modalBodyContent .credit-details-table:not(.credit-details-sub-table) td:nth-of-type(6) { width: 13%; white-space: nowrap; } /* Due Date */
+            #modalBodyContent .credit-details-sub-table td:nth-of-type(6) { width: 13%; white-space: nowrap; } /* Due Date */
             
             /* --- 5-COLUMN CREDIT SUB-TABLE (in Admin POS Summary) --- */
             #modalBodyContent .credit-details-sub-table th:nth-of-type(1),
@@ -1360,7 +1363,8 @@
             }
             /* === END: NEW === */
             
-            /* === START: แก้ไขตารางผู้ใช้ (#page-users #user-table) สำหรับ Mobile === */
+            /* === START: แก้ไขตารางผู้ใช้ (#page-users #user-table) สำหรับ Mobile (FINAL) === */
+            /* Override the table-as-card rule in the general section above to enforce standard table display on mobile. */
             #page-users #user-table {
                 /* บังคับให้เป็นตารางปกติ */
                 display: table;
@@ -1379,23 +1383,23 @@
                 display: table-row;
             }
             
+            /* ใช้กฎทั่วไปของตารางมือถือ (table th, table td) ที่อยู่ด้านบน ซึ่งบังคับให้มี white-space: nowrap; */
             #page-users #user-table th,
             #page-users #user-table td {
                 display: table-cell;
-                /* ปิด white-space: nowrap; สำหรับเซลล์ที่มีเนื้อหายาวที่ต้องการให้ตัดบรรทัด */
-                white-space: normal; 
-                word-break: break-word;
-            }
-            
-            /* คืนค่า nowrap ให้กับคอลัมน์สั้นๆ (เช่น ID, ประเภท, จัดการ) */
-            #page-users #user-table th:nth-child(2), /* ID */
-            #page-users #user-table td:nth-child(2), /* ID */
-            #page-users #user-table th:nth-child(6), /* Action */
-            #page-users #user-table td:nth-child(6) { /* Action */
-                 white-space: nowrap;
+                /* NOTE: white-space: nowrap; comes from the general mobile table rule above */
             }
 
-            /* ลบ margin/border/shadow ที่มาจาก card view */
+            /* บังคับให้คอลัมน์ที่มีเนื้อหายาวสามารถตัดบรรทัดได้ (เพื่อไม่ให้ล้นจอหากตารางไม่กว้างพอให้เลื่อน) */
+             #page-users #user-table td:first-child,
+             #page-users #user-table td:nth-child(3),
+             #page-users #user-table td:nth-child(4),
+             #page-users #user-table td:nth-child(5) { 
+                 white-space: normal; 
+                 word-break: break-word;
+             }
+
+            /* ลบ margin/border/shadow ที่มาจาก card view (ถ้ามี) */
             #page-users #user-table tr {
                 margin-bottom: 0;
                 border: none;
@@ -1404,8 +1408,6 @@
             }
             
             #page-users #user-table td {
-                /* ลบ padding-left พิเศษที่ใช้ใน Card View */
-                padding-left: 10px !important;
                 /* ใช้เส้นขอบปกติของตาราง */
                 border-bottom: 1px solid #e9ecef;
             }
@@ -1419,7 +1421,7 @@
             #page-users .table-container {
                 overflow-x: auto;
             }
-            /* === END: แก้ไขตารางผู้ใช้ (#page-users #user-table) สำหรับ Mobile === */
+            /* === END: แก้ไขตารางผู้ใช้ (#page-users #user-table) สำหรับ Mobile (FINAL) === */
 
         }
         
@@ -1757,7 +1759,7 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* ===== มือถือ - ปรับให้แสดงผลเป็นแนวนอนและเลื่อนได้ ===== */
+/* ===== มือถือ - ปรับให้แสดงผลเป็นแนวนอนและเลื่อนได้ (FINAL) ===== */
 @media (max-width: 768px) {
     #page-users #user-table {
         /* บังคับให้เป็นตารางปกติ */
@@ -1777,23 +1779,23 @@
         display: table-row;
     }
     
+    /* ใช้กฎทั่วไปของตารางมือถือ (table th, table td) ที่อยู่ด้านบน ซึ่งบังคับให้มี white-space: nowrap; */
     #page-users #user-table th,
     #page-users #user-table td {
         display: table-cell;
-        /* ปิด white-space: nowrap; สำหรับเซลล์ที่มีเนื้อหายาวที่ต้องการให้ตัดบรรทัด */
-        white-space: normal; 
-        word-break: break-word;
-    }
-    
-    /* คืนค่า nowrap ให้กับคอลัมน์สั้นๆ (เช่น ID, ประเภท, จัดการ) */
-    #page-users #user-table th:nth-child(2), /* ID */
-    #page-users #user-table td:nth-child(2), /* ID */
-    #page-users #user-table th:nth-child(6), /* Action */
-    #page-users #user-table td:nth-child(6) { /* Action */
-         white-space: nowrap;
+        /* NOTE: white-space: nowrap; comes from the general mobile table rule above */
     }
 
-    /* ลบ margin/border/shadow ที่มาจาก card view */
+    /* บังคับให้คอลัมน์ที่มีเนื้อหายาวสามารถตัดบรรทัดได้ (เพื่อไม่ให้ล้นจอหากตารางไม่กว้างพอให้เลื่อน) */
+     #page-users #user-table td:first-child,
+     #page-users #user-table td:nth-child(3),
+     #page-users #user-table td:nth-child(4),
+     #page-users #user-table td:nth-child(5) { 
+         white-space: normal; 
+         word-break: break-word;
+     }
+
+    /* ลบ margin/border/shadow ที่มาจาก card view (ถ้ามี) */
     #page-users #user-table tr {
         margin-bottom: 0;
         border: none;
@@ -1802,8 +1804,6 @@
     }
     
     #page-users #user-table td {
-        /* ลบ padding-left พิเศษที่ใช้ใน Card View */
-        padding-left: 10px !important;
         /* ใช้เส้นขอบปกติของตาราง */
         border-bottom: 1px solid #e9ecef;
     }

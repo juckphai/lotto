@@ -1,4 +1,4 @@
-        document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
             // [PWA] Service Worker Registration
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
@@ -3016,7 +3016,7 @@ renderPos(payload = null) {
                     if (stockOutRecord) {
                         this.editingStockOutId = id;
                         document.getElementById('stock-out-product').value = stockOutRecord.productId;
-                        document.getElementById('stock-out-quantity').value = stockOutOut.quantity;
+                        document.getElementById('stock-out-quantity').value = stockOutRecord.quantity;
                         document.getElementById('stock-out-reason').value = stockOutRecord.reason;
                         document.getElementById('stock-out-product').disabled = true;
                         document.getElementById('stock-out-form').scrollIntoView({ behavior: 'smooth' });
