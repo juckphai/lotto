@@ -1696,66 +1696,76 @@
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* ===== มือถือ ===== */
+/* ===== มือถือ - ปรับให้แสดงผลเป็นแนวนอนและเลื่อนได้ ===== */
 @media (max-width: 768px) {
     #page-users #user-table {
-        display: block;
+        display: table;
         overflow-x: auto;
+        table-layout: auto !important;
+        width: auto !important; /* ให้กว้างตามเนื้อหาเพื่อเปิดให้เลื่อนได้ */
+        min-width: 100%; /* อย่างน้อยต้องกว้างเท่าจอ */
     }
 
-    /* ซ่อนหัวตาราง */
+    /* คืนค่าการแสดงผลส่วนหัวและส่วนเนื้อหา */
     #page-users #user-table thead {
-        display: none;
+        display: table-header-group;
     }
-
+    
     #page-users #user-table tbody,
     #page-users #user-table tr,
-    #page-users #user-table td {
-        display: block;
-        width: 100%;
+    #page-users #user-table td,
+    #page-users #user-table th {
+        display: table-cell;
+        white-space: nowrap; /* ให้ข้อความไม่ตัดบรรทัดเมื่อเลื่อนแนวนอน */
+    }
+    
+    /* คืนค่าการตัดคำสำหรับคอลัมน์ที่มีข้อความยาว */
+    #page-users #user-table td:first-child,
+    #page-users #user-table td:nth-child(3),
+    #page-users #user-table td:nth-child(4),
+    #page-users #user-table td:nth-child(5) {
+         white-space: normal;
+         word-break: break-word;
     }
 
     #page-users #user-table tr {
-        margin-bottom: 10px; /* ลด margin */
-        border: 1px solid #e9ecef;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 0; /* ลบ margin ที่ใช้ใน card view */
+        border: none;
+        border-radius: 0;
+        overflow: visible;
+        box-shadow: none;
         background-color: var(--background-color);
+    }
+    
+    #page-users #user-table tbody tr:nth-child(even) {
+        background-color: var(--background-alt);
     }
 
     #page-users #user-table td {
-        text-align: left;
-        padding: 8px 10px; /* ลด padding */
+        /* ลบ padding-left พิเศษ */
+        padding-left: 10px !important;
+        /* ลบเส้นขอบด้านล่างที่ไม่จำเป็นออกไป (ใช้เส้นขอบปกติของตาราง) */
         border-bottom: 1px solid #e9ecef;
-        position: relative;
-        padding-left: 45%;
-        color: var(--text-color);
+        
     }
 
-    /* label ข้างซ้าย สำหรับมือถือ */
+    /* ลบ label ข้างซ้าย (td:before) */
     #page-users #user-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px; /* ลด left */
-        width: 40%;
-        font-weight: 600;
-        color: #0088ff;
-        background-color: #e0e0e0;
-        padding: 2px 6px; /* ลด padding */
-        border-radius: 4px;
+        content: none; 
     }
 
     #page-users #user-table .action-buttons {
-        justify-content: flex-start;
-    }
-
-    #page-users #user-table .action-buttons:before {
-        display: none;
+        /* ให้ปุ่มอยู่ตรงกลางเหมือนเดิม หรือตามการจัดเรียงของตาราง */
+        justify-content: center;
     }
 
     #page-users #user-table td.action-buttons {
-        padding-left: 10px !important; /* ลด padding */
+        padding-left: 10px !important; /* คืนค่า padding ปกติ */
+    }
+
+    /* บังคับให้ container มีการเลื่อนแนวนอน */
+    #page-users .table-container {
+        overflow-x: auto;
     }
 }
 
@@ -1773,4 +1783,5 @@
         padding: 10px 10px; /* ลด padding */
         font-size: 1.0em;
     }
+}
 }
