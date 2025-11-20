@@ -1075,7 +1075,12 @@
                 grid-template-columns: 1fr;
             }
 
-            /* --- TABLE STYLES (Mobile - UNIFIED HORIZONTAL LAYOUT from 5.txt) --- */
+            /* === START: MOBILE TABLE OVERRIDES (UNIFIED HORIZONTAL LAYOUT) === */
+            /* เพิ่มกฎนี้เพื่อให้ทุกตารางที่มีเนื้อหากว้างกว่าจอสามารถเลื่อนแนวนอนได้ */
+            .table-container {
+                overflow-x: auto !important;
+            }
+
             table {
                 table-layout: auto !important; 
             }
@@ -1099,6 +1104,7 @@
             table td::before {
                 display: none;
             }
+            /* === END: MOBILE TABLE OVERRIDES (UNIFIED HORIZONTAL LAYOUT) === */
             
             /* === START: *** REFINED & MORE FORCEFUL *** RULES FOR POS CART TABLE ON MOBILE === */
             #page-pos #cart-table {
@@ -1463,7 +1469,7 @@
                 justify-self: stretch; /* Make it fill the grid cell */
             }
             
-            /* ===== มือถือ ===== */
+            /* ===== มือถือ - ปรับปรุงฟอร์มรหัสผ่านสำรอง ===== */
             @media (max-width: 768px) {
                 #page-data #backup-password-form {
                     max-width: 95% !important; /* ให้ฟอร์มกว้างเกือบเต็มจอสำหรับมือถือ */
