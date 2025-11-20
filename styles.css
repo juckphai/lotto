@@ -1713,17 +1713,26 @@
     
     #page-users #user-table tbody,
     #page-users #user-table tr,
-    #page-users #user-table td,
-    #page-users #user-table th {
+    #page-users #user-table th,
+    #page-users #user-table td {
         display: table-cell;
-        white-space: nowrap; /* ให้ข้อความไม่ตัดบรรทัดเมื่อเลื่อนแนวนอน */
+        /* ปิด white-space: nowrap; สำหรับเซลล์ทั้งหมดบนมือถือ เพื่อให้เนื้อหาตัดบรรทัดได้ตามที่ต้องการ */
+        white-space: normal; 
     }
     
-    /* คืนค่าการตัดคำสำหรับคอลัมน์ที่มีข้อความยาว */
-    #page-users #user-table td:first-child,
-    #page-users #user-table td:nth-child(3),
-    #page-users #user-table td:nth-child(4),
-    #page-users #user-table td:nth-child(5) {
+    /* บังคับให้คอลัมน์สำคัญที่ไม่ควรตัดคำ (เช่น ID, ปุ่ม) ใช้ nowrap */
+    #page-users #user-table th:nth-child(2), /* ID */
+    #page-users #user-table td:nth-child(2), /* ID */
+    #page-users #user-table th:nth-child(6), /* Action */
+    #page-users #user-table td:nth-child(6) { /* Action */
+         white-space: nowrap;
+    }
+
+    /* คืนค่าการตัดคำสำหรับคอลัมน์ที่มีข้อความยาว (ชื่อ, สถานะ, ร้านค้า) */
+    #page-users #user-table td:first-child, /* ชื่อ */
+    #page-users #user-table td:nth-child(3), /* Username */
+    #page-users #user-table td:nth-child(4), /* สถานะ/บทบาท */
+    #page-users #user-table td:nth-child(5) { /* ร้านค้า */
          white-space: normal;
          word-break: break-word;
     }
