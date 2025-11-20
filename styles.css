@@ -861,11 +861,16 @@
                 grid-template-columns: 1fr;
             }
 
-            /* === START: MOBILE TABLE OVERRIDES (UNIFIED HORIZONTAL LAYOUT) === */
+            /* --- START: MOBILE TABLE OVERRIDES (UNIFIED HORIZONTAL LAYOUT for general tables) --- */
+            /* Note: We keep this general rule to not break other tables like Stock/History */
             table {
                 table-layout: auto !important; 
             }
             
+            /* Remove the block-like conversion for general tables on mobile
+               as the default styles already allow horizontal scroll if columns are tight
+               (The specific block for #page-users is removed below) 
+            */
             table thead, table tbody, table tr {
                 display: revert; 
             }
@@ -877,7 +882,7 @@
                 font-size: clamp(9px, 2.2vw, 12px); 
                 line-height: 1.0;
                 vertical-align: middle;
-                white-space: nowrap; /* Added back for mobile tables to prevent stretching */
+                white-space: nowrap; 
                 color: var(--text-color);
                 background-color: var(--background-color);
             }
@@ -886,7 +891,7 @@
                 display: none;
             }
             
-            /* === START: *** REFINED & MORE FORCEFUL *** RULES FOR POS CART TABLE ON MOBILE === */
+            /* --- START: *** REFINED & MORE FORCEFUL *** RULES FOR POS CART TABLE ON MOBILE --- */
             #page-pos #cart-table {
                 table-layout: fixed;
                 width: 100%;
@@ -924,7 +929,7 @@
                 font-size: 0.8em;
                 margin: 0;
             }
-             /* === END: REFINED RULES FOR POS CART TABLE === */
+             /* --- END: REFINED RULES FOR POS CART TABLE --- */
 
             /* === START: USER REQUEST - Green Cart Table Customization (Data Rows Only) === */
             /* Target ONLY the data cells (td) inside the cart table's body */
@@ -1359,6 +1364,36 @@
                 grid-template-columns: 1fr;
             }
             /* === END: NEW === */
+            
+            /* --- [NEW] Style adjustments for #page-users to fix layout (now behaves like general table) --- */
+            #page-users #user-table {
+                /* Since block/card display is removed, ensure table fits with overflow-x */
+                display: table; /* Reset from block */
+                width: 100%;
+                table-layout: auto;
+            }
+            
+            /* Ensure the display properties are reset to default table behavior */
+            #page-users #user-table thead {
+                display: table-header-group; /* Make header visible again */
+            }
+            #page-users #user-table tbody,
+            #page-users #user-table tr,
+            #page-users #user-table td {
+                display: table-row;
+                width: auto;
+            }
+            #page-users #user-table td {
+                 text-align: center; /* Revert to center for table cell */
+                 padding-left: 10px; /* Revert padding for table cell */
+            }
+            #page-users #user-table td:before {
+                content: none; /* Remove pseudo-element for mobile label */
+            }
+            #page-users #user-table .action-buttons {
+                justify-content: center; /* Center buttons */
+            }
+            /* --- [END NEW] Style adjustments for #page-users --- */
 
         }
         
@@ -1699,64 +1734,55 @@
 /* ===== มือถือ ===== */
 @media (max-width: 768px) {
     #page-users #user-table {
-        display: block;
-        overflow-x: auto;
+        /* [แก้ไข] ส่วนนี้ถูกยกเลิกการ override โดย CSS ด้านบนเพื่อให้ตารางแสดงผลปกติ */
+        /* display: block;  */
+        /* overflow-x: auto; */
     }
 
     /* ซ่อนหัวตาราง */
     #page-users #user-table thead {
-        display: none;
+        /* [แก้ไข] แสดงส่วนหัวตารางอีกครั้ง */
+        display: table-header-group;
     }
 
     #page-users #user-table tbody,
     #page-users #user-table tr,
     #page-users #user-table td {
-        display: block;
+        /* [แก้ไข] ตั้งค่าให้แสดงผลแบบตารางปกติบนมือถือ */
+        display: table-row;
         width: 100%;
     }
-
+    
     #page-users #user-table tr {
-        margin-bottom: 10px; /* ลด margin */
-        border: 1px solid #e9ecef;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        background-color: var(--background-color);
+        /* [แก้ไข] ลบรูปแบบ card-like */
+        margin-bottom: 0;
+        border: none;
+        border-radius: 0;
+        overflow: auto;
+        box-shadow: none;
     }
-
+    
     #page-users #user-table td {
-        text-align: left;
-        padding: 8px 10px; /* ลด padding */
+        /* [แก้ไข] ใช้การแสดงผลตารางปกติ */
+        text-align: center;
+        padding-left: 10px;
         border-bottom: 1px solid #e9ecef;
-        position: relative;
-        padding-left: 45%;
-        color: var(--text-color);
+        position: static;
+        padding: 8px 10px;
     }
 
     /* label ข้างซ้าย สำหรับมือถือ */
     #page-users #user-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px; /* ลด left */
-        width: 40%;
-        font-weight: 600;
-        color: #0088ff;
-        background-color: #e0e0e0;
-        padding: 2px 6px; /* ลด padding */
-        border-radius: 4px;
+        /* [แก้ไข] ซ่อน label ที่แสดงผลในโหมด mobile card */
+        content: none;
     }
 
     #page-users #user-table .action-buttons {
-        justify-content: flex-start;
+        justify-content: center;
     }
-
-    #page-users #user-table .action-buttons:before {
-        display: none;
-    }
-
-    #page-users #user-table td.action-buttons {
-        padding-left: 10px !important; /* ลด padding */
-    }
+    
+    /* ===== แท็บเล็ต ===== */
+    /* ส่วนนี้ยังคงอยู่เหมือนเดิม ไม่ถูกกระทบจากการแก้ไข */
 }
 
 /* ===== แท็บเล็ต ===== */
