@@ -781,13 +781,14 @@
 
         /* RESPONSIVE STYLES */
         @media (max-width: 768px) {
-            .main-wrapper {
-                width: 100%;
-                margin: 0;
-                border-radius: 0;
-                border: none;
-                min-height: 100vh;
-                padding: 3px; /* ลด padding อีก */
+    .main-wrapper {
+        width: 100%;
+        margin: 0;
+        border-radius: 10;
+        background-color: #FAFAD2;
+        border: 1px solid #ED01ED; 
+        min-height: 100vh;
+        padding: 3px;
             }
             form {
                 grid-template-columns: 1fr;
