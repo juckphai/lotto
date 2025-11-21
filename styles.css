@@ -790,7 +790,7 @@
         border-radius: 10px;      /* ใส่ px ให้ครบ */
             form {
                 grid-template-columns: 1fr;
-                gap: 10px; /* ลด gap */
+                gap: 3px; /* ลด gap */
             }
             form label {
                 text-align: left;
@@ -801,7 +801,7 @@
             /* --- NEW: Override for POS form to be two-column on mobile --- */
             #page-pos #add-to-cart-form {
                 grid-template-columns: auto 1fr;
-                gap: 8px 6px; /* ลด gap */
+                gap: 4px 3px; /* ลด gap */
             }
             #page-pos #add-to-cart-form label {
                 text-align: right;
