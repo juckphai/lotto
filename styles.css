@@ -25,7 +25,7 @@
         }
 
         .main-wrapper {
-            max-width: 900px; 
+            max-width: 800px; 
             margin: 5px auto; /* ลด margin ด้านบน/ล่าง */
             background-color: #FAFAD2;
             border: 1px solid #ED01ED; 
@@ -780,16 +780,18 @@
 /* === END: ปรับปรุงฟอร์มรหัสผ่านสำรอง === */
 
         /* RESPONSIVE STYLES */
-        @media (max-width: 768px) {
+@media (max-width: 768px) {
     .main-wrapper {
-        margin: 0;
-        border-radius: 10;
+        width: fit-content;       /* กว้างตามเนื้อหา */
+        max-width: 98%;           /* แต่ไม่ให้ล้นขอบจอ */
+        margin: 10px auto;        /* จัดกลาง + มีระยะขอบ */
+        padding: 10px;            /* เพิ่มระยะภายใน */
         background-color: #FAFAD2;
         border: 1px solid #ED01ED; 
-        min-height: 100vh;
-        width: 98%;
-        padding: 3px;
-            }
+        border-radius: 10px;      /* ใส่ px ให้ครบ */
+    }
+}
+
             form {
                 grid-template-columns: 1fr;
                 gap: 10px; /* ลด gap */
