@@ -3678,14 +3678,17 @@ renderPos(payload = null) {
             </table>
         </div>`;
     
-    // หน้าจัดการผู้ใช้
+ 
+   // หน้าจัดการผู้ใช้
     document.getElementById('page-users').innerHTML = `
         <h2>👥 จัดการผู้ใช้</h2> 
         <form id="user-form"> 
             <input type="hidden" id="user-id"> 
             <div class="form-group"><label for="user-username">👤 ชื่อผู้ใช้:</label><input type="text" id="user-username" required></div>
-            <div class="form-group"><label for="user-password">🔑 รหัสผ่านใหม่:</label><input type="password" id="user-password" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
-            <div class="form-group"><label for="user-password-confirm">🔑 ยืนยันรหัสผ่าน:</label><input type="password" id="user-password-confirm" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
+            <div class="password-fields-row">
+                <div class="form-group"><label for="user-password">🔑 รหัสผ่านใหม่:</label><input type="password" id="user-password" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
+                <div class="form-group"><label for="user-password-confirm">🔑 ยืนยันรหัสผ่าน:</label><input type="password" id="user-password-confirm" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
+            </div>
             <div class="form-group">
                 <label style="font-weight:normal; display:block; cursor:pointer;">
                     <input type="checkbox" id="show-password-user-form"> 👁️ แสดงรหัสผ่าน
@@ -3711,9 +3714,10 @@ renderPos(payload = null) {
             </div> 
             <div id="user-sales-period-container" class="form-group">
                 <h4>📅 กำหนดระยะเวลาที่สามารถขายได้</h4> 
+            <div class="date-fields-row">
                 <div class="form-group"><label for="user-sales-start-date">วันที่เริ่มขาย:</label><input type="date" id="user-sales-start-date"></div>
                 <div class="form-group"><label for="user-sales-end-date">วันที่สิ้นสุด:</label><input type="date" id="user-sales-end-date"></div>
-            </div> 
+            </div>
             <div id="user-product-assignment-container" class="form-group"> 
                 <h4>📦 กำหนดสินค้าที่สามารถขายได้</h4> 
                 <div id="user-product-assignment" style="max-height: 150px; overflow-y: auto; border: 1px solid #BFBFBF; padding: 10px; border-radius: 10px;"></div> 
@@ -3729,6 +3733,7 @@ renderPos(payload = null) {
                 <tbody></tbody> 
             </table>
         </div>`;
+
 
     // หน้าจัดการข้อมูล
     document.getElementById('page-data').innerHTML = `

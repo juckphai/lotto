@@ -104,7 +104,80 @@
             <div class="section-header header-users admin-only" onclick="App.showPage('page-users')">
                 <span><span class="icon">👥</span> จัดการผู้ใช้</span><span class="arrow">▶</span>
             </div>
-            <div id="page-users" class="section-content admin-only"></div>
+            <div id="page-users" class="section-content admin-only">
+                <form id="user-form">
+                    <div id="user-name-group">
+                        <label for="user-name">🧑‍💼 ชื่อ-นามสกุล:</label>
+                        <input type="text" id="user-name" required>
+                    </div>
+                    <div id="user-username-group">
+                        <label for="user-username">👤 ชื่อผู้ใช้:</label>
+                        <input type="text" id="user-username" required>
+                    </div>
+                    <div id="user-role-group">
+                        <label for="user-role">🛠️ สิทธิ์การเข้าถึง:</label>
+                        <select id="user-role" required></select>
+                    </div>
+                    <div id="user-store-group">
+                        <label for="user-store">🏪 ร้านค้า:</label>
+                        <select id="user-store" required></select>
+                    </div>
+                    
+                    <div id="user-password-group">
+                        <label for="user-password">🔑 รหัสผ่าน:</label>
+                        <input type="password" id="user-password">
+                    </div>
+                    <div id="user-confirm-password-group">
+                        <label for="user-confirm-password">✅ ยืนยันรหัสผ่าน:</label>
+                        <input type="password" id="user-confirm-password">
+                    </div>
+                    
+                    <div id="user-start-date-group">
+                        <label for="user-start-date">🗓️ วันที่เริ่มขาย:</label>
+                        <input type="date" id="user-start-date" required>
+                    </div>
+                    <div id="user-end-date-group">
+                        <label for="user-end-date">🛑 วันที่สิ้นสุด:</label>
+                        <input type="date" id="user-end-date">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="user-commission-rate" style="text-align: left;">💰 อัตราค่าคอมมิชชั่น (%)</label>
+                        <input type="number" id="user-commission-rate" min="0" max="100" step="0.01" value="0.00" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label style="text-align: left; margin-bottom: 5px;">แหล่งที่มาของค่าคอมมิชชั่น (ใช้สำหรับการคำนวณสรุปข้อมูล):</label>
+                        <div id="user-commission-sources">
+                            </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="add-user-btn" class="success">➕ เพิ่มผู้ใช้</button>
+                        <button type="button" id="update-user-btn" class="success" style="display: none;">🔄 อัปเดตผู้ใช้</button>
+                        <button type="button" id="cancel-edit-user-btn" class="danger" style="display: none;">❌ ยกเลิก</button>
+                    </div>
+                </form>
+                <h2>👥 รายการผู้ใช้</h2>
+                <div class="table-container">
+                    <table id="user-table">
+                        <thead>
+                            <tr>
+                                <th>ชื่อ-นามสกุล</th>
+                                <th>ชื่อผู้ใช้</th>
+                                <th>สิทธิ์</th>
+                                <th>ร้านค้า</th>
+                                <th>คอมมิชชั่น (%)</th>
+                                <th>เริ่มขาย</th>
+                                <th>สิ้นสุด</th>
+                                <th>จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
 
             <div class="section-header header-data" onclick="App.showPage('page-data')">
                 <span><span class="icon">💾</span> จัดการข้อมูล</span><span class="arrow">▶</span>
