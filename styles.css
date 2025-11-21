@@ -4,11 +4,11 @@
             --danger-color: #d0021b;
             --success-color: #28a745;
             --warning-color: #f5a623;
-            --border-color: #495057; /* ปรับปรุง: Darkened border for much better visibility */
-            --text-color: #000000; /* Standard black text */
-            --text-color-light: #333333; /* Dark gray for secondary text */
-            --background-color: #ffffff; /* White background */
-            --background-alt: #eeeeee; /* ปรับปรุง: Light gray background (คมชัดขึ้น) */
+            --border-color: #666666; /* Darkened border for better visibility */
+            --text-color: #000000; /* New: Standard black text */
+            --text-color-light: #333333; /* New: Dark gray for secondary text */
+            --background-color: #ffffff; /* New: White background */
+            --background-alt: #f8f9fa; /* New: Light gray background */
         }
 
         *, *::before, *::after { box-sizing: border-box; }
@@ -117,7 +117,6 @@
     line-height: 1;
     vertical-align: middle;
     transition: transform 0.3s ease;
-    color: white !important; /* ปรับปรุง: Ensure icon color is white on dark background */
 }
 
 .section-header:hover .icon {
@@ -273,8 +272,8 @@
         }
         
         th {
-            background-color: #495057; /* ปรับปรุง: ใช้สีเทาเข้มเพื่อให้ตัดกับพื้นหลังขาว */
-            color: white; /* ปรับปรุง: เปลี่ยนเป็นสีขาวเพื่อให้ตัดกับพื้นหลังเข้ม */
+            background-color: #e9ecef;
+            color: var(--text-color);
             font-weight: bold;
         }
         
@@ -293,7 +292,7 @@
         input, select {
             padding: 8px; /* ลด padding */
             border-radius: 15px; /* ลด radius */
-            border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+            border: 1px solid #666;
             font-family: inherit;
             font-size: 0.9em; /* ลด font size */
             width: 100%;
@@ -302,7 +301,7 @@
             background-color: var(--background-color);
             color: var(--text-color);
         }
-        input:disabled, select:disabled { background-color: var(--background-alt); cursor: not-allowed; color: #666; } /* ปรับปรุง: ใช้ background-alt ที่คมชัดขึ้น */
+        input:disabled, select:disabled { background-color: #f8f9fa; cursor: not-allowed; color: #666; }
         button { 
             cursor: pointer; 
             color: white; 
@@ -325,10 +324,10 @@
         button#toggle-special-price-btn:hover { background-color: #d8901e; }
         
         #page-pos .pos-layout { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; /* ลด gap */ }
-        #cart-summary { background-color: #00B050; padding: 10px; /* ลด padding */ border-radius: 8px; color: white; } /* ปรับปรุง: พื้นหลังสีเขียวเข้ม ควรใช้ตัวอักษรสีขาว */
+        #cart-summary { background-color: #eef5ff; padding: 10px; /* ลด padding */ border-radius: 8px; color: var(--text-color); }
         #cart-total { font-size: clamp(1.2rem, 1.2rem + 2vw, 2.5rem); /* ลด font size */ font-weight: bold; text-align: right; margin-top: 10px; /* ลด margin */ color: #0070C0; }
         #process-sale-btn { font-size: clamp(1.0rem, 1rem + 0.5vw, 1.2rem); /* ลด font size */ width: 100%; }
-        #payment-method-container { margin-top: 10px; /* ลด margin */ padding-top: 10px; /* ลด padding */ border-top: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */ color: white; } /* ปรับปรุง: ใน cart-summary สีตัวอักษรควรเป็นขาว */
+        #payment-method-container { margin-top: 10px; /* ลด margin */ padding-top: 10px; /* ลด padding */ border-top: 1px solid #666; color: var(--text-color); }
         
         .payment-options-wrapper {
             display: flex;
@@ -336,7 +335,7 @@
             align-items: center;
             margin: 8px 0; /* ลด margin */
             flex-wrap: wrap; /* Added for better mobile view */
-            color: white; /* ปรับปรุง: ใน cart-summary สีตัวอักษรควรเป็นขาว */
+            color: var(--text-color);
         }
         
         /* --- Change Radio Button Color --- */
@@ -344,7 +343,7 @@
             accent-color: var(--danger-color);
         }
 
-        #credit-fields-container, #transfer-fields-container { margin-top: 8px; /* ลด margin */ display: none; color: white; } /* ปรับปรุง: ใน cart-summary สีตัวอักษรควรเป็นขาว */
+        #credit-fields-container, #transfer-fields-container { margin-top: 8px; /* ลด margin */ display: none; color: var(--text-color); }
 
         #report-filter-form {
             display: grid;
@@ -372,19 +371,19 @@
             gap: 10px; /* ลด gap */
             align-items: flex-end;
             justify-content: center;
-            background-color: #00B050;
+            background-color: #eef5ff;
             padding: 10px; /* ลด padding */
             border-radius: 6px;
             margin: -5px auto 15px auto; /* ลด margin */
             border: 1px solid var(--primary-color);
-            color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+            color: var(--text-color);
         }
         #sales-history-export-form label {
             font-weight: bold;
             display: flex;
             flex-direction: column;
             gap: 3px; /* ลด gap */
-            color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+            color: var(--text-color);
         }
         #sales-history-export-form input[type="date"] {
             padding: 6px; /* ลด padding */
@@ -392,7 +391,7 @@
             min-width: 140px;
             background-color: var(--background-color);
             color: var(--text-color);
-            border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+            border: 1px solid #666;
         }
 /* ปุ่มส่งออก Excel ในหน้า รายการขายย้อนหลัง */
 #export-sales-history-excel-btn { /* แก้ไข selector ให้ถูกต้อง */
@@ -595,14 +594,14 @@
         .modal-close-btn { background-color: #E97132; color: white; padding: 8px 20px; /* ลด padding */ border: none; cursor: pointer; border-radius: 15px; /* ลด radius */ font-size: 15px; /* ลด font size */ margin-top: 8px; /* ลด margin */ transition: background-color 0.3s; width: 90%; max-width: 250px;}
         .modal-close-btn:hover { background-color: #e64a19; }
 .format-modal-content {
-    background-color: var(--background-alt); /* ปรับปรุง: ใช้ background-alt ที่คมชัดขึ้น */
+    background-color: #e0e0e0; /* พื้นหลังสีเทา */
     padding: 15px 20px; /* ลด padding */
     border-radius: 10px;
     text-align: center;
     box-shadow: 0 3px 10px rgba(0,0,0,0.3); /* ลดขนาดเงา */
     width: 90%;
     max-width: 400px;
-    color: var(--text-color); /* ปรับปรุง: ใช้ text-color สำหรับพื้นหลังสีอ่อน */
+    color: #0088ff; /* ตัวหนังสือสีฟ้า */
 }
         .format-modal-buttons { display: flex; flex-direction: column; gap: 10px; /* ลด gap */ margin-top: 15px; /* ลด margin */ }
         .format-modal-buttons button { padding: 10px; /* ลด padding */ font-size: 15px; /* ลด font size */ border-radius: 8px; }
@@ -722,7 +721,7 @@
             flex-grow: 1;
             background-color: var(--background-color);
             color: var(--text-color);
-            border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+            border: 1px solid #666;
         }
         /* === END: NEW === */
         
@@ -842,7 +841,7 @@
                 flex-wrap: wrap;
                 gap: 8px 15px; /* ลด gap */
                 padding: 8px; /* ลด padding */
-                background: var(--background-alt); /* ปรับปรุง: ใช้ background-alt ที่คมชัดขึ้น */
+                background: #f0f8ff;
                 border-radius: 6px;
             }
              #page-users #user-form #user-commission-sources label {
@@ -946,8 +945,8 @@
 
             /* Ensure header (th) remains with its default style for contrast */
             #page-pos #cart-table th {
-                background-color: #495057; /* ปรับปรุง: ใช้สีเข้มเพื่อให้ตัดกับพื้นหลังขาว */
-                color: white; /* ปรับปรุง: ตัวอักษรสีขาว */
+                background-color: #e9ecef; /* Default from general table style */
+                color: var(--text-color); /* Default text color */
                 padding-top: 6px;  /* Keep original padding */
                 padding-bottom: 6px;
             }
@@ -990,7 +989,7 @@
                 font-size: 0.85em; /* ลด font size */
                 background-color: var(--background-color);
                 color: var(--text-color);
-                border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+                border: 1px solid #666;
             }
             #page-pos #add-to-cart-form .form-actions button {
                 padding: 8px; /* ลด padding */
@@ -1015,35 +1014,35 @@
             /* --- Cart Summary Compacting Rules --- */
             #page-pos #cart-summary {
                 padding: 8px; /* ลด padding */
-                background-color: #00B050;
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                background-color: #eef5ff;
+                color: var(--text-color);
             }
             #page-pos #cart-summary h4 {
                 font-size: 0.95rem; /* ลด font size */
                 margin-top: 0;
                 margin-bottom: 3px; /* ลด margin */
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                color: var(--text-color);
             }
             #page-pos #payment-method-container {
                 margin-top: 8px; /* ลด margin */
                 padding-top: 8px; /* ลด padding */
                 border-top: none; 
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                color: var(--text-color);
             }
             #page-pos .payment-options-wrapper {
                 margin: 3px 0 8px 0; /* ลด margin */
                 gap: 10px; /* ลด gap */
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                color: var(--text-color);
             }
              #page-pos #credit-fields-container,
              #page-pos #transfer-fields-container {
                 margin-top: 3px; /* ลด margin */
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                color: var(--text-color);
             }
             #page-pos #credit-fields-container > div,
             #page-pos #transfer-fields-container > div {
                 margin-top: 3px; /* ลด margin */
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                color: var(--text-color);
             }
             
             #page-pos .cart-action-row {
@@ -1058,7 +1057,7 @@
                 font-size: 0.95rem; /* ลด font size */
                 font-weight: bold;
                 white-space: nowrap;
-                color: white; /* ปรับปรุง: พื้นหลังเข้ม ใช้ตัวอักษรสีขาว */
+                color: var(--text-color);
             }
             #page-pos #cart-total {
                 font-size: 1.4rem; /* ลด font size */
@@ -1561,7 +1560,7 @@
     width: 100%;
     padding: 8px 10px; 
     border-radius: 4px; 
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #666;
     font-size: 0.95em; 
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     background-color: var(--background-color);
@@ -1587,9 +1586,9 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ลด minmax */
     gap: 8px; /* ลด gap */
     padding: 10px; /* ลด padding */
-    background: var(--background-alt); /* ปรับปรุง: ใช้ background-alt ที่คมชัดขึ้น */
+    background: #e9f7fe;
     border-radius: 6px;
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #b8e2f5;
 }
 
 #page-users #user-form #user-commission-sources label {
@@ -1637,7 +1636,7 @@
     border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #666;
     background-color: #00B050;
 }
 
@@ -1648,7 +1647,7 @@
 
 /* ===== หัวตาราง สีฟ้า / ตัวหนังสือสีขาว ===== */
 #page-users #user-table thead {
-    background-color: #00B050;
+    background-color: #eef5ff;
     /* สีฟ้าเหมือนในรูป 1 */
     color: white;
     border-bottom: 2px solid #3a7bc8;
@@ -1681,23 +1680,23 @@
 /* ============ เนื้อหาตาราง ============ */
 #page-users #user-table tbody tr {
     transition: none;
-    background-color: var(--background-color); /* ปรับปรุง: ใช้สีพื้นหลังขาว */
-    border-bottom: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    background-color: var(--background-color);
+    border-bottom: 1px solid #e0e0e0;
 }
 
 #page-users #user-table tbody tr:nth-child(even) {
-    background-color: var(--background-alt); /* ปรับปรุง: ใช้สีพื้นหลังทางเลือกที่คมชัดขึ้น */
+    background-color: #f8f9fa;
 }
 
 /* เพิ่ม hover effect บนแถวข้อมูล */
 #page-users #user-table tbody tr:hover {
-    background-color: #c9e6ff; /* สีฟ้าอ่อนที่ชัดเจนขึ้น */
+    background-color: #eef5ff;
 }
 
 #page-users #user-table td {
     padding: 10px 10px;
     border: none;
-    border-bottom: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border-bottom: 1px solid #e9ecef;
     vertical-align: middle;
     color: var(--text-color);
     text-align: center;
@@ -1793,7 +1792,7 @@
 
     #page-users #user-table tr {
         margin-bottom: 10px;
-        border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+        border: 1px solid #e9ecef;
         border-radius: 6px;
         overflow: hidden;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
@@ -1803,7 +1802,7 @@
     #page-users #user-table td {
         text-align: left;
         padding: 8px 10px;
-        border-bottom: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+        border-bottom: 1px solid #e9ecef;
         position: relative;
         padding-left: 45%;
     }
@@ -1815,8 +1814,8 @@
         left: 10px;
         width: 40%;
         font-weight: 600;
-        color: white; /* ปรับปรุง: ใช้สีขาวเพื่อให้ชัดเจนบนพื้นหลังสีเข้ม */
-        background-color: #4a90e2; /* ปรับปรุง: ใช้สีฟ้าที่ชัดเจนขึ้น */
+        color: #4a90e2;
+        background-color: #eef5ff;
         padding: 2px 6px;
         border-radius: 4px;
     }
@@ -1896,7 +1895,7 @@
     width: 100%;
     padding: 8px 10px;
     border-radius: 4px;
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #666;
     font-size: 0.95em;
     background-color: var(--background-color);
     color: var(--text-color);
@@ -1921,7 +1920,7 @@
     width: 100%;
     padding: 8px 10px;
     border-radius: 4px;
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #666;
     font-size: 0.95em;
     background-color: var(--background-color);
     color: var(--text-color);
@@ -1943,10 +1942,10 @@
 
 /* ส่วนคอมมิชชั่น */
 #user-commission-settings-container {
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #ddd;
     border-radius: 6px;
     padding: 12px;
-    background-color: var(--background-alt); /* ปรับปรุง: ใช้ background-alt ที่คมชัดขึ้น */
+    background-color: #f9f9f9;
 }
 
 #user-commission-sources {
@@ -1970,10 +1969,10 @@
 
 /* ส่วนกำหนดสินค้า */
 #user-product-assignment-container {
-    border: 1px solid var(--border-color); /* ปรับปรุง: ใช้ border color ที่เข้มขึ้น */
+    border: 1px solid #ddd;
     border-radius: 6px;
     padding: 12px;
-    background-color: var(--background-alt); /* ปรับปรุง: ใช้ background-alt ที่คมชัดขึ้น */
+    background-color: #f9f9f9;
 }
 
 /* ปุ่มฟอร์ม */
@@ -2040,4 +2039,3 @@
         flex: 1;
         min-width: 200px;
     }
-}
