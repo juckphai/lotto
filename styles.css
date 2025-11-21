@@ -1756,34 +1756,57 @@
 .password-fields-row, 
 .date-fields-row {
     display: flex;
-    justify-content: center;   /* จัดให้อยู่กึ่งกลางแนวนอน */
-    gap: 20px;                 /* ระยะห่างระหว่างช่อง */
+    justify-content: center;
+    gap: 20px;
     width: 100%;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .password-fields-row .form-group,
 .date-fields-row .form-group {
-    flex: 1;                   /* ให้กว้างเท่าๆ กัน */
-    max-width: 900px;          /* จำกัดความกว้างเพื่อให้สมดุล */
+    flex: 1;
+    max-width: 300px;
+    /* ลบ grid-column: 1 / -1; สำหรับ form-group ในแถวนี้ */
+    grid-column: unset !important; /* ยกเลิก grid-column */
 }
 
 #user-form {
     display: flex;
     flex-direction: column;
     align-items: center;       /* จัดฟอร์มทั้งหมดให้อยู่กึ่งกลางหน้าจอ */
+    width: 100%;
+    max-width: 800px;          /* ความกว้างสูงสุดตามที่กำหนดในส่วนจัดการผู้ใช้ */
+    margin: 0 auto 15px auto;
 }
 
+/* กำหนดให้ form-group ทั่วไปมีความกว้างเต็มที่เมื่อไม่ได้อยู่ในแถวพิเศษ */
 #user-form .form-group {
     width: 100%;
-    max-width: 900px;          /* ความกว้างสูงสุดของแถวปกติ */
+    max-width: 800px;          /* ความกว้างสูงสุดของแถวปกติ */
+    grid-column: 1 / -1;       /* ให้ช่องปกติกว้างเต็ม Grid */
 }
-#user-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;        /* กึ่งกลางแนวนอน */
-    width: 100%;
-    max-width: 900px;           /* ความกว้างสูงสุด */
-    margin: 0 auto;
-    padding: 10px;
-    box-sizing: border-box;
+/* --- ปรับปรุงสำหรับมือถือ (Mobile Responsive) --- */
+@media (max-width: 768px) {
+    
+    /* บังคับให้แถวรหัสผ่านและแถววันที่เรียงเป็นแนวตั้งบนมือถือ */
+    .password-fields-row, 
+    .date-fields-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    /* บนมือถือ แต่ละช่องต้องกว้างเต็มที่ */
+    .password-fields-row .form-group,
+    .date-fields-row .form-group {
+        width: 100%;
+        max-width: none;
+    }
+
+    /* ปรับให้ label อยู่ด้านบนซ้ายของ input (ตามสไตล์ฟอร์มมือถือทั่วไป) */
+    #page-users #user-form .password-fields-row label,
+    #page-users #user-form .date-fields-row label {
+        text-align: left !important;
+        margin-bottom: -5px;
+    }
 }
