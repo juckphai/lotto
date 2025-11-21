@@ -1753,60 +1753,58 @@
         font-size: 1.0em;
     }
 }
+/* --- แถวรหัสผ่านและวันที่ --- */
 .password-fields-row, 
 .date-fields-row {
     display: flex;
-    justify-content: center;
-    gap: 20px;
+    justify-content: center;   /* จัดกึ่งกลางแนวนอน */
+    gap: 20px;                 /* ระยะห่างระหว่างช่อง */
     width: 100%;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin: 5px 0;
 }
 
 .password-fields-row .form-group,
 .date-fields-row .form-group {
-    flex: 1;
+    flex: 1;                   /* ให้ช่องขยายเต็มแต่ไม่เกิน max-width */
     max-width: 300px;
-    /* ลบ grid-column: 1 / -1; สำหรับ form-group ในแถวนี้ */
-    grid-column: unset !important; /* ยกเลิก grid-column */
 }
 
+/* --- ฟอร์มทั้งหมด --- */
 #user-form {
     display: flex;
     flex-direction: column;
-    align-items: center;       /* จัดฟอร์มทั้งหมดให้อยู่กึ่งกลางหน้าจอ */
+    align-items: center;       /* จัดฟอร์มกลางหน้าจอ */
     width: 100%;
-    max-width: 800px;          /* ความกว้างสูงสุดตามที่กำหนดในส่วนจัดการผู้ใช้ */
+    max-width: 800px;          /* กำหนดความกว้างสูงสุด */
     margin: 0 auto 15px auto;
 }
 
-/* กำหนดให้ form-group ทั่วไปมีความกว้างเต็มที่เมื่อไม่ได้อยู่ในแถวพิเศษ */
+/* --- form-group ปกติ --- */
 #user-form .form-group {
     width: 100%;
-    max-width: 800px;          /* ความกว้างสูงสุดของแถวปกติ */
-    grid-column: 1 / -1;       /* ให้ช่องปกติกว้างเต็ม Grid */
+    max-width: 800px;
 }
-/* --- ปรับปรุงสำหรับมือถือ (Mobile Responsive) --- */
+
+/* --- Responsive สำหรับมือถือ --- */
 @media (max-width: 768px) {
-    
-    /* บังคับให้แถวรหัสผ่านและแถววันที่เรียงเป็นแนวตั้งบนมือถือ */
-    .password-fields-row, 
+    /* ให้ช่องรหัสผ่านและวันที่เรียงแนวตั้ง */
+    .password-fields-row,
     .date-fields-row {
         flex-direction: column;
         gap: 10px;
+        align-items: stretch;  /* ให้ช่องเต็มความกว้าง */
     }
 
-    /* บนมือถือ แต่ละช่องต้องกว้างเต็มที่ */
     .password-fields-row .form-group,
     .date-fields-row .form-group {
+        max-width: 100%;
         width: 100%;
-        max-width: none;
     }
 
-    /* ปรับให้ label อยู่ด้านบนซ้ายของ input (ตามสไตล์ฟอร์มมือถือทั่วไป) */
+    /* label อยู่ด้านบนซ้าย */
     #page-users #user-form .password-fields-row label,
     #page-users #user-form .date-fields-row label {
         text-align: left !important;
-        margin-bottom: -5px;
+        margin-bottom: 5px;
     }
 }
