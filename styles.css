@@ -1582,167 +1582,265 @@
     font-weight: bold;
 }
 
+/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
+
+/* ปรับปรุงฟอร์มจัดการผู้ใช้ */
+#page-users #user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* ลด gap */
+    max-width: 800px;
+    margin: 0 auto 15px auto; /* ลด margin */
+    background-color: var(--background-alt);
+    padding: 15px; /* ลด padding */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: var(--text-color);
+}
+
+#page-users #user-form label {
+    text-align: right;
+    font-weight: bold;
+    margin-bottom: 3px; /* ลด margin */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: var(--text-color);
+}
+
+#page-users #user-form input,
+#page-users #user-form select {
+    width: 100%;
+    padding: 8px 10px; /* ลด padding */
+    border-radius: 4px; /* ลด radius */
+    border: 1px solid #666;
+    font-size: 0.95em; /* ลด font size */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+#page-users #user-form input:focus,
+#page-users #user-form select:focus {
+    border-color: #4a90e2;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+/* ปรับปรุงส่วนของ Commission Sources */
+#page-users #user-form .form-group {
+    grid-column: 1 / -1;
+    margin-top: 8px; /* ลด margin */
+}
+
+#page-users #user-form #user-commission-sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ลด minmax */
+    gap: 8px; /* ลด gap */
+    padding: 10px; /* ลด padding */
+    background: #e9f7fe;
+    border-radius: 6px;
+    border: 1px solid #b8e2f5;
+}
+
+#page-users #user-form #user-commission-sources label {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    font-weight: normal;
+    margin-bottom: 0;
+    cursor: pointer;
+    padding: 3px; /* ลด padding */
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+}
+
+#page-users #user-form #user-commission-sources label:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+#page-users #user-form #user-commission-sources input {
+    width: auto;
+    margin-right: 6px; /* ลด margin */
+}
+
+/* ปรับปรุงปุ่มในฟอร์ม */
+#page-users #user-form .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* ลด gap */
+    margin-top: 15px; /* ลด margin */
+}
+
+#page-users #user-form .form-actions button {
+    min-width: 120px;
+    padding: 10px 15px; /* ลด padding */
+    font-weight: bold;
+}
+
 /* === START: ปรับปรุงตารางจัดการผู้ใช้ให้ตรงกับรูปแบบที่ต้องการ === */
 
 /* ปรับปรุงตารางผู้ใช้ให้ตรงกับรูปแบบในรูป 1 */
 #page-users .table-container {
-    margin-top: 15px; 
-    border-radius: 6px; 
-    overflow: hidden; 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-    border: 1px solid #666; 
-    background-color: var(--background-color); 
+    [cite_start]margin-top: 15px; [cite: 1]
+    [cite_start]border-radius: 6px; [cite: 1]
+    [cite_start]overflow: hidden; [cite: 1]
+    [cite_start]box-shadow: 0 1px 3px rgba(0,0,0,0.1); [cite: 2]
+    [cite_start]border: 1px solid #666; [cite: 2]
+    [cite_start]background-color: var(--background-color); [cite: 2]
 }
 
 #page-users #user-table {
-    width: 100%; 
-    border-collapse: collapse; 
+    [cite_start]width: 100%; [cite: 3]
+    [cite_start]border-collapse: collapse; [cite: 3]
 }
 
 /* ===== หัวตาราง สีฟ้า / ตัวหนังสือสีขาว ===== */
 #page-users #user-table thead {
-    background: #4a90e2; 
+    [cite_start]background: #4a90e2; [cite: 4]
     /* สีฟ้าเหมือนในรูป 1 */
-    color: white; 
-    border-bottom: 2px solid #3a7bc8; 
+    [cite_start]color: white; [cite: 4]
+    [cite_start]border-bottom: 2px solid #3a7bc8; [cite: 4]
 }
 
 #page-users #user-table th {
-    padding: 12px 10px; 
-    text-align: center; 
-    font-weight: 700; 
-    border: none; 
-    cursor: default; 
-    transition: none; 
-    font-size: 1.0em; 
-    letter-spacing: 0.5px; 
-    border-right: 1px solid rgba(255,255,255,0.2); 
-    color: white; 
+    [cite_start]padding: 12px 10px; [cite: 6]
+    [cite_start]text-align: center; [cite: 6]
+    [cite_start]font-weight: 700; [cite: 6]
+    [cite_start]border: none; [cite: 6]
+    [cite_start]cursor: default; [cite: 6]
+    [cite_start]transition: none; [cite: 6]
+    [cite_start]font-size: 1.0em; [cite: 6]
+    [cite_start]letter-spacing: 0.5px; [cite: 6]
+    [cite_start]border-right: 1px solid rgba(255,255,255,0.2); [cite: 6]
+    [cite_start]color: white; [cite: 6]
 }
 
 #page-users #user-table th:last-child {
-    border-right: none; 
+    [cite_start]border-right: none; [cite: 7]
 }
 
 /* ปิด hover effect บนหัวตาราง */
 #page-users #user-table th:hover {
-    background: inherit; 
-    box-shadow: none; 
-    transform: none; 
+    [cite_start]background: inherit; [cite: 8]
+    [cite_start]box-shadow: none; [cite: 8]
+    [cite_start]transform: none; [cite: 8]
 }
 
 /* ============ เนื้อหาตาราง ============ */
 #page-users #user-table tbody tr {
-    transition: none; 
-    background-color: var(--background-color); 
-    border-bottom: 1px solid #e0e0e0; 
+    [cite_start]transition: none; [cite: 9]
+    [cite_start]background-color: var(--background-color); [cite: 9]
+    [cite_start]border-bottom: 1px solid #e0e0e0; [cite: 9]
 }
 
 #page-users #user-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa; 
+    [cite_start]background-color: #f8f9fa; [cite: 10]
 }
 
 /* เพิ่ม hover effect บนแถวข้อมูล */
 #page-users #user-table tbody tr:hover {
-    background-color: #eef5ff; 
+    [cite_start]background-color: #eef5ff; [cite: 11]
 }
 
 #page-users #user-table td {
-    padding: 10px 10px; 
-    border: none; 
-    border-bottom: 1px solid #e9ecef; 
-    vertical-align: middle; 
-    color: var(--text-color); 
-    text-align: center; 
+    [cite_start]padding: 10px 10px; [cite: 12]
+    [cite_start]border: none; [cite: 12]
+    [cite_start]border-bottom: 1px solid #e9ecef; [cite: 12]
+    [cite_start]vertical-align: middle; [cite: 12]
+    [cite_start]color: var(--text-color); [cite: 12]
+    [cite_start]text-align: center; [cite: 12]
 }
 
 /* ปุ่มภายในตาราง */
 #page-users #user-table .action-buttons {
-    display: flex; 
-    justify-content: center; 
-    gap: 5px; 
-    min-width: 120px; 
+    [cite_start]display: flex; [cite: 13]
+    [cite_start]justify-content: center; [cite: 13]
+    [cite_start]gap: 5px; [cite: 13]
+    [cite_start]min-width: 120px; [cite: 13]
 }
 
 #page-users #user-table .action-buttons button {
-    padding: 6px 12px; 
-    font-size: 0.85em; 
-    border-radius: 4px; 
-    transition: all 0.2s; 
+    [cite_start]padding: 6px 12px; [cite: 14]
+    [cite_start]font-size: 0.85em; [cite: 14]
+    [cite_start]border-radius: 4px; [cite: 14]
+    [cite_start]transition: all 0.2s; [cite: 14]
 }
 
 #page-users #user-table .action-buttons button:hover {
-    transform: translateY(-1px); 
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
+    [cite_start]transform: translateY(-1px); [cite: 15]
+    [cite_start]box-shadow: 0 1px 3px rgba(0,0,0,0.1); [cite: 15]
 }
 
 /* ===== มือถือ ===== */
 @media (max-width: 768px) {
     #page-users #user-table {
-        display: block; 
-        overflow-x: auto; 
+        [cite_start]display: block; [cite: 16]
+        [cite_start]overflow-x: auto; [cite: 16]
     }
 
     /* ซ่อนหัวตาราง */
     #page-users #user-table thead {
-        display: none; 
+        [cite_start]display: none; [cite: 17]
     }
 
     #page-users #user-table tbody,
     #page-users #user-table tr,
     #page-users #user-table td {
-        display: block; 
-        width: 100%; 
+        [cite_start]display: block; [cite: 18]
+        [cite_start]width: 100%; [cite: 18]
     }
 
     #page-users #user-table tr {
-        margin-bottom: 10px; 
-        border: 1px solid #e9ecef; 
-        border-radius: 6px; 
-        overflow: hidden; 
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1); 
-        background-color: var(--background-color); 
+        [cite_start]margin-bottom: 10px; [cite: 19]
+        [cite_start]border: 1px solid #e9ecef; [cite: 19]
+        [cite_start]border-radius: 6px; [cite: 20]
+        [cite_start]overflow: hidden; [cite: 20]
+        [cite_start]box-shadow: 0 1px 3px rgba(0,0,0,0.1); [cite: 20]
+        [cite_start]background-color: var(--background-color); [cite: 20]
     }
 
     #page-users #user-table td {
-        text-align: left; 
-        padding: 8px 10px; 
-        border-bottom: 1px solid #e9ecef; 
-        position: relative; 
-        padding-left: 45%; 
+        [cite_start]text-align: left; [cite: 21]
+        [cite_start]padding: 8px 10px; [cite: 21]
+        [cite_start]border-bottom: 1px solid #e9ecef; [cite: 21]
+        [cite_start]position: relative; [cite: 21]
+        [cite_start]padding-left: 45%; [cite: 21]
     }
 
     /* label ข้างซ้าย สำหรับมือถือ */
     #page-users #user-table td:before {
-        content: attr(data-label); 
-        position: absolute; 
-        left: 10px; 
-        width: 40%; 
-        font-weight: 600; 
-        color: #4a90e2; 
-        background-color: #eef5ff; 
-        padding: 2px 6px; 
-        border-radius: 4px; 
+        [cite_start]content: attr(data-label); [cite: 22]
+        [cite_start]position: absolute; [cite: 22]
+        [cite_start]left: 10px; [cite: 22]
+        [cite_start]width: 40%; [cite: 22]
+        [cite_start]font-weight: 600; [cite: 22]
+        [cite_start]color: #4a90e2; [cite: 22]
+        [cite_start]background-color: #eef5ff; [cite: 22]
+        [cite_start]padding: 2px 6px; [cite: 23]
+        [cite_start]border-radius: 4px; [cite: 23]
     }
 
     #page-users #user-table .action-buttons {
-        justify-content: flex-start; 
+        [cite_start]justify-content: flex-start; [cite: 24]
     }
 
     #page-users #user-table .action-buttons:before {
-        display: none; 
+        [cite_start]display: none; [cite: 25]
     }
 
     #page-users #user-table td.action-buttons {
-        padding-left: 10px !important; 
+        [cite_start]padding-left: 10px !important; [cite: 26]
     }
 }
 
 /* ===== แท็บเล็ต ===== */
 @media (min-width: 769px) and (max-width: 1024px) {
     #page-users #user-table th {
-        padding: 10px 8px; 
-        font-size: 0.95em; 
+        [cite_start]padding: 10px 8px; [cite: 27]
+        [cite_start]font-size: 0.95em; [cite: 27]
     }
 }
 
