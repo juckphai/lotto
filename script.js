@@ -3678,61 +3678,103 @@ renderPos(payload = null) {
             </table>
         </div>`;
     
- 
-   // หน้าจัดการผู้ใช้
-    document.getElementById('page-users').innerHTML = `
-        <h2>👥 จัดการผู้ใช้</h2> 
-        <form id="user-form"> 
-            <input type="hidden" id="user-id"> 
-            <div class="form-group"><label for="user-username">👤 ชื่อผู้ใช้:</label><input type="text" id="user-username" required></div>
-            <div class="password-fields-row">
-                <div class="form-group"><label for="user-password">🔑 รหัสผ่านใหม่:</label><input type="password" id="user-password" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
-                <div class="form-group"><label for="user-password-confirm">🔑 ยืนยันรหัสผ่าน:</label><input type="password" id="user-password-confirm" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
+// หน้าจัดการผู้ใช้
+document.getElementById('page-users').innerHTML = `
+    <h2 style="text-align:center">👥 จัดการผู้ใช้</h2> 
+    <form id="user-form"> 
+        <input type="hidden" id="user-id"> 
+        <div class="form-group">
+            <label for="user-username">👤 ชื่อผู้ใช้:</label>
+            <input type="text" id="user-username" required>
+        </div>
+
+
+<!-- 🔑 แถวรหัสผ่าน (50% / 50%) -->
+<div class="password-fields-row">
+    <div class="form-group">
+        <label for="user-password">🔑 รหัสผ่านใหม่:</label>
+        <input type="password" id="user-password" placeholder="กำหนดรหัสผ่านสำหรับผู้ใช้ใหม่">
+    </div>
+
+    <div class="form-group">
+        <label for="user-password-confirm">🔑 ยืนยันรหัสผ่าน:</label>
+        <input type="password" id="user-password-confirm" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน">
+    </div>
+</div>
+
+        <div class="form-group">
+            <label style="font-weight:normal; display:block; cursor:pointer;">
+                <input type="checkbox" id="show-password-user-form"> 👁️ แสดงรหัสผ่าน
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label for="user-role">🛡️ ประเภท:</label>
+            <select id="user-role" required>
+                <option value="seller">Seller</option>
+                <option value="admin">Admin</option>
+            </select>
+        </div>
+
+        <div id="user-store-assignment-container" class="form-group"></div>
+
+        <div id="user-commission-settings-container" class="form-group"> 
+            <h4>💰 ตั้งค่าคอมมิชชั่น</h4>
+            <div class="form-group">
+                <label for="user-commission-rate">อัตรา (%):</label>
+                <input type="number" id="user-commission-rate" min="0" max="100" step="any" placeholder="เช่น 3, 5.5">
             </div>
             <div class="form-group">
-                <label style="font-weight:normal; display:block; cursor:pointer;">
-                    <input type="checkbox" id="show-password-user-form"> 👁️ แสดงรหัสผ่าน
-                </label>
-            </div>
-            <div class="form-group"><label for="user-role">🛡️ ประเภท:</label><select id="user-role" required> <option value="seller">Seller</option> <option value="admin">Admin</option> </select></div>
-            <div id="user-store-assignment-container" class="form-group"></div>
-            <div id="user-commission-settings-container" class="form-group"> 
-                <h4>💰 ตั้งค่าคอมมิชชั่น</h4>
-                <div class="form-group"><label for="user-commission-rate">อัตรา (%):</label><input type="number" id="user-commission-rate" min="0" max="100" step="any" placeholder="เช่น 3, 5.5"></div>
-                <div class="form-group">
-                    <label>คิดจากยอดขาย:</label>
-                    <div id="user-commission-sources"> 
-                        <label><input type="checkbox" id="user-commission-cash"> 💵 เงินสด</label> 
-                        <label><input type="checkbox" id="user-commission-transfer"> 🏦 เงินโอน</label> 
-                        <label><input type="checkbox" id="user-commission-credit"> 📝 เครดิต</label> 
-                    </div>
+                <label>คิดจากยอดขาย:</label>
+                <div id="user-commission-sources"> 
+                    <label><input type="checkbox" id="user-commission-cash"> 💵 เงินสด</label> 
+                    <label><input type="checkbox" id="user-commission-transfer"> 🏦 เงินโอน</label> 
+                    <label><input type="checkbox" id="user-commission-credit"> 📝 เครดิต</label> 
                 </div>
-            </div> 
-            <div id="user-history-view-container" class="form-group"> 
-                <h4>🕒 ตั้งค่าการแสดงผลประวัติ</h4>
-                <div class="form-group"><label for="user-visible-days">จำนวนวันที่ดูประวัติขายได้:</label><input type="number" id="user-visible-days" min="0" placeholder="0=วันนี้, 1=วันนี้และเมื่อวาน (เว้นว่าง=ทั้งหมด)"></div>
-            </div> 
-            <div id="user-sales-period-container" class="form-group">
-                <h4>📅 กำหนดระยะเวลาที่สามารถขายได้</h4> 
-            <div class="date-fields-row">
-                <div class="form-group"><label for="user-sales-start-date">วันที่เริ่มขาย:</label><input type="date" id="user-sales-start-date"></div>
-                <div class="form-group"><label for="user-sales-end-date">วันที่สิ้นสุด:</label><input type="date" id="user-sales-end-date"></div>
             </div>
-            <div id="user-product-assignment-container" class="form-group"> 
-                <h4>📦 กำหนดสินค้าที่สามารถขายได้</h4> 
-                <div id="user-product-assignment" style="max-height: 150px; overflow-y: auto; border: 1px solid #BFBFBF; padding: 10px; border-radius: 10px;"></div> 
-            </div> 
-            <div class="form-actions"> 
-                <button type="submit" class="success">💾 บันทึกผู้ใช้</button> 
-                <button type="button" id="clear-user-form-btn" style="background-color:#6c757d;">🔄 เคลียร์ฟอร์ม</button> 
-            </div> 
-        </form> 
-        <div class="table-container">
-            <table id="user-table"> 
-                <thead><tr><th>ชื่อผู้ใช้</th><th>ประเภท</th><th>ร้านค้า</th><th>สินค้าที่ขายได้</th><th>ระยะเวลาที่ขายได้</th><th>จัดการ</th></tr></thead> 
-                <tbody></tbody> 
-            </table>
-        </div>`;
+        </div> 
+
+        <div id="user-history-view-container" class="form-group"> 
+            <h4>🕒 ตั้งค่าการแสดงผลประวัติ</h4>
+            <div class="form-group">
+                <label for="user-visible-days">จำนวนวันที่ดูประวัติขายได้:</label>
+                <input type="number" id="user-visible-days" min="0" placeholder="0=วันนี้, 1=วันนี้และเมื่อวาน (เว้นว่าง=ทั้งหมด)">
+            </div>
+        </div> 
+
+        <div id="user-sales-period-container" class="form-group">
+            <h4>📅 กำหนดระยะเวลาที่สามารถขายได้</h4>
+
+            <!-- 📅 แถววันที่ (50% / 50%) -->
+            <div class="date-fields-row">
+                <div class="form-group">
+                    <label for="user-sales-start-date">วันที่เริ่มขาย:</label>
+                    <input type="date" id="user-sales-start-date">
+                </div>
+                <div class="form-group">
+                    <label for="user-sales-end-date">วันที่สิ้นสุด:</label>
+                    <input type="date" id="user-sales-end-date">
+                </div>
+            </div>
+        </div>
+
+        <div id="user-product-assignment-container" class="form-group"> 
+            <h4>📦 กำหนดสินค้าที่สามารถขายได้</h4> 
+            <div id="user-product-assignment" style="max-height: 150px; overflow-y: auto; border: 1px solid #BFBFBF; padding: 10px; border-radius: 10px;"></div> 
+        </div> 
+
+        <div class="form-actions"> 
+            <button type="submit" class="success">💾 บันทึกผู้ใช้</button> 
+            <button type="button" id="clear-user-form-btn" style="background-color:#6c757d; color:#fff;">🔄 เคลียร์ฟอร์ม</button> 
+        </div> 
+    </form> 
+
+    <div class="table-container" style="margin-top:20px;">
+        <table id="user-table" style="width:100%; border-collapse: collapse;"> 
+            <thead><tr><th>ชื่อผู้ใช้</th><th>ประเภท</th><th>ร้านค้า</th><th>สินค้าที่ขายได้</th><th>ระยะเวลาที่ขายได้</th><th>จัดการ</th></tr></thead> 
+            <tbody></tbody> 
+        </table>
+    </div>`;
 
 
     // หน้าจัดการข้อมูล

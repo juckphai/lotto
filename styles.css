@@ -811,8 +811,7 @@
             }
             /* --- END NEW --- */
 
-            /* === START: MOBILE USER PAGE FORM OVERRIDES (General Form) === */
-            /* ถูกแทนที่ด้วยโค้ดด้านล่าง เพื่อให้ User Form ถูกต้อง */
+            /* === START: MOBILE USER PAGE FORM OVERRIDES === */
             #page-users #user-form,
             #page-data #backup-password-form {
                 grid-template-columns: 1fr;
@@ -1484,89 +1483,43 @@
             }
         }
 
-/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) - UPDATED === */
+/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
 
 /* ปรับปรุงฟอร์มจัดการผู้ใช้ */
 #page-users #user-form {
     display: grid;
-    /* 4 คอลัมน์สำหรับ Desktop: Label1 | Input1 | Label2 | Input2 */
-    grid-template-columns: 100px 1fr 100px 1fr; 
-    gap: 10px; 
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* ลด gap */
     max-width: 800px;
-    margin: 0 auto 15px auto; 
+    margin: 0 auto 15px auto; /* ลด margin */
     background-color: var(--background-alt);
-    padding: 15px; 
+    padding: 15px; /* ลด padding */
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     color: var(--text-color);
 }
 
-/* 1. จัดการฟิลด์เดี่ยว (ให้ครอบคลุม 4 คอลัมน์ และใช้ Grid ภายใน Label|Input) */
-#page-users #user-name-group,
-#page-users #user-username-group,
-#page-users #user-role-group,
-#page-users #user-store-group {
-    grid-column: 1 / -1; 
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 10px;
-    align-items: center;
-}
-#page-users #user-name-group label,
-#page-users #user-username-group label,
-#page-users #user-role-group label,
-#page-users #user-store-group label {
-    grid-column: 1 / 2;
-}
-#page-users #user-name-group input,
-#page-users #user-username-group input,
-#page-users #user-role-group select,
-#page-users #user-store-group select {
-    grid-column: 2 / 3;
-}
-
-
-/* 2. จัดการฟิลด์คู่ (ให้ใช้ Grid หลัก 4 คอลัมน์) */
-/* ให้ Password / Date Start ใช้คอลัมน์ 1/2 */
-#page-users #user-password-group,
-#page-users #user-date-start-group {
-    grid-column: 1 / 3; 
-    display: contents; 
-}
-/* ให้ Confirm Password / Date End ใช้คอลัมน์ 3/4 */
-#page-users #user-confirm-password-group,
-#page-users #user-date-end-group {
-    grid-column: 3 / 5; 
-    display: contents;
-}
-
-
 #page-users #user-form label {
-    /* ปรับให้ label อยู่ในคอลัมน์ของ Grid หลัก */
-    grid-column: auto;
     text-align: right;
     font-weight: bold;
-    margin-bottom: 3px; 
+    margin-bottom: 3px; /* ลด margin */
     display: flex;
     align-items: center;
     justify-content: flex-end;
     color: var(--text-color);
 }
 
-/* ปรับแต่ง input/select ให้อยู่ในคอลัมน์ที่เหมาะสม (Grid Column Auto จะทำงานตามลำดับใน HTML) */
-#page-users #user-form input:not([type="checkbox"]):not(.form-actions input),
+#page-users #user-form input,
 #page-users #user-form select {
-    grid-column: auto;
     width: 100%;
-    padding: 8px 10px; 
-    border-radius: 4px; 
+    padding: 8px 10px; /* ลด padding */
+    border-radius: 4px; /* ลด radius */
     border: 1px solid #666;
-    font-size: 0.95em; 
+    font-size: 0.95em; /* ลด font size */
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     background-color: var(--background-color);
     color: var(--text-color);
 }
-
 
 #page-users #user-form input:focus,
 #page-users #user-form select:focus {
@@ -1575,7 +1528,7 @@
     box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
 }
 
-/* ปรับปรุงส่วนของ Commission Sources และอื่นๆ ที่ต้องเต็มความกว้าง */
+/* ปรับปรุงส่วนของ Commission Sources */
 #page-users #user-form .form-group {
     grid-column: 1 / -1;
     margin-top: 8px; /* ลด margin */
@@ -1628,414 +1581,209 @@
     font-weight: bold;
 }
 
-/* ปรับปรุงตารางจัดการผู้ใช้ให้ตรงกับรูปแบบที่ต้องการ */
+/* === START: ปรับปรุงตารางจัดการผู้ใช้ให้ตรงกับรูปแบบที่ต้องการ === */
 
 /* ปรับปรุงตารางผู้ใช้ให้ตรงกับรูปแบบในรูป 1 */
 #page-users .table-container {
-    margin-top: 15px;
-    border-radius: 6px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    border: 1px solid #666;
-    background-color: #00B050;
+    [cite_start]margin-top: 15px; [cite: 1]
+    [cite_start]border-radius: 6px; [cite: 1]
+    [cite_start]overflow: hidden; [cite: 1]
+    [cite_start]box-shadow: 0 1px 3px rgba(0,0,0,0.1); [cite: 2]
+    [cite_start]border: 1px solid #666; [cite: 2]
+    [cite_start]background-color: var(--background-color); [cite: 2]
 }
 
 #page-users #user-table {
-    width: 100%;
-    border-collapse: collapse;
+    [cite_start]width: 100%; [cite: 3]
+    [cite_start]border-collapse: collapse; [cite: 3]
 }
 
 /* ===== หัวตาราง สีฟ้า / ตัวหนังสือสีขาว ===== */
 #page-users #user-table thead {
-    background-color: #eef5ff;
+    [cite_start]background: #4a90e2; [cite: 4]
     /* สีฟ้าเหมือนในรูป 1 */
-    color: white;
-    border-bottom: 2px solid #3a7bc8;
+    [cite_start]color: white; [cite: 4]
+    [cite_start]border-bottom: 2px solid #3a7bc8; [cite: 4]
 }
 
 #page-users #user-table th {
-    padding: 12px 10px;
-    text-align: center;
-    font-weight: 700;
-    border: none;
-    cursor: default;
-    transition: none;
-    font-size: 1.0em;
-    letter-spacing: 0.5px;
-    border-right: 1px solid rgba(255,255,255,0.2);
-    color: white;
+    [cite_start]padding: 12px 10px; [cite: 6]
+    [cite_start]text-align: center; [cite: 6]
+    [cite_start]font-weight: 700; [cite: 6]
+    [cite_start]border: none; [cite: 6]
+    [cite_start]cursor: default; [cite: 6]
+    [cite_start]transition: none; [cite: 6]
+    [cite_start]font-size: 1.0em; [cite: 6]
+    [cite_start]letter-spacing: 0.5px; [cite: 6]
+    [cite_start]border-right: 1px solid rgba(255,255,255,0.2); [cite: 6]
+    [cite_start]color: white; [cite: 6]
 }
 
 #page-users #user-table th:last-child {
-    border-right: none;
+    [cite_start]border-right: none; [cite: 7]
 }
 
 /* ปิด hover effect บนหัวตาราง */
 #page-users #user-table th:hover {
-    background: inherit;
-    box-shadow: none;
-    transform: none;
+    [cite_start]background: inherit; [cite: 8]
+    [cite_start]box-shadow: none; [cite: 8]
+    [cite_start]transform: none; [cite: 8]
 }
 
 /* ============ เนื้อหาตาราง ============ */
 #page-users #user-table tbody tr {
-    transition: none;
-    background-color: var(--background-color);
-    border-bottom: 1px solid #e0e0e0;
+    [cite_start]transition: none; [cite: 9]
+    [cite_start]background-color: var(--background-color); [cite: 9]
+    [cite_start]border-bottom: 1px solid #e0e0e0; [cite: 9]
 }
 
 #page-users #user-table tbody tr:nth-child(even) {
-    background-color: #f8f9fa;
+    [cite_start]background-color: #f8f9fa; [cite: 10]
 }
 
 /* เพิ่ม hover effect บนแถวข้อมูล */
 #page-users #user-table tbody tr:hover {
-    background-color: #eef5ff;
+    [cite_start]background-color: #eef5ff; [cite: 11]
 }
 
 #page-users #user-table td {
-    padding: 10px 10px;
-    border: none;
-    border-bottom: 1px solid #e9ecef;
-    vertical-align: middle;
-    color: var(--text-color);
-    text-align: center;
+    [cite_start]padding: 10px 10px; [cite: 12]
+    [cite_start]border: none; [cite: 12]
+    [cite_start]border-bottom: 1px solid #e9ecef; [cite: 12]
+    [cite_start]vertical-align: middle; [cite: 12]
+    [cite_start]color: var(--text-color); [cite: 12]
+    [cite_start]text-align: center; [cite: 12]
 }
 
 /* ปุ่มภายในตาราง */
 #page-users #user-table .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 5px;
-    min-width: 120px;
+    [cite_start]display: flex; [cite: 13]
+    [cite_start]justify-content: center; [cite: 13]
+    [cite_start]gap: 5px; [cite: 13]
+    [cite_start]min-width: 120px; [cite: 13]
 }
 
 #page-users #user-table .action-buttons button {
-    padding: 6px 12px;
-    font-size: 0.85em;
-    border-radius: 4px;
-    transition: all 0.2s;
+    [cite_start]padding: 6px 12px; [cite: 14]
+    [cite_start]font-size: 0.85em; [cite: 14]
+    [cite_start]border-radius: 4px; [cite: 14]
+    [cite_start]transition: all 0.2s; [cite: 14]
 }
 
 #page-users #user-table .action-buttons button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    [cite_start]transform: translateY(-1px); [cite: 15]
+    [cite_start]box-shadow: 0 1px 3px rgba(0,0,0,0.1); [cite: 15]
 }
 
-/* ===== มือถือ (Mobile Responsive) - อัปเดตการจัดการฟอร์ม ===== */
+/* ===== มือถือ ===== */
 @media (max-width: 768px) {
-    /* --- Override Mobile User Form (ทำให้ Password/Date เป็นคอลัมน์เดียว) --- */
-    #page-users #user-form {
-        grid-template-columns: 1fr;
-    }
-    
-    /* ให้ทุกกลุ่มฟิลด์หลักครอบคลุม 1 คอลัมน์ (สำหรับฟิลด์คู่/เดี่ยว) */
-    #page-users #user-name-group,
-    #page-users #user-username-group,
-    #page-users #user-role-group,
-    #page-users #user-store-group,
-    #page-users #user-password-group,
-    #page-users #user-confirm-password-group,
-    #page-users #user-date-start-group,
-    #page-users #user-date-end-group,
-    #user-commission-settings-container,
-    #user-history-view-container,
-    #user-product-assignment-container {
-        grid-column: 1 / -1; 
-        display: flex !important; 
-        flex-direction: column; 
-        gap: 3px;
-        margin-bottom: 5px;
-    }
-    
-    /* ปรับ label ให้อยู่ด้านซ้ายสำหรับมือถือ */
-    #page-users #user-form label {
-        text-align: left;
-        justify-content: flex-start;
-        margin-bottom: 0;
-    }
-    
-    /* ปรับ label ในกลุ่มฟิลด์เดี่ยว (ที่ใช้ Grid ภายในบน Desktop) */
-    #page-users #user-name-group label,
-    #page-users #user-username-group label,
-    #page-users #user-role-group label,
-    #page-users #user-store-group label {
-        text-align: left;
-        justify-content: flex-start;
-    }
-    
-    /* Reset grid column for input/select on mobile when it's inside a flex container */
-    #page-users #user-form input:not([type="checkbox"]):not(.form-actions input),
-    #page-users #user-form select {
-        grid-column: auto; /* Reset */
-    }
-    
-    
-    /* --- End Override Mobile User Form --- */
-
     #page-users #user-table {
-        display: block;
-        overflow-x: auto;
+        [cite_start]display: block; [cite: 16]
+        [cite_start]overflow-x: auto; [cite: 16]
     }
 
     /* ซ่อนหัวตาราง */
     #page-users #user-table thead {
-        display: none;
+        [cite_start]display: none; [cite: 17]
     }
 
     #page-users #user-table tbody,
     #page-users #user-table tr,
     #page-users #user-table td {
-        display: block;
-        width: 100%;
+        [cite_start]display: block; [cite: 18]
+        [cite_start]width: 100%; [cite: 18]
     }
 
     #page-users #user-table tr {
-        margin-bottom: 10px;
-        border: 1px solid #e9ecef;
-        border-radius: 6px;
-        overflow: hidden;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        background-color: var(--background-color);
+        [cite_start]margin-bottom: 10px; [cite: 19]
+        [cite_start]border: 1px solid #e9ecef; [cite: 19]
+        [cite_start]border-radius: 6px; [cite: 20]
+        [cite_start]overflow: hidden; [cite: 20]
+        [cite_start]box-shadow: 0 1px 3px rgba(0,0,0,0.1); [cite: 20]
+        [cite_start]background-color: var(--background-color); [cite: 20]
     }
 
     #page-users #user-table td {
-        text-align: left;
-        padding: 8px 10px;
-        border-bottom: 1px solid #e9ecef;
-        position: relative;
-        padding-left: 45%;
+        [cite_start]text-align: left; [cite: 21]
+        [cite_start]padding: 8px 10px; [cite: 21]
+        [cite_start]border-bottom: 1px solid #e9ecef; [cite: 21]
+        [cite_start]position: relative; [cite: 21]
+        [cite_start]padding-left: 45%; [cite: 21]
     }
 
     /* label ข้างซ้าย สำหรับมือถือ */
     #page-users #user-table td:before {
-        content: attr(data-label);
-        position: absolute;
-        left: 10px;
-        width: 40%;
-        font-weight: 600;
-        color: #4a90e2;
-        background-color: #eef5ff;
-        padding: 2px 6px;
-        border-radius: 4px;
+        [cite_start]content: attr(data-label); [cite: 22]
+        [cite_start]position: absolute; [cite: 22]
+        [cite_start]left: 10px; [cite: 22]
+        [cite_start]width: 40%; [cite: 22]
+        [cite_start]font-weight: 600; [cite: 22]
+        [cite_start]color: #4a90e2; [cite: 22]
+        [cite_start]background-color: #eef5ff; [cite: 22]
+        [cite_start]padding: 2px 6px; [cite: 23]
+        [cite_start]border-radius: 4px; [cite: 23]
     }
 
     #page-users #user-table .action-buttons {
-        justify-content: flex-start;
+        [cite_start]justify-content: flex-start; [cite: 24]
     }
 
     #page-users #user-table .action-buttons:before {
-        display: none;
+        [cite_start]display: none; [cite: 25]
     }
 
     #page-users #user-table td.action-buttons {
-        padding-left: 10px !important;
+        [cite_start]padding-left: 10px !important; [cite: 26]
     }
 }
 
 /* ===== แท็บเล็ต ===== */
 @media (min-width: 769px) and (max-width: 1024px) {
     #page-users #user-table th {
-        padding: 10px 8px;
-        font-size: 0.95em;
+        [cite_start]padding: 10px 8px; [cite: 27]
+        [cite_start]font-size: 0.95em; [cite: 27]
     }
 }
 
+/* === END: ปรับปรุงตารางจัดการผู้ใช้ === */
 /* ===== จอใหญ่ ===== */
 @media (min-width: 1200px) {
     #page-users #user-table th {
-        padding: 10px 10px;
+        padding: 10px 10px; /* ลด padding */
         font-size: 1.0em;
     }
 }
-/* === START: STYLES FOR USER MANAGEMENT PAGE - COMPACT LAYOUT === */
-
-/* กำหนดรูปแบบฟอร์มผู้ใช้แบบกะทัดรัด */
-#page-users #user-form {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-    max-width: 800px;
-    margin: 0 auto 15px auto;
-    background-color: var(--background-alt);
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    color: var(--text-color);
-}
-
-/* แถวสำหรับฟิลด์คู่ (รหัสผ่านและวันที่) */
-.password-fields-row,
+.password-fields-row, 
 .date-fields-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
+    display: flex;
+    justify-content: center;   /* จัดให้อยู่กึ่งกลางแนวนอน */
+    gap: 20px;                 /* ระยะห่างระหว่างช่อง */
+    width: 100%;
 }
 
-/* กลุ่มฟอร์มภายในแถว */
 .password-fields-row .form-group,
 .date-fields-row .form-group {
+    flex: 1;                   /* ให้กว้างเท่าๆ กัน */
+    max-width: 250px;          /* จำกัดความกว้างเพื่อให้สมดุล */
+}
+
+#user-form {
     display: flex;
     flex-direction: column;
-    margin: 0;
+    align-items: center;       /* จัดฟอร์มทั้งหมดให้อยู่กึ่งกลางหน้าจอ */
 }
 
-/* ปรับ label ให้อยู่ด้านบนของ input */
-.password-fields-row .form-group label,
-.date-fields-row .form-group label {
-    text-align: left;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: var(--text-color);
-}
-
-/* ปรับ input ให้เต็มพื้นที่ */
-.password-fields-row .form-group input,
-.date-fields-row .form-group input {
+#user-form .form-group {
     width: 100%;
-    padding: 8px 10px;
-    border-radius: 4px;
-    border: 1px solid #666;
-    font-size: 0.95em;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    max-width: 900px;          /* ความกว้างสูงสุดของแถวปกติ */
 }
-
-/* กลุ่มฟอร์มทั่วไป */
-#page-users #user-form .form-group {
+#user-form {
     display: flex;
     flex-direction: column;
-    margin-bottom: 0;
-}
-
-#page-users #user-form .form-group label {
-    text-align: left;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: var(--text-color);
-}
-
-#page-users #user-form .form-group input,
-#page-users #user-form .form-group select {
+    align-items: center;        /* กึ่งกลางแนวนอน */
     width: 100%;
-    padding: 8px 10px;
-    border-radius: 4px;
-    border: 1px solid #666;
-    font-size: 0.95em;
-    background-color: var(--background-color);
-    color: var(--text-color);
+    max-width: 900px;           /* ความกว้างสูงสุด */
+    margin: 0 auto;
+    padding: 10px;
+    box-sizing: border-box;
 }
-
-/* ปุ่มแสดงรหัสผ่าน */
-#page-users #user-form .form-group label[for="show-password-user-form"] {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    font-weight: normal;
-    margin-top: 5px;
-}
-
-#page-users #user-form .form-group label[for="show-password-user-form"] input {
-    width: auto;
-    margin-right: 8px;
-}
-
-/* ส่วนคอมมิชชั่น */
-#user-commission-settings-container {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px;
-    background-color: #f9f9f9;
-}
-
-#user-commission-sources {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-top: 8px;
-}
-
-#user-commission-sources label {
-    display: flex;
-    align-items: center;
-    font-weight: normal;
-    cursor: pointer;
-}
-
-#user-commission-sources input {
-    width: auto;
-    margin-right: 6px;
-}
-
-/* ส่วนกำหนดสินค้า */
-#user-product-assignment-container {
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 12px;
-    background-color: #f9f9f9;
-}
-
-/* ปุ่มฟอร์ม */
-#page-users #user-form .form-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 15px;
-}
-
-#page-users #user-form .form-actions button {
-    min-width: 120px;
-    padding: 10px 15px;
-    font-weight: bold;
-}
-
-/* === RESPONSIVE STYLES FOR MOBILE === */
-@media (max-width: 768px) {
-    /* บนมือถือ ให้ฟิลด์คู่แสดงเป็นคอลัมน์เดียว */
-    .password-fields-row,
-    .date-fields-row {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    
-    /* ปรับขนาดฟอร์มให้เหมาะสมกับมือถือ */
-    #page-users #user-form {
-        padding: 10px;
-        gap: 10px;
-    }
-    
-    /* ปรับขนาดฟอนต์และ padding สำหรับมือถือ */
-    #page-users #user-form .form-group input,
-    #page-users #user-form .form-group select {
-        padding: 10px 8px;
-        font-size: 16px; /* ป้องกัน zoom บน iOS */
-    }
-    
-    /* ปรับปุ่มให้เต็มความกว้างบนมือถือ */
-    #page-users #user-form .form-actions {
-        flex-direction: column;
-    }
-    
-    #page-users #user-form .form-actions button {
-        width: 100%;
-    }
-    
-    /* ปรับส่วนคอมมิชชั่นให้แสดงเป็นคอลัมน์เดียว */
-    #user-commission-sources {
-        flex-direction: column;
-        gap: 8px;
-    }
-}
-
-    .password-fields-row, .date-fields-row {
-        display: flex;
-        gap: 15px;
-        align-items: flex-end;
-        flex-wrap: wrap;
-    }
-
-    .password-fields-row .form-group,
-    .date-fields-row .form-group {
-        flex: 1;
-        min-width: 200px;
-    }
