@@ -782,12 +782,12 @@
         /* RESPONSIVE STYLES */
         @media (max-width: 768px) {
     .main-wrapper {
-        width: 100%;
         margin: 0;
         border-radius: 10;
         background-color: #FAFAD2;
         border: 1px solid #ED01ED; 
         min-height: 100vh;
+        width: 98%;
         padding: 3px;
             }
             form {
