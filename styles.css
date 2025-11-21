@@ -780,18 +780,26 @@
 /* === END: ปรับปรุงฟอร์มรหัสผ่านสำรอง === */
 
         /* RESPONSIVE STYLES */
-        @media (max-width: 768px) {
-            .main-wrapper {
-        max-width: 98%;           /* แต่ไม่ให้ล้นขอบจอ */
-        margin: 2px auto;        /* จัดกลาง + มีระยะขอบ */
-        padding: 3px;            /* เพิ่มระยะภายใน */
+@media (max-width: 768px) {
+    .main-wrapper {
+        width: 98%;
+        max-width: 500px;      /* กำหนดความกว้างสูงสุดเพื่อไม่ให้ยืดเต็มจอเกินไป */
+        margin: 0 auto;        /* กำหนดให้อยู่กึ่งกลาง */
+        padding: 10px;
         background-color: #FAFAD2;
-        border: 1px solid #ED01ED; 
-        border-radius: 10px;      /* ใส่ px ให้ครบ */
-            form {
-                grid-template-columns: 1fr;
-                gap: 3px; /* ลด gap */
-            }
+        border: 1px solid #ED01ED;
+        border-radius: 10px;
+        box-sizing: border-box; /* ป้องกันขยายเกินจอ */
+    }
+
+    .main-wrapper form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 6px;  /* ปรับให้ห่างพอดี */
+        width: 100%; /* ป้องกันเอียง */
+    }
+}
+
             form label {
                 text-align: left;
                 margin-bottom: -5px; /* ลด margin */
