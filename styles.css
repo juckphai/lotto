@@ -1764,7 +1764,7 @@
 .password-fields-row .form-group,
 .date-fields-row .form-group {
     flex: 1;                   /* ให้กว้างเท่าๆ กัน */
-    max-width: 250px;          /* จำกัดความกว้างเพื่อให้สมดุล */
+    max-width: 900px;          /* จำกัดความกว้างเพื่อให้สมดุล */
 }
 
 #user-form {
