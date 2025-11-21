@@ -25,9 +25,9 @@
         }
 
         .main-wrapper {
-            max-width: 800px; 
+            max-width: 900px; 
             margin: 5px auto; /* ลด margin ด้านบน/ล่าง */
-            background-color: var(--background-color);
+            background-color: #FAFAD2;
             border: 1px solid #ED01ED; 
             padding: 5px; /* ลด padding โดยรวม */
             border-radius: 8px; /* ลด radius เล็กน้อย */
@@ -38,7 +38,7 @@
         #login-screen { 
             padding: 20px; /* ลด padding */
             text-align: center;
-            background-color: var(--background-color);
+            background-color: #FAFAD2;
             color: var(--text-color);
         }
         #login-screen h1 { 
@@ -139,16 +139,16 @@
         /* === END: ICON STYLES === */
         
         /* --- Colors for each section header --- */
-        .header-pos { background-color: #00B0F0; }
-        .header-products { background-color: #00B050; }
-        .header-stock { background-color: #28a745; }
-        .header-stock-out { background-color: var(--warning-color); } /* NEW Color for Stock Out */
-        .header-history { background-color: #ff9800; }
-        .header-reports { background-color: #ED01ED; }
-        .header-summary { background-color: #673ab7; }
-        .header-stores { background-color: #ff5722; } /* New Color for Stores */
-        .header-users { background-color: #0070C0; }
-        .header-data { background-color: #607d8b; }
+        .header-pos { background-color: #4a90e2; } /* Primary Blue */
+        .header-products { background-color: #00b050; } /* Green */
+        .header-stock { background-color: #ff9800; } /* Orange */
+        .header-stock-out { background-color: #d0021b; } /* Danger Red */
+        .header-history { background-color: #00b0f0; } /* Light Blue */
+        .header-reports { background-color: #673ab7; } /* Deep Purple */
+        .header-summary { background-color: #ff5722; } /* Deep Orange */
+        .header-stores { background-color: #28a745; } /* Success Green */
+        .header-users { background-color: #ED01ED; } /* Neon Pink */
+        .header-data { background-color: #607d8b; } /* Blue Gray */
         
         .section-content { 
             display: none; 
@@ -284,7 +284,7 @@
             grid-template-columns: 150px 1fr;
             gap: 10px; /* ลด gap */
             align-items: center;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto 10px auto; /* ลด margin */
             background-color: var(--background-color);
         }
@@ -485,11 +485,11 @@
         .modal-overlay {
             position: fixed;
             z-index: 1000;
+            background-color: #eef5ff;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 253, 231, 0.95); /* Semi-transparent light yellow */
             display: none;
             justify-content: center;
             align-items: center;
@@ -507,7 +507,7 @@
     align-items: center;
     margin: auto 0;
     width: 100%;
-    max-width: 900px;
+    max-width: 950px;
 }
 
 #modalBodyContent {
@@ -564,7 +564,7 @@
             align-items: center;
             width: 100%;
             margin-top: 8px; /* ลด margin */
-            max-width: 800px;
+            max-width: 600px;
             background-color: var(--background-alt);
             padding: 10px; /* ลด padding */
             border-radius: 6px;
@@ -594,9 +594,10 @@
         .modal-close-btn { background-color: #E97132; color: white; padding: 8px 20px; /* ลด padding */ border: none; cursor: pointer; border-radius: 15px; /* ลด radius */ font-size: 15px; /* ลด font size */ margin-top: 8px; /* ลด margin */ transition: background-color 0.3s; width: 90%; max-width: 250px;}
         .modal-close-btn:hover { background-color: #e64a19; }
 .format-modal-content {
-    background-color: #ffffff;  /* พื้นหลังสีเทา */
+    background-color: #ffffff; /* พื้นหลังสีเทา */
     padding: 15px 20px; /* ลด padding */
     border-radius: 10px;
+    border: 1px solid #ED01ED; 
     text-align: center;
     box-shadow: 0 3px 10px rgba(0,0,0,0.3); /* ลดขนาดเงา */
     width: 90%;
@@ -744,7 +745,7 @@
     /* กำหนดให้ฟอร์มใช้ Grid 1 คอลัมน์ (สำหรับ Desktop) */
     grid-template-columns: 1fr;
     /* ลดขนาดสูงสุดของฟอร์มเพื่อควบคุมความกว้าง */
-    max-width: 400px !important; /* ปรับขนาดให้แคบลงและกำหนดให้มีความสำคัญสูง */
+    max-width: 350px !important; /* ปรับขนาดให้แคบลงและกำหนดให้มีความสำคัญสูง */
     margin: 10px auto 10px auto !important; /* จัดให้อยู่ตรงกลาง */
     padding: 10px;
     border: 1px solid var(--border-color); /* เพิ่มเส้นขอบเล็กน้อย */
@@ -1386,7 +1387,7 @@
             /* --- Page Layout --- */
             @page {
                 size: A4;
-                margin: 15mm 5mm 10mm 10mm; /* top, right, bottom, left */
+                margin: 15mm 5mm 8mm 8mm; /* top, right, bottom, left */
                 @top-center {
                     content: "หน้า " counter(page);
                     font-family: Arial, sans-serif;
@@ -1482,6 +1483,104 @@
                 margin: 1em 0;
             }
         }
+
+/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
+
+/* ปรับปรุงฟอร์มจัดการผู้ใช้ */
+#page-users #user-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px; /* ลด gap */
+    max-width: 800px;
+    margin: 0 auto 15px auto; /* ลด margin */
+    background-color: var(--background-alt);
+    padding: 15px; /* ลด padding */
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    color: var(--text-color);
+}
+
+#page-users #user-form label {
+    text-align: right;
+    font-weight: bold;
+    margin-bottom: 3px; /* ลด margin */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    color: var(--text-color);
+}
+
+#page-users #user-form input,
+#page-users #user-form select {
+    width: 100%;
+    padding: 8px 10px; /* ลด padding */
+    border-radius: 4px; /* ลด radius */
+    border: 1px solid #666;
+    font-size: 0.95em; /* ลด font size */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+#page-users #user-form input:focus,
+#page-users #user-form select:focus {
+    border-color: #4a90e2;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
+}
+
+/* ปรับปรุงส่วนของ Commission Sources */
+#page-users #user-form .form-group {
+    grid-column: 1 / -1;
+    margin-top: 8px; /* ลด margin */
+}
+
+#page-users #user-form #user-commission-sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ลด minmax */
+    gap: 8px; /* ลด gap */
+    padding: 10px; /* ลด padding */
+    background: #e9f7fe;
+    border-radius: 6px;
+    border: 1px solid #b8e2f5;
+}
+
+#page-users #user-form #user-commission-sources label {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    font-weight: normal;
+    margin-bottom: 0;
+    cursor: pointer;
+    padding: 3px; /* ลด padding */
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    color: var(--text-color);
+}
+
+#page-users #user-form #user-commission-sources label:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+#page-users #user-form #user-commission-sources input {
+    width: auto;
+    margin-right: 6px; /* ลด margin */
+}
+
+/* ปรับปรุงปุ่มในฟอร์ม */
+#page-users #user-form .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* ลด gap */
+    margin-top: 15px; /* ลด margin */
+}
+
+#page-users #user-form .form-actions button {
+    min-width: 120px;
+    padding: 10px 15px; /* ลด padding */
+    font-weight: bold;
+}
 
 /* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
 
