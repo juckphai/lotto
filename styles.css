@@ -37,9 +37,10 @@
         }
 
         #login-screen { 
+            /* ✅ เปลี่ยนพื้นหลังเป็นสีขาว (ตาม body/background-color) */
             padding: 20px; /* ลด padding */
             text-align: center;
-            background-color: #FAFAD2;
+            background-color: var(--background-color); 
             color: var(--text-color);
         }
         #login-screen h1 { 
@@ -47,11 +48,94 @@
             color: var(--text-color);
             font-size: clamp(1.5rem, 1.5rem + 2vw, 2.8rem);
         }
+        #login-screen p { /* New: Style for tagline */
+            color: var(--text-color-light);
+            margin-bottom: 25px;
+        }
         #main-app { 
             display: none; 
             background-color: var(--background-color);
             color: var(--text-color);
         }
+
+        /* --- New/Refined Login Form Styles --- */
+        #login-form {
+            display: grid !important;
+            grid-template-columns: 1fr !important; /* Force single column */
+            gap: 12px !important;
+            max-width: 350px !important; /* Control width on desktop */
+            margin: 0 auto 10px auto !important;
+            padding: 15px;
+            border: 1px solid var(--border-color); /* Light border around form */
+            border-radius: 8px; /* Rounded form box */
+            background-color: var(--background-alt) !important; /* Light grey background for the form box */
+        }
+        
+        #login-form label:not(:has(input[type="checkbox"])) {
+            text-align: left !important;
+            font-weight: bold;
+            display: block !important;
+            margin-bottom: -5px !important;
+            color: var(--text-color);
+        }
+        
+        #login-form input:not([type="checkbox"]) {
+            padding: 10px !important; /* เพิ่ม padding ให้กรอกง่าย */
+            border-radius: 8px !important; /* ขอบโค้ง */
+            border: 1px solid #ccc !important;
+            font-size: 1.0em !important;
+            text-align: left !important; /* จัดข้อความชิดซ้าย */
+            box-sizing: border-box;
+            width: 100%;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        
+        #login-form .form-actions {
+            margin-top: 10px !important;
+            grid-column: 1 / -1;
+            display: flex;
+            justify-content: center;
+        }
+
+        #login-form .form-actions button {
+            padding: 10px 20px !important;
+            border-radius: 25px !important; /* ปุ่มโค้งมน */
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        /* --- NEW: Style for aligned checkboxes in login form --- */
+        #login-form .checkbox-group {
+            /* ใช้ grid-column เต็มความกว้างของฟอร์ม */
+            grid-column: 1 / -1; 
+            text-align: left; /* จัดชิดซ้าย */
+            margin-top: -5px; /* ลดช่องว่างด้านบน */
+            margin-bottom: 5px; /* เพิ่มช่องว่างด้านล่างเล็กน้อย */
+        }
+
+        #login-form .checkbox-group label {
+            display: flex; /* ใช้ Flexbox เพื่อจัดเรียง checkbox และข้อความ */
+            align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+            cursor: pointer;
+            font-weight: normal !important; /* ยกเลิก font-weight: bold จาก label ทั่วไป */
+            color: var(--text-color);
+        }
+
+        #login-form .checkbox-group input[type="checkbox"] {
+            width: auto !important; /* คืนค่าความกว้างสำหรับ checkbox */
+            margin-right: 8px; /* ระยะห่างระหว่าง checkbox กับข้อความ */
+            padding: 0 !important;
+            border: none !important;
+            text-align: left !important;
+            min-width: 0 !important;
+            height: 18px;
+            background-color: transparent !important;
+            color: var(--text-color);
+        }
+        /* --- END NEW --- */
+
+        /* --- End Login Form Styles --- */
 
         .top-bar {
             background-color: var(--primary-color);
@@ -792,6 +876,32 @@
                 /* -------------------------------------- */
                 padding: 3px; /* ลด padding อีก */
             }
+
+            /* Responsive Styles for Login Screen */
+            #login-screen {
+                padding: 15px;
+            }
+
+            #login-form {
+                max-width: 95% !important; /* Full width on mobile */
+                gap: 10px !important;
+                padding: 10px !important;
+            }
+            
+            #login-form input:not([type="checkbox"]) {
+                padding: 8px !important;
+                font-size: 0.95em !important;
+            }
+            
+            #login-form .form-actions button {
+                padding: 8px 15px !important;
+                font-size: 1.0em !important;
+            }
+            
+            #login-form label[style] { /* Adjusting checkbox labels on mobile */
+                font-size: 0.9em;
+            }
+
             form {
                 grid-template-columns: 1fr;
                 gap: 10px; /* ลด gap */
@@ -1485,104 +1595,6 @@
                 margin: 1em 0;
             }
         }
-
-/* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
-
-/* ปรับปรุงฟอร์มจัดการผู้ใช้ */
-#page-users #user-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px; /* ลด gap */
-    max-width: 800px;
-    margin: 0 auto 15px auto; /* ลด margin */
-    background-color: var(--background-alt);
-    padding: 15px; /* ลด padding */
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    color: var(--text-color);
-}
-
-#page-users #user-form label {
-    text-align: right;
-    font-weight: bold;
-    margin-bottom: 3px; /* ลด margin */
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    color: var(--text-color);
-}
-
-#page-users #user-form input,
-#page-users #user-form select {
-    width: 100%;
-    padding: 8px 10px; /* ลด padding */
-    border-radius: 4px; /* ลด radius */
-    border: 1px solid #666;
-    font-size: 0.95em; /* ลด font size */
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    background-color: var(--background-color);
-    color: var(--text-color);
-}
-
-#page-users #user-form input:focus,
-#page-users #user-form select:focus {
-    border-color: #4a90e2;
-    outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
-}
-
-/* ปรับปรุงส่วนของ Commission Sources */
-#page-users #user-form .form-group {
-    grid-column: 1 / -1;
-    margin-top: 8px; /* ลด margin */
-}
-
-#page-users #user-form #user-commission-sources {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); /* ลด minmax */
-    gap: 8px; /* ลด gap */
-    padding: 10px; /* ลด padding */
-    background: #e9f7fe;
-    border-radius: 6px;
-    border: 1px solid #b8e2f5;
-}
-
-#page-users #user-form #user-commission-sources label {
-    display: flex;
-    align-items: center;
-    text-align: left;
-    font-weight: normal;
-    margin-bottom: 0;
-    cursor: pointer;
-    padding: 3px; /* ลด padding */
-    border-radius: 4px;
-    transition: background-color 0.2s;
-    color: var(--text-color);
-}
-
-#page-users #user-form #user-commission-sources label:hover {
-    background-color: rgba(74, 144, 226, 0.1);
-}
-
-#page-users #user-form #user-commission-sources input {
-    width: auto;
-    margin-right: 6px; /* ลด margin */
-}
-
-/* ปรับปรุงปุ่มในฟอร์ม */
-#page-users #user-form .form-actions {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: center;
-    gap: 10px; /* ลด gap */
-    margin-top: 15px; /* ลด margin */
-}
-
-#page-users #user-form .form-actions button {
-    min-width: 120px;
-    padding: 10px 15px; /* ลด padding */
-    font-weight: bold;
-}
 
 /* === START: ปรับปรุงเต็มรูปแบบสำหรับหน้า "จัดการผู้ใช้" (COMPACT) === */
 

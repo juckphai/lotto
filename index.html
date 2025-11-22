@@ -22,24 +22,25 @@
     <div class="main-wrapper">
         <div id="login-screen">
             <h1>🏪 บัญชีขาย</h1>
-            <p>กรุณาเข้าสู่ระบบ</p>
-            <form id="login-form" style="display: inline-grid; max-width: 350px;">
+            <p>กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
+            <form id="login-form">
                 <label for="username">👤 ชื่อผู้ใช้:</label>
                 <input type="text" id="username" required>
+                
                 <label for="password">🔑 รหัสผ่าน:</label>
                 <input type="password" id="password" required>
                 
-                <div style="grid-column: 1 / -1; text-align: left; margin: 0 0 10px 0;">
-                    <label style="font-weight: normal; cursor: pointer;">
+                <div class="checkbox-group">
+                    <label for="show-password-login">
                         <input type="checkbox" id="show-password-login">
                         👁️ แสดงรหัสผ่าน
                     </label>
                 </div>
                 
-                <div style="grid-column: 1 / -1; text-align: left; margin: 5px 0 10px 0;">
-                    <label style="font-weight: normal; cursor: pointer;">
+                <div class="checkbox-group">
+                    <label for="remember-me">
                         <input type="checkbox" id="remember-me">
-                        📝 จดจำการเข้าสู่ระบบในครั้งถัดไป
+                        📝 จดจำการเข้าสู่ระบบ
                     </label>
                 </div>
 
