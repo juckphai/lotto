@@ -5,6 +5,7 @@
             --success-color: #28a745;
             --warning-color: #f5a623;
             --border-color: #666666; /* Darkened border for better visibility */
+            --main-border-color: #ED01ED; /* NEW: ตัวแปรสำหรับสีชมพู */
             --text-color: #000000; /* New: Standard black text */
             --text-color-light: #333333; /* New: Dark gray for secondary text */
             --background-color: #ffffff; /* New: White background */
@@ -28,7 +29,7 @@
             max-width: 800px; 
             margin: 5px auto; /* ลด margin ด้านบน/ล่าง */
             background-color: var(--background-color);
-            border: 1px solid #ED01ED; 
+            border: 2px solid var(--main-border-color); /* ✅ ใช้ตัวแปรและเพิ่มความหนา */
             padding: 5px; /* ลด padding โดยรวม */
             border-radius: 8px; /* ลด radius เล็กน้อย */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* ลดขนาดเงา */
@@ -785,8 +786,10 @@
                 width: 100%;
                 margin: 0;
                 border-radius: 0;
-                border: none;
-                min-height: 100vh;
+                /* --- แก้ไขปัญหาพื้นที่ว่างด้านล่าง --- */
+                border: 2px solid var(--main-border-color); /* กำหนดเส้นขอบสีชมพูชัดเจน */
+                min-height: auto; /* ✅ ปรับความสูงตามเนื้อหา */
+                /* -------------------------------------- */
                 padding: 3px; /* ลด padding อีก */
             }
             form {
