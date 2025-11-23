@@ -924,7 +924,7 @@
                 color: var(--text-color);
             }
 
-            /* === START: MOBILE USER PAGE FORM OVERRIDES === */
+            /* === START: MOBILE USER PAGE FORM OVERRIDES (FOR STACKING) === */
             #page-users #user-form,
             #page-data #backup-password-form {
                 grid-template-columns: 1fr;
@@ -960,7 +960,31 @@
                 margin-bottom: 0;
                 color: var(--text-color);
             }
-            /* === END: MOBILE USER PAGE FORM OVERRIDES === */
+            /* === END: MOBILE USER PAGE FORM OVERRIDES (FOR STACKING) === */
+
+            /* === START: [NEW] MOBILE OVERRIDE FOR TWO-COLUMN SECTIONS IN USER FORM (The Fix) === */
+            #page-users #user-form .user-two-columns {
+                display: grid !important; /* Force Grid on mobile for these groups */
+                grid-template-columns: 1fr 1fr !important; /* Force two equal columns */
+                gap: 8px !important; /* Reduced gap for mobile */
+                grid-column: 1 / -1; /* ให้ยืดเต็มความกว้างของฟอร์มผู้ใช้ */
+            }
+
+            #page-users #user-form .user-two-columns .field-group {
+                display: flex;
+                flex-direction: column; /* Stack label and input vertically */
+                align-items: stretch;
+                gap: 3px;
+            }
+
+            #page-users #user-form .user-two-columns label {
+                text-align: left !important;
+                margin-bottom: 0 !important;
+                font-weight: bold;
+            }
+            /* === END: [NEW] MOBILE OVERRIDE (The Fix) === */
+
+
             
             .form-actions {
                 flex-direction: column;
@@ -1612,6 +1636,23 @@
     color: var(--text-color);
 }
 
+/* เพิ่มการจัดกลุ่มสำหรับ field ที่ต้องการให้ input/label อยู่ใน div ย่อย */
+#page-users #user-form .field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    grid-column: span 1; /* ใช้ 1 คอลัมน์ของ grid ย่อยภายใน user-two-columns */
+}
+
+/* จัดกลุ่ม 2 คอลัมน์ที่ต้องการกำหนดเอง */
+#page-users #user-form .user-two-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    grid-column: 1 / -1; /* ครอบคลุมความกว้างเต็มของฟอร์มหลัก */
+}
+
+
 #page-users #user-form label {
     text-align: right;
     font-weight: bold;
@@ -1620,6 +1661,7 @@
     align-items: center;
     justify-content: flex-end;
     color: var(--text-color);
+    white-space: nowrap; /* ป้องกัน Label ใน Desktop ไม่ให้หดตัวในฟอร์ม */
 }
 
 #page-users #user-form input,
@@ -1632,6 +1674,7 @@
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     background-color: var(--background-color);
     color: var(--text-color);
+    text-align: left; /* ให้ input ชิดซ้ายตามหลักการกรอกฟอร์ม */
 }
 
 #page-users #user-form input:focus,
@@ -1640,6 +1683,11 @@
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(74, 144, 226, 0.25);
 }
+/* ยกเลิกการชิดขวาของ label ใน field-group บน desktop (ใช้ text-align: left ใน media query แทน) */
+#page-users #user-form .field-group label {
+    text-align: left;
+}
+
 
 /* ปรับปรุงส่วนของ Commission Sources */
 #page-users #user-form .form-group {
@@ -1668,6 +1716,7 @@
     border-radius: 4px;
     transition: background-color 0.2s;
     color: var(--text-color);
+    white-space: nowrap; /* ป้องกันการพับของ checkbox label บน Desktop */
 }
 
 #page-users #user-form #user-commission-sources label:hover {
@@ -1677,6 +1726,7 @@
 #page-users #user-form #user-commission-sources input {
     width: auto;
     margin-right: 6px; /* ลด margin */
+    text-align: left;
 }
 
 /* ปรับปรุงปุ่มในฟอร์ม */

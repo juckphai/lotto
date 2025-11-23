@@ -3680,55 +3680,169 @@ renderPos(payload = null) {
     
     // หน้าจัดการผู้ใช้
     document.getElementById('page-users').innerHTML = `
-        <h2>👥 จัดการผู้ใช้</h2> 
-        <form id="user-form"> 
-            <input type="hidden" id="user-id"> 
-            <div class="form-group"><label for="user-username">👤 ชื่อผู้ใช้:</label><input type="text" id="user-username" required></div>
-            <div class="form-group"><label for="user-password">🔑 รหัสผ่านใหม่:</label><input type="password" id="user-password" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
-            <div class="form-group"><label for="user-password-confirm">🔑 ยืนยันรหัสผ่าน:</label><input type="password" id="user-password-confirm" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
-            <div class="form-group">
-                <label style="font-weight:normal; display:block; cursor:pointer;">
-                    <input type="checkbox" id="show-password-user-form"> 👁️ แสดงรหัสผ่าน
-                </label>
-            </div>
-            <div class="form-group"><label for="user-role">🛡️ ประเภท:</label><select id="user-role" required> <option value="seller">Seller</option> <option value="admin">Admin</option> </select></div>
-            <div id="user-store-assignment-container" class="form-group"></div>
-            <div id="user-commission-settings-container" class="form-group"> 
-                <h4>💰 ตั้งค่าคอมมิชชั่น</h4>
-                <div class="form-group"><label for="user-commission-rate">อัตรา (%):</label><input type="number" id="user-commission-rate" min="0" max="100" step="any" placeholder="เช่น 3, 5.5"></div>
-                <div class="form-group">
-                    <label>คิดจากยอดขาย:</label>
-                    <div id="user-commission-sources"> 
-                        <label><input type="checkbox" id="user-commission-cash"> 💵 เงินสด</label> 
-                        <label><input type="checkbox" id="user-commission-transfer"> 🏦 เงินโอน</label> 
-                        <label><input type="checkbox" id="user-commission-credit"> 📝 เครดิต</label> 
-                    </div>
+    <h2>👥 จัดการผู้ใช้</h2> 
+
+    <form id="user-form" class="user-form-center">
+
+        <input type="hidden" id="user-id">
+
+<!-- 👤 ชื่อผู้ใช้ + 🛡️ ประเภทผู้ใช้ (แถวเดียวกัน) -->
+<div class="user-two-columns" style="grid-column: 1 / -1;">
+    
+    <div class="field-group">
+        <label for="user-username">👤 ชื่อผู้ใช้:</label>
+        <input type="text" id="user-username" required>
+    </div>
+
+    <div class="field-group">
+        <label for="user-role">🛡️ ประเภท:</label>
+        <select id="user-role" required>
+            <option value="seller">Seller</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+</div>
+
+
+<!-- 🔑 แถวรหัสผ่าน (อยู่ grid row ของ user-form โดยตรง) -->
+<div class="user-two-columns" style="grid-column: 1 / -1;">
+    <div class="field-group">
+        <label for="user-password">🔑 รหัสผ่านใหม่:</label>
+        <input type="password" id="user-password" placeholder="กำหนดรหัสผ่านสำหรับผู้ใช้ใหม่">
+    </div>
+
+    <div class="field-group">
+        <label for="user-password-confirm">🔑 ยืนยันรหัสผ่าน:</label>
+        <input type="password" id="user-password-confirm" placeholder="ยืนยันรหัสผ่าน">
+    </div>
+</div>
+
+<!-- 👁️ แสดงรหัสผ่าน (อันนี้ค่อยอยู่ .form-group ได้) -->
+<div class="form-group" style="display:flex; justify-content:center; align-items:center; gap:6px;">
+
+    <input type="checkbox" id="show-password-user-form" style="width:18px; height:18px;">
+
+    <label for="show-password-user-form" 
+           style="cursor:pointer; font-weight:normal; margin:0; display:flex; align-items:center;">
+        👁️ แสดงรหัสผ่าน
+    </label>
+
+</div>
+
+        <!-- ร้านและกำหนดสินค้า -->
+        <div id="user-store-assignment-container" class="form-group"></div>
+
+<!-- คอมมิชชั่น -->
+<div id="user-commission-settings-container" class="form-group">
+
+    <!-- ทั้งหมดอยู่แถวเดียวกัน -->
+    <div style="display:flex; align-items:center; gap:10px;">
+
+        <h4 style="margin:0; white-space:nowrap;">💰 ตั้งค่าคอมมิชชั่น:</h4>
+
+        <label for="user-commission-rate" style="margin:0; white-space:nowrap;">
+            อัตรา (%):
+        </label>
+
+        <input type="number" 
+               id="user-commission-rate" 
+               min="0" 
+               max="100" 
+               step="any" 
+               placeholder="เช่น 3, 5.5"
+               style="flex:1;">
+
+    </div>
+
+</div>
+
+
+
+<div class="form-group" style="display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;">
+
+    <label style="margin:0; white-space:nowrap;">
+        คิดจากยอดขาย:
+    </label>
+
+    <div id="user-commission-sources" 
+         style="display:flex; align-items:center; gap:15px; flex-wrap:wrap;">
+
+        <label style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+            <input type="checkbox" id="user-commission-cash"> 💵 เงินสด
+        </label>
+
+        <label style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+            <input type="checkbox" id="user-commission-transfer"> 🏦 โอน
+        </label>
+
+        <label style="display:flex; align-items:center; gap:5px; white-space:nowrap;">
+            <input type="checkbox" id="user-commission-credit"> 💳 เครดิต
+        </label>
+
+    </div>
+</div>
+
+
+        <!-- ระยะเวลาที่ขายได้ (จัดคู่) -->
+        <div id="user-sales-period-container" class="form-group">
+            <h4>📅 กำหนดระยะเวลาที่สามารถขายได้</h4>
+
+            <div class="user-two-columns">
+                <div class="field-group">
+                    <label for="user-sales-start-date">วันที่เริ่มขาย:</label>
+                    <input type="date" id="user-sales-start-date">
                 </div>
-            </div> 
-            <div id="user-history-view-container" class="form-group"> 
-                <h4>🕒 ตั้งค่าการแสดงผลประวัติ</h4>
-                <div class="form-group"><label for="user-visible-days">จำนวนวันที่ดูประวัติขายได้:</label><input type="number" id="user-visible-days" min="0" placeholder="0=วันนี้, 1=วันนี้และเมื่อวาน (เว้นว่าง=ทั้งหมด)"></div>
-            </div> 
-            <div id="user-sales-period-container" class="form-group">
-                <h4>📅 กำหนดระยะเวลาที่สามารถขายได้</h4> 
-                <div class="form-group"><label for="user-sales-start-date">วันที่เริ่มขาย:</label><input type="date" id="user-sales-start-date"></div>
-                <div class="form-group"><label for="user-sales-end-date">วันที่สิ้นสุด:</label><input type="date" id="user-sales-end-date"></div>
-            </div> 
-            <div id="user-product-assignment-container" class="form-group"> 
-                <h4>📦 กำหนดสินค้าที่สามารถขายได้</h4> 
-                <div id="user-product-assignment" style="max-height: 150px; overflow-y: auto; border: 1px solid #BFBFBF; padding: 10px; border-radius: 10px;"></div> 
-            </div> 
-            <div class="form-actions"> 
-                <button type="submit" class="success">💾 บันทึกผู้ใช้</button> 
-                <button type="button" id="clear-user-form-btn" style="background-color:#6c757d;">🔄 เคลียร์ฟอร์ม</button> 
-            </div> 
-        </form> 
-        <div class="table-container">
-            <table id="user-table"> 
-                <thead><tr><th>ชื่อผู้ใช้</th><th>ประเภท</th><th>ร้านค้า</th><th>สินค้าที่ขายได้</th><th>ระยะเวลาที่ขายได้</th><th>จัดการ</th></tr></thead> 
-                <tbody></tbody> 
-            </table>
-        </div>`;
+
+                <div class="field-group">
+                    <label for="user-sales-end-date">วันที่สิ้นสุด:</label>
+                    <input type="date" id="user-sales-end-date">
+                </div>
+            </div>
+        </div>
+
+        <!-- สินค้าที่ขายได้ -->
+        <div id="user-product-assignment-container" class="form-group">
+            <h4>📦 กำหนดสินค้าที่สามารถขายได้</h4>
+            <div id="user-product-assignment"
+                 style="max-height:150px; overflow-y:auto; border:1px solid #BFBFBF; padding:10px; border-radius:10px;">
+            </div>
+        </div>
+
+<!-- การเข้าถึงประวัติ -->
+<div id="user-history-view-container" class="form-group">
+    <h4>📘 จำนวนวันที่ดูประวัติขายได้</h4>
+
+    <input type="number" id="user-visible-days" min="0"
+           placeholder="เว้นว่างคือดูได้ทั้งหมด 0=วันนี้, 1=เมื่อวานด้วย"
+           style="width:100%; box-sizing:border-box;">
+</div>
+
+
+
+        <div class="form-actions">
+            <button type="submit" class="success">💾 บันทึกผู้ใช้</button>
+            <button type="button" id="clear-user-form-btn" style="background-color:#6c757d;">🔄 เคลียร์ฟอร์ม</button>
+        </div>
+
+    </form>
+
+    <div class="table-container">
+        <table id="user-table">
+            <thead>
+                <tr>
+                    <th>ชื่อผู้ใช้</th>
+                    <th>ประเภท</th>
+                    <th>ร้านค้า</th>
+                    <th>สินค้าที่ขายได้</th>
+                    <th>ระยะเวลาที่ขายได้</th>
+                    <th>จัดการ</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+`;
 
     // หน้าจัดการข้อมูล
     document.getElementById('page-data').innerHTML = `
