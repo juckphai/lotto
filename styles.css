@@ -1224,7 +1224,7 @@
                 font-size: clamp(7px, 1.8vw, 8.5px); /* ปรับ: ลด font size อีกเล็กน้อย */
                 padding: 5px 3px; /* ปรับ: เพิ่ม padding-top/bottom เพื่อเพิ่มความสูงของแถวตามคำแนะนำ */
                 color: #0088ff !important;
-                border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบเซลล์ให้คมชัด */
+                border: 0.5px solid #333 !important; /* ปรับ: เส้นขอบตารางหลักให้คมชัด */
             }
             #modalBodyContent table td {
                 padding: 4px 2px; /* ปรับ: เพิ่ม padding-top/bottom เพื่อเพิ่มความสูงของแถวตามคำแนะนำ */
@@ -1743,6 +1743,47 @@
     padding: 10px 15px; /* ลด padding */
     font-weight: bold;
 }
+
+/* === START: ปรับปรุงส่วนกำหนดสินค้าที่สามารถขายได้ (ตามคำขอ) === */
+
+/* 1. จัดเรียงรายการสินค้าเป็น Grid/หลายคอลัมน์ */
+#page-users #user-form #user-product-assignment {
+    display: grid !important; 
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important; /* แสดงหลายคอลัมน์บน Desktop */
+    gap: 8px !important; 
+    padding: 10px;
+    background: #e9f7fe; 
+    border-radius: 6px;
+    border: 1px solid #b8e2f5;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* 2. จัดเรียง Checkbox และชื่อสินค้าให้อยู่ในแถวเดียวกัน (Inline) */
+#page-users #user-form #user-product-assignment label {
+    display: flex !important; /* ใช้ Flexbox */
+    align-items: center;      /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    gap: 6px;                 /* ระยะห่างระหว่าง checkbox กับข้อความ */
+    padding: 3px 5px;         /* เพิ่ม padding เล็กน้อย */
+    font-weight: normal;      /* กำหนดให้เป็นตัวปกติ */
+    transition: background-color 0.2s;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#page-users #user-form #user-product-assignment label:hover {
+    background-color: rgba(74, 144, 226, 0.1);
+}
+
+#page-users #user-form #user-product-assignment input[type="checkbox"] {
+    width: auto !important;   /* คืนค่าความกว้างสำหรับ checkbox */
+    margin: 0 !important;     /* ลบ margin ภายนอก */
+    flex-shrink: 0;           /* ป้องกัน checkbox หด */
+    /* เนื่องจาก label เดิมใน script.js มี style="display: block; margin-bottom: 5px;" 
+       การใช้ !important ใน display: flex จะเข้ามา Overwrite ได้อย่างสมบูรณ์ */
+}
+/* === END: ปรับปรุงส่วนกำหนดสินค้าที่สามารถขายได้ === */
+
 
 /* === START: ปรับปรุงตารางจัดการผู้ใช้ให้ตรงกับรูปแบบที่ต้องการ === */
 
