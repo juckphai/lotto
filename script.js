@@ -1347,7 +1347,8 @@
                         }
                     });
 
-                    let footerRows = `<tr style="font-weight: bold; background-color: #f0f0f0;">
+                    // สร้างส่วนสรุป (Footer Rows) เหมือนเดิม
+                    let footerRows = `<tr style="font-weight: bold; background-color: #f0f0f0; border-top: 2px solid #333;">
                         <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด:</td>
                         <td>${this.formatNumberSmart(totalSales)}</td>
                         ${isAdminReport ? `<td style="color:${totalProfit >= 0 ? 'green' : 'red'};">${this.formatNumberSmart(totalProfit)}</td>` : ''}
@@ -1396,6 +1397,9 @@
 
                     const tableClass = isAdminReport ? 'detailed-sales-table admin-view' : 'detailed-sales-table';
 
+                    /* แก้ไข: นำ footerRows ไปต่อท้าย tableRows ใน <tbody> โดยตรง 
+                       และลบแท็ก <tfoot> ออก เพื่อไม่ให้ Browser สั่งพิมพ์ซ้ำทุกหน้า
+                    */
                     return `
                         <div style="text-align:center;">
                             <h2>${title}</h2>
@@ -1414,10 +1418,8 @@
                                     </thead>
                                     <tbody>
                                         ${tableRows}
+                                        ${footerRows} 
                                     </tbody>
-                                    <tfoot>
-                                        ${footerRows}
-                                    </tfoot>
                                 </table>
                             </div>
                         </div>
