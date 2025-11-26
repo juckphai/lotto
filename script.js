@@ -511,7 +511,7 @@
                         statusEl.style.color = 'var(--warning-color)';
                     }
                 },
- async saveBackupToFile() {
+                async saveBackupToFile() {
                     const now = new Date();
                     const year = now.getFullYear();
                     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -525,7 +525,6 @@
                     let dataToSaveString;
                     const backupPassword = this.data.backupPassword;
 
-                    // ส่วนเตรียมข้อมูล (เหมือนเดิม)
                     if (backupPassword) {
                         try {
                             this.showToast('กำลังเข้ารหัสข้อมูลด้วยรหัสผ่านของระบบ...', 'warning');
@@ -543,43 +542,9 @@
                         dataToSaveString = JSON.stringify(this.data, null, 2);
                     }
 
-                    // --- [ส่วนที่แก้ไขใหม่: ใช้ showSaveFilePicker] ---
-                    // ตรวจสอบว่า Browser รองรับฟีเจอร์นี้หรือไม่ (ใช้ได้บน Chrome/Edge บน PC)
-                    if ('showSaveFilePicker' in window) {
-                        try {
-                            const options = {
-                                suggestedName: fullFileName,
-                                types: [{
-                                    description: 'JSON Backup File',
-                                    accept: { 'application/json': ['.json'] },
-                                }],
-                            };
-                            
-                            // สั่งเปิดหน้าต่าง Save As... ของ Windows/Mac
-                            const handle = await window.showSaveFilePicker(options);
-                            
-                            // สร้าง Stream เพื่อเขียนไฟล์
-                            const writable = await handle.createWritable();
-                            await writable.write(dataToSaveString);
-                            await writable.close();
-                            
-                            this.showToast(`บันทึกไฟล์ "${handle.name}" เรียบร้อยแล้ว`, 'success');
-                            return; // ถ้าทำสำเร็จ ให้จบการทำงานตรงนี้เลย
-
-                        } catch (err) {
-                            // กรณีผู้ใช้กดยกเลิก (Cancel) ไม่ต้องทำอะไร
-                            if (err.name === 'AbortError') {
-                                return; 
-                            }
-                            console.error('SaveFilePicker failed:', err);
-                            // ถ้า error อื่นๆ ให้ทำต่อในส่วน Fallback ด้านล่าง
-                        }
-                    }
-
-                    // --- [ส่วน Fallback: กรณีใช้บนมือถือ หรือ Browser ที่ไม่รองรับ] ---
-                    // ใช้วิธีเดิมคือสร้างลิงก์หลอกๆ แล้วกดดาวน์โหลด
                     const blob = new Blob([dataToSaveString], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
+
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = fullFileName;
@@ -587,7 +552,37 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    this.showToast(`บันทึกไฟล์ "${fullFileName}" เรียบร้อย (โหมดดาวน์โหลดปกติ)`);
+                    this.showToast(`บันทึกไฟล์ "${fullFileName}" เรียบร้อย`);
+                },
+                recalculateAllStock() {
+                    const totalStockIn = new Map();
+                    const totalSold = new Map();
+                    const totalStockOut = new Map();
+
+                    this.data.stockIns.forEach(si => {
+                        const currentQty = totalStockIn.get(si.productId) || 0;
+                        totalStockIn.set(si.productId, currentQty + si.quantity);
+                    });
+
+                    this.data.sales.forEach(sale => {
+                        sale.items.forEach(item => {
+                            const currentQty = totalSold.get(item.productId) || 0;
+                            totalSold.set(item.productId, currentQty + item.quantity);
+                        });
+                    });
+
+                    this.data.stockOuts.forEach(so => {
+                        const currentQty = totalStockOut.get(so.productId) || 0;
+                        totalStockOut.set(so.productId, currentQty + so.quantity);
+                    });
+
+                    this.data.products.forEach(product => {
+                        const initialStock = totalStockIn.get(product.id) || 0;
+                        const soldQty = totalSold.get(product.id) || 0;
+                        const stockOutQty = totalStockOut.get(product.id) || 0;
+                        product.stock = initialStock - soldQty - stockOutQty;
+                    });
+                    console.log("Stock recalculated for all products based on history.");
                 },
                 // *** เพิ่มฟังก์ชันที่หายไปสำหรับปุ่ม Recalculate ***
                 handleRecalculateStock() {
