@@ -511,7 +511,7 @@
                         statusEl.style.color = 'var(--warning-color)';
                     }
                 },
- async saveBackupToFile() {
+                async saveBackupToFile() {
                     const now = new Date();
                     const year = now.getFullYear();
                     const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -525,7 +525,6 @@
                     let dataToSaveString;
                     const backupPassword = this.data.backupPassword;
 
-                    // ส่วนเตรียมข้อมูล (เหมือนเดิม)
                     if (backupPassword) {
                         try {
                             this.showToast('กำลังเข้ารหัสข้อมูลด้วยรหัสผ่านของระบบ...', 'warning');
@@ -543,43 +542,9 @@
                         dataToSaveString = JSON.stringify(this.data, null, 2);
                     }
 
-                    // --- [ส่วนที่แก้ไขใหม่: ใช้ showSaveFilePicker] ---
-                    // ตรวจสอบว่า Browser รองรับฟีเจอร์นี้หรือไม่ (ใช้ได้บน Chrome/Edge บน PC)
-                    if ('showSaveFilePicker' in window) {
-                        try {
-                            const options = {
-                                suggestedName: fullFileName,
-                                types: [{
-                                    description: 'JSON Backup File',
-                                    accept: { 'application/json': ['.json'] },
-                                }],
-                            };
-                            
-                            // สั่งเปิดหน้าต่าง Save As... ของ Windows/Mac
-                            const handle = await window.showSaveFilePicker(options);
-                            
-                            // สร้าง Stream เพื่อเขียนไฟล์
-                            const writable = await handle.createWritable();
-                            await writable.write(dataToSaveString);
-                            await writable.close();
-                            
-                            this.showToast(`บันทึกไฟล์ "${handle.name}" เรียบร้อยแล้ว`, 'success');
-                            return; // ถ้าทำสำเร็จ ให้จบการทำงานตรงนี้เลย
-
-                        } catch (err) {
-                            // กรณีผู้ใช้กดยกเลิก (Cancel) ไม่ต้องทำอะไร
-                            if (err.name === 'AbortError') {
-                                return; 
-                            }
-                            console.error('SaveFilePicker failed:', err);
-                            // ถ้า error อื่นๆ ให้ทำต่อในส่วน Fallback ด้านล่าง
-                        }
-                    }
-
-                    // --- [ส่วน Fallback: กรณีใช้บนมือถือ หรือ Browser ที่ไม่รองรับ] ---
-                    // ใช้วิธีเดิมคือสร้างลิงก์หลอกๆ แล้วกดดาวน์โหลด
                     const blob = new Blob([dataToSaveString], { type: 'application/json' });
                     const url = URL.createObjectURL(blob);
+
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = fullFileName;
@@ -587,21 +552,18 @@
                     a.click();
                     document.body.removeChild(a);
                     URL.revokeObjectURL(url);
-                    this.showToast(`บันทึกไฟล์ "${fullFileName}" เรียบร้อย (โหมดดาวน์โหลดปกติ)`);
+                    this.showToast(`บันทึกไฟล์ "${fullFileName}" เรียบร้อย`);
                 },
-  // ฟังก์ชันคำนวณสต็อกใหม่ทั้งหมด (ต้องมีตัวนี้ครับ ไม่งั้น Restore ไม่ผ่าน)
                 recalculateAllStock() {
                     const totalStockIn = new Map();
                     const totalSold = new Map();
                     const totalStockOut = new Map();
 
-                    // 1. รวมยอดนำเข้า
                     this.data.stockIns.forEach(si => {
                         const currentQty = totalStockIn.get(si.productId) || 0;
                         totalStockIn.set(si.productId, currentQty + si.quantity);
                     });
 
-                    // 2. รวมยอดขาย
                     this.data.sales.forEach(sale => {
                         sale.items.forEach(item => {
                             const currentQty = totalSold.get(item.productId) || 0;
@@ -609,13 +571,11 @@
                         });
                     });
 
-                    // 3. รวมยอดปรับออก
                     this.data.stockOuts.forEach(so => {
                         const currentQty = totalStockOut.get(so.productId) || 0;
                         totalStockOut.set(so.productId, currentQty + so.quantity);
                     });
 
-                    // 4. อัปเดตสต็อกสินค้าทุกตัว
                     this.data.products.forEach(product => {
                         const initialStock = totalStockIn.get(product.id) || 0;
                         const soldQty = totalSold.get(product.id) || 0;
@@ -624,8 +584,15 @@
                     });
                     console.log("Stock recalculated for all products based on history.");
                 },
-
-                // ฟังก์ชันช่วยรวมอาร์เรย์ (Helper) - ควรมีตัวนี้ด้วยเผื่อหายไป
+                // *** เพิ่มฟังก์ชันที่หายไปสำหรับปุ่ม Recalculate ***
+                handleRecalculateStock() {
+                    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการ "คำนวณสต็อกใหม่ทั้งหมด" ? การกระทำนี้จะใช้ประวัติการนำเข้า/ขาย/ปรับออกทั้งหมด เพื่อกำหนดค่าสต็อกสินค้าปัจจุบันใหม่')) {
+                        this.recalculateAllStock();
+                        this.saveData();
+                        this.showToast('คำนวณสต็อกใหม่ทั้งหมดสำเร็จ!');
+                        this.renderStockSummaryReport();
+                    }
+                },
                 _mergeSingleArray(currentArray, newArray, key = 'id') {
                     if (!newArray || !Array.isArray(newArray)) return;
                     const currentIds = new Set(currentArray.map(item => item[key]));
@@ -644,8 +611,6 @@
                         }
                     });
                 },
-
-                // ฟังก์ชันรวมข้อมูล (Merge Data) - ต้องมีตัวนี้ด้วย
                 mergeData(dataFromFile) {
                     if (dataFromFile.users && Array.isArray(dataFromFile.users)) {
                         const currentAdmin = this.data.users.find(u => u.username === 'admin');
@@ -671,8 +636,6 @@
                                 existingProduct.costPrice = newProduct.costPrice;
                                 existingProduct.sellingPrice = newProduct.sellingPrice;
                                 existingProduct.unit = newProduct.unit;
-                                // [สำคัญ] บรรทัดนี้คือส่วนที่เพิ่มเข้ามาใหม่เพื่ออัปเดตบาร์โค้ด
-                                if(newProduct.barcode) existingProduct.barcode = newProduct.barcode; 
                             } else {
                                 this.data.products.push(newProduct);
                             }
@@ -1384,8 +1347,7 @@
                         }
                     });
 
-                    // สร้างส่วนสรุป (Footer Rows) เหมือนเดิม
-                    let footerRows = `<tr style="font-weight: bold; background-color: #f0f0f0; border-top: 2px solid #333;">
+                    let footerRows = `<tr style="font-weight: bold; background-color: #f0f0f0;">
                         <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด:</td>
                         <td>${this.formatNumberSmart(totalSales)}</td>
                         ${isAdminReport ? `<td style="color:${totalProfit >= 0 ? 'green' : 'red'};">${this.formatNumberSmart(totalProfit)}</td>` : ''}
@@ -1434,9 +1396,6 @@
 
                     const tableClass = isAdminReport ? 'detailed-sales-table admin-view' : 'detailed-sales-table';
 
-                    /* แก้ไข: นำ footerRows ไปต่อท้าย tableRows ใน <tbody> โดยตรง 
-                       และลบแท็ก <tfoot> ออก เพื่อไม่ให้ Browser สั่งพิมพ์ซ้ำทุกหน้า
-                    */
                     return `
                         <div style="text-align:center;">
                             <h2>${title}</h2>
@@ -1455,8 +1414,10 @@
                                     </thead>
                                     <tbody>
                                         ${tableRows}
-                                        ${footerRows} 
                                     </tbody>
+                                    <tfoot>
+                                        ${footerRows}
+                                    </tfoot>
                                 </table>
                             </div>
                         </div>
