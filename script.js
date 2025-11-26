@@ -2205,7 +2205,7 @@
                 },
 
                 // --- POS (POINT OF SALE) ---
-renderPos(payload = null) {
+              renderPos(payload = null) {
                     this.editingSaleContext = null;
                     const productSelect = document.getElementById('pos-product');
                     if (!productSelect) return;
@@ -2286,11 +2286,9 @@ renderPos(payload = null) {
                         const dateInput = document.getElementById('pos-date');
                         const timeInput = document.getElementById('pos-time');
                         
-                        // กำหนดค่าเริ่มต้นเป็น วันที่/เวลาปัจจุบัน
                         if (!dateInput.value) { dateInput.value = dateString; }
                         if (!timeInput.value) { timeInput.value = timeString; }
                         
-                        // หากเป็นการเริ่มทำรายการใหม่ (ตะกร้าว่าง)
                         if (this.cart.length === 0) {
                             document.querySelector('input[name="payment-method"][value="เงินสด"]').checked = true;
                             document.getElementById('pos-date').classList.remove('backdating-active');
@@ -2300,6 +2298,10 @@ renderPos(payload = null) {
                     this.renderCart();
                     this.togglePaymentDetailFields();
                     this.updateSpecialPriceInfo();
+
+                    // [ใหม่] โฟกัสไปที่ช่องสแกนบาร์โค้ดเสมอเมื่อเปิดหน้า POS
+                    const barcodeInput = document.getElementById('pos-barcode-input');
+                    if (barcodeInput) setTimeout(() => barcodeInput.focus(), 100); 
                 },
                 renderCart() {
                     const tbody = document.querySelector('#cart-table tbody');
@@ -2541,6 +2543,69 @@ renderPos(payload = null) {
                         }
                     }
                 },
+              // [ฟังก์ชันใหม่] จัดการการสแกนบาร์โค้ด
+                handleBarcodeScan(e) {
+                    e.preventDefault();
+                    const barcodeInput = document.getElementById('pos-barcode-input');
+                    const barcode = barcodeInput.value.trim();
+
+                    if (!barcode) return;
+
+                    // 1. ค้นหาสินค้า
+                    const product = this.data.products.find(p => p.barcode === barcode);
+
+                    if (product) {
+                        // 2. ตรวจสอบสิทธิ์ (Seller)
+                        if (this.currentUser.role === 'seller') {
+                            const assignedIds = this.currentUser.assignedProductIds || [];
+                            if (!assignedIds.includes(product.id)) {
+                                this.showToast('คุณไม่มีสิทธิ์ขายสินค้านี้', 'error');
+                                barcodeInput.value = '';
+                                return;
+                            }
+                        }
+
+                        // 3. ตรวจสอบสต็อก
+                        if (product.stock <= 0) {
+                            this.showToast(`สินค้า "${product.name}" หมดสต็อก!`, 'error');
+                            barcodeInput.value = '';
+                            return;
+                        }
+
+                        // 4. เพิ่มลงตะกร้าอัตโนมัติ (+1)
+                        const quantity = 1;
+                        const existingCartItem = this.cart.find(item => item.id === product.id && !item.isSpecialPrice);
+
+                        if (existingCartItem) {
+                            if (existingCartItem.quantity + quantity > product.stock) {
+                                this.showToast('สินค้าในสต็อกไม่เพียงพอ', 'error');
+                            } else {
+                                existingCartItem.quantity += quantity;
+                                this.showToast(`เพิ่ม ${product.name} แล้ว (+1)`);
+                            }
+                        } else {
+                            this.cart.push({
+                                id: product.id,
+                                name: product.name,
+                                quantity: quantity,
+                                sellingPrice: product.sellingPrice,
+                                costPrice: product.costPrice,
+                                isSpecialPrice: false,
+                                originalPrice: product.sellingPrice
+                            });
+                            this.showToast(`เพิ่ม ${product.name} ลงตะกร้า`);
+                        }
+
+                        // 5. อัปเดตหน้าจอ
+                        this.renderCart();
+                        barcodeInput.value = '';
+                        barcodeInput.focus(); // โฟกัสกลับเตรียมสแกนชิ้นต่อไป
+
+                    } else {
+                        this.showToast(`ไม่พบสินค้าบาร์โค้ด: ${barcode}`, 'error');
+                        barcodeInput.value = '';
+                    }
+                },
 
                 // --- SALES HISTORY MANAGEMENT (ADMIN & SELLER) ---
                 renderSalesHistory() {
@@ -2710,37 +2775,41 @@ renderPos(payload = null) {
                         tbody.appendChild(tr);
                     });
                 },
-                saveProduct(e) {
+                               saveProduct(e) {
                     e.preventDefault();
                     const idValue = document.getElementById('product-id').value;
                     const id = idValue ? parseInt(idValue, 10) : null;
 
                     const newProductData = {
+                        barcode: document.getElementById('product-barcode').value.trim(), // [ใหม่] รับค่าบาร์โค้ด
                         name: document.getElementById('product-name').value,
                         unit: document.getElementById('product-unit').value
                     };
+
+                    // ตรวจสอบบาร์โค้ดซ้ำ (ถ้ามีการกรอก)
+                    if (newProductData.barcode) {
+                        const duplicate = this.data.products.find(p => p.barcode === newProductData.barcode && p.id !== id);
+                        if (duplicate) {
+                            this.showToast(`บาร์โค้ดนี้ซ้ำกับสินค้า "${duplicate.name}"`, 'error');
+                            return;
+                        }
+                    }
 
                     if (id) {
                         const index = this.data.products.findIndex(p => p.id === id); 
                         if (index > -1) {
                             const oldProduct = this.data.products[index];
                             const newName = newProductData.name;
+                            // อัปเดตชื่อในประวัติย้อนหลัง (Logic เดิม)
                             if (oldProduct.name !== newName) {
-                                this.data.sales.forEach(sale => {
-                                    sale.items.forEach(item => {
-                                        if (item.productId === id) { item.name = newName; }
-                                    });
-                                });
-                                this.data.stockIns.forEach(stockIn => {
-                                    if (stockIn.productId === id) { stockIn.productName = newName; }
-                                });
-                                this.data.stockOuts.forEach(stockOut => {
-                                    if (stockOut.productId === id) { stockOut.productName = newName; }
-                                });
-                                this.showToast('อัปเดตชื่อสินค้าในประวัติย้อนหลังเรียบร้อย');
+                                this.data.sales.forEach(sale => { sale.items.forEach(item => { if (item.productId === id) item.name = newName; }); });
+                                this.data.stockIns.forEach(stockIn => { if (stockIn.productId === id) stockIn.productName = newName; });
+                                this.data.stockOuts.forEach(stockOut => { if (stockOut.productId === id) stockOut.productName = newName; });
                             }
+                            // อัปเดตข้อมูล
                             this.data.products[index].name = newProductData.name;
                             this.data.products[index].unit = newProductData.unit;
+                            this.data.products[index].barcode = newProductData.barcode; // [ใหม่]
                         }
                     } else {
                         newProductData.id = Date.now();
@@ -2754,8 +2823,19 @@ renderPos(payload = null) {
                     document.getElementById('product-form').reset();
                     document.getElementById('product-id').value = '';
                 },
-                editProduct(id) { const product = this.data.products.find(p => p.id == id); if(product) { document.getElementById('product-id').value = product.id; document.getElementById('product-name').value = product.name; document.getElementById('product-unit').value = product.unit; document.getElementById('product-name').focus(); } },
-                deleteProduct(id) { if(confirm('คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้? การกระทำนี้จะลบสินค้าออกจากระบบ แต่จะไม่ลบประวัติการขายหรือการนำเข้าที่เกี่ยวข้อง')) { this.data.products = this.data.products.filter(p => p.id != id); this.saveData(); this.renderProductTable(); } },
+
+                editProduct(id) { 
+                    const product = this.data.products.find(p => p.id == id); 
+                    if(product) { 
+                        document.getElementById('product-id').value = product.id; 
+                        document.getElementById('product-barcode').value = product.barcode || ''; // [ใหม่]
+                        document.getElementById('product-name').value = product.name; 
+                        document.getElementById('product-unit').value = product.unit; 
+                        
+                        // [ใหม่] ให้โฟกัสที่บาร์โค้ดก่อนเพื่อให้แก้ไขหรือดูได้ง่าย
+                        setTimeout(() => document.getElementById('product-barcode').focus(), 100);
+                    } 
+                },
 
                 // --- STOCK MANAGEMENT ---
                 calculateStockAsOf(cutoffDate) {
@@ -3440,64 +3520,63 @@ renderPos(payload = null) {
         },
 
 fillPages(){ 
-                document.getElementById('page-pos').innerHTML = `
+     document.getElementById('page-pos').innerHTML = `
         <h2>ขายสินค้า (Point of Sale)</h2>
         <div class="pos-layout">
             <div>
+                <form id="scan-barcode-form" style="margin-bottom: 10px; border: 2px solid var(--primary-color); padding: 10px; border-radius: 8px; background-color: #e3f2fd; max-width:none;">
+                    <label for="pos-barcode-input" style="font-weight:bold; font-size:1.1em; color:#007bff; text-align:left; display:block;">📷 สแกนบาร์โค้ดที่นี่:</label>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="pos-barcode-input" placeholder="คลิกแล้วยิงบาร์โค้ด..." autocomplete="off" style="font-size: 1.2em; text-align: center; flex-grow:1;">
+                        <button type="submit" style="width:auto; padding:0 20px;">ตกลง</button>
+                    </div>
+                </form>
+
                 <form id="add-to-cart-form" style="max-width:none;">
-          
                     <label for="pos-date-time-group">วันที่/เวลาขาย:</label>
                     <div id="pos-date-time-group" class="date-time-group">
                         <input type="date" id="pos-date">
                         <input type="time" id="pos-time">
-              
                     </div>
-                    <label for="pos-product">เลือกสินค้า:</label>
-                    <select id="pos-product" required></select>
-                    <label for="pos-quantity">จำนวน:</label>
-                    <input type="number" id="pos-quantity" value="1" min="1" required>
-   
-                    <div id="special-price-container" style="display: none; grid-column: 1 / -1;
- grid-template-columns: 150px 1fr; align-items: center; gap: 15px;">
+                    
+                    <div class="product-quantity-group">
+                        <label for="pos-product" class="inline-label">สินค้า/จำนวน:</label>
+                        <select id="pos-product" required></select>
+                        <input type="number" id="pos-quantity" value="1" min="1" required>
+                    </div>
+
+                    <div id="special-price-container" style="display: none; grid-column: 1 / -1; grid-template-columns: 150px 1fr; align-items: center; gap: 15px;">
                         <label for="special-price">ราคาขายใหม่:</label>
                         <div>
                             <input type="number" id="special-price" placeholder="กรอกราคาต่อหน่วย" min="0" step="any">
-           
-                            <span id="current-price-info" style="font-size: 0.9em;
- color: #555; margin-left: 10px;"></span>
+                            <span id="current-price-info" style="font-size: 0.9em; color: #555; margin-left: 10px;"></span>
                         </div>
                     </div>
                     <div class="form-actions">
                         <button type="submit" class="success">เพิ่มลงตะกร้า</button>
-     
                         <button type="button" id="toggle-special-price-btn">ใช้ราคาพิเศษ</button>
                     </div>
                 </form>
                 <h3>รายการในตะกร้า</h3>
                 <div class="table-container">
-        
                     <table id="cart-table">
                         <thead><tr><th>สินค้า</th><th>ราคาฯ</th><th>จำนวน</th><th>รวม</th><th>ลบ</th></tr></thead>
                         <tbody></tbody>
                     </table>
                 </div>
-   
             </div>
             <div id="cart-summary">
                 <div id="payment-method-container">
                     <h4>ประเภทการชำระเงิน</h4>
                     <div class="payment-options-wrapper">
-                   
                         <label><input type="radio" name="payment-method" value="เงินสด" checked> เงินสด</label>
                         <label><input type="radio" name="payment-method" value="เงินโอน"> เงินโอน</label>
                         <label><input type="radio" name="payment-method" value="เครดิต"> เครดิต</label>
                     </div>
-           
                     <div id="transfer-fields-container">
                         <div style="margin-top:5px;"><label for="transfer-name" style="text-align:left;font-weight:bold;">ชื่อผู้โอน:</label><input type="text" id="transfer-name"></div>
                     </div>
                     <div id="credit-fields-container">
-                   
                         <div style="margin-top:5px;"><label for="credit-buyer-name" style="text-align:left;font-weight:bold;">ชื่อผู้ซื้อ (เครดิต):</label><input type="text" id="credit-buyer-name"></div>
                         <div style="margin-top:5px;"><label for="credit-due-days" style="text-align:left;font-weight:bold;">จำนวนวันเครดิต :</label><input type="number" id="credit-due-days" min="0" placeholder="เช่น 7, 15, 30"></div>
                     </div>
@@ -3509,8 +3588,7 @@ fillPages(){
                     <button id="process-sale-btn">ยืนยันการขาย</button>
                 </div>
             </div>
-      
-        </div>`; 
+        </div>`;
 
     // หน้าจัดการสินค้า
     document.getElementById('page-products').innerHTML = `
@@ -3518,6 +3596,10 @@ fillPages(){
         <p style="text-align:center; margin-top:-10px; margin-bottom:15px; font-size:0.9em;">ในหน้านี้ใช้สำหรับสร้างและแก้ไข <b>ชื่อสินค้า</b> และ <b>หน่วยนับ</b> เท่านั้น<br>ราคาทุนและราคาขาย จะถูกกำหนดในหน้า "นำเข้าสินค้า"</p>
         <form id="product-form"> 
             <input type="hidden" id="product-id"> 
+            
+            <label for="product-barcode">รหัสบาร์โค้ด (ถ้ามี):</label> 
+            <input type="text" id="product-barcode" placeholder="สแกนหรือพิมพ์รหัสสินค้า"> 
+
             <label for="product-name">ชื่อสินค้า:</label> 
             <input type="text" id="product-name" required> 
       
@@ -3527,7 +3609,6 @@ fillPages(){
                 <button type="submit" class="success">บันทึกสินค้า</button> 
                 <button type="button" id="clear-product-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button> 
             </div> 
-    
         </form> 
         <div class="table-container">
             <table id="product-table"> 
@@ -4071,7 +4152,14 @@ fillPages(){
             document.getElementById('logout-btn').addEventListener('click', () => this.logout()); 
             
             const mainApp = document.getElementById('main-app');
-            mainApp.addEventListener('submit', (e) => { 
+         mainApp.addEventListener('submit', (e) => { 
+                // [ใหม่] เพิ่ม Listener สำหรับฟอร์มสแกนบาร์โค้ด
+                if (e.target.id === 'scan-barcode-form') { 
+                    e.preventDefault(); 
+                    this.handleBarcodeScan(e); 
+                    return; // จบการทำงาน ไม่ต้องเช็คเงื่อนไขอื่น
+                }
+
                 if (e.target.id === 'add-to-cart-form') { e.preventDefault(); this.addToCart(e); }
                 if (e.target.id === 'product-form') { e.preventDefault(); this.saveProduct(e); } 
                 if (e.target.id === 'store-form') { e.preventDefault(); this.saveStore(e); } 
@@ -4085,6 +4173,7 @@ fillPages(){
                 if (e.target.id === 'seller-transfer-report-form') { e.preventDefault(); this.runSellerTransferSummary(); }
                 if (e.target.id === 'backup-password-form') { e.preventDefault(); this.saveBackupPassword(e); }
             }); 
+
             mainApp.addEventListener('click', (e) => { 
                 if (e.target.id === 'process-sale-btn') this.processSale(); 
                 if (e.target.classList.contains('remove-from-cart-btn')) this.removeFromCart(e.target.dataset.index); 
