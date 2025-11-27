@@ -2215,13 +2215,16 @@ renderPos(payload = null) {
                         const assignedIds = this.currentUser.assignedProductIds || [];
                         availableProducts = availableProducts.filter(p => assignedIds.includes(p.id));
                     }
+                    // กรองเฉพาะสินค้าที่มีสต็อก > 0
                     const productsInStock = availableProducts.filter(p => p.stock > 0);
 
+                    // --- [ปรับปรุง] การจัดการสินค้าชิ้นเดียวของผู้ขาย ---
                     if (this.currentUser.role === 'seller' && productsInStock.length === 1) {
                         const singleProduct = productsInStock[0];
                         productSelect.innerHTML = `<option value="${singleProduct.id}">${singleProduct.name} (คงเหลือ: ${this.formatNumberSmart(singleProduct.stock)})</option>`;
                         productSelect.disabled = true;
                         productSelect.classList.add('single-product-seller');
+                        productSelect.value = singleProduct.id; // ตั้งค่าเริ่มต้นให้เลือกสินค้านี้
                     } else {
                         productSelect.innerHTML = '<option value="">--- เลือกสินค้า ---</option>';
                         productsInStock.forEach(p => {
@@ -2230,6 +2233,7 @@ renderPos(payload = null) {
                         productSelect.disabled = false;
                         productSelect.classList.remove('single-product-seller');
                     }
+                    // --- [สิ้นสุดปรับปรุง] ---
 
                     // --- กำหนดค่าเริ่มต้นสำหรับ Date/Time ---
                     const now = new Date();
@@ -2366,7 +2370,7 @@ renderPos(payload = null) {
                     this.updateSpecialPriceInfo();
                 },
                 removeFromCart(index) { this.cart.splice(index, 1); this.renderCart(); },
-                processSale() {
+processSale() {
                     if (this.cart.length === 0) {
                         this.showToast('ตะกร้าว่างเปล่า');
                         return;
@@ -2403,8 +2407,7 @@ renderPos(payload = null) {
                         let saleDate = new Date();
                         const dateInput = document.getElementById('pos-date').value;
                         const timeInput = document.getElementById('pos-time').value;
-                        const isBackdatedSale = dateInput || timeInput;
-
+                        
                         if (dateInput) {
                             const [year, month, day] = dateInput.split('-');
                             saleDate.setFullYear(parseInt(year), parseInt(month) - 1, parseInt(day));
@@ -2480,15 +2483,15 @@ renderPos(payload = null) {
                         this.cart = [];
                         this.editingSaleContext = null;
 
-                        if (isBackdatedSale) {
-                            this.renderCart();
-                            document.getElementById('pos-product').value = '';
-                            document.getElementById('pos-quantity').value = 1;
-                            document.getElementById('special-price').value = '';
-                            this.updateSpecialPriceInfo();
-                        } else {
-                            this.renderPos();
-                        }
+                        // --- [ปรับปรุง] การจัดการหลังการขายสำเร็จ ---
+                        // เรียก renderPos() เสมอ เพื่อรีเฟรชสินค้า, อัปเดตสต็อก, และคงสถานะ Single Product
+                        this.renderPos();
+                        
+                        // เคลียร์ค่า Quantity และ Special Price หลังการขายเสร็จสิ้น
+                        document.getElementById('pos-quantity').value = 1;
+                        document.getElementById('special-price').value = '';
+                        this.updateSpecialPriceInfo();
+                        // --- [สิ้นสุดปรับปรุง] ---
 
                         this.showToast('✓ บันทึกการขายสำเร็จ!');
                     } catch (e) {
@@ -4065,210 +4068,170 @@ fillPages(){
     </div>`;
         },
 
-        // --- EVENT LISTENERS ---
-        attachEventListeners(){ 
-            document.getElementById('login-form').addEventListener('submit', (e) => { e.preventDefault(); this.login(document.getElementById('username').value, document.getElementById('password').value); }); 
-            document.getElementById('logout-btn').addEventListener('click', () => this.logout()); 
-            
-            const mainApp = document.getElementById('main-app');
-            mainApp.addEventListener('submit', (e) => { 
-                if (e.target.id === 'add-to-cart-form') { e.preventDefault(); this.addToCart(e); }
-                if (e.target.id === 'product-form') { e.preventDefault(); this.saveProduct(e); } 
-                if (e.target.id === 'store-form') { e.preventDefault(); this.saveStore(e); } 
-                if (e.target.id === 'stock-in-form') { e.preventDefault(); this.saveStockIn(e); }
-                if (e.target.id === 'stock-out-form') { e.preventDefault(); this.saveStockOut(e); }
-                if (e.target.id === 'report-filter-form') { e.preventDefault(); this.renderReport(e); } 
-                if (e.target.id === 'user-form') { e.preventDefault(); this.saveUser(e); }
-                if (e.target.id === 'seller-sales-filter-form') { e.preventDefault(); this.renderSellerSalesHistoryWithFilter(); }
-                if (e.target.id === 'seller-detailed-report-form') { e.preventDefault(); this.runSellerDetailedReport(); }
-                if (e.target.id === 'seller-credit-report-form') { e.preventDefault(); this.runSellerCreditSummary(); }
-                if (e.target.id === 'seller-transfer-report-form') { e.preventDefault(); this.runSellerTransferSummary(); }
-                if (e.target.id === 'backup-password-form') { e.preventDefault(); this.saveBackupPassword(e); }
-            }); 
-            mainApp.addEventListener('click', (e) => { 
-                if (e.target.id === 'process-sale-btn') this.processSale(); 
-                if (e.target.classList.contains('remove-from-cart-btn')) this.removeFromCart(e.target.dataset.index); 
-                if (e.target.id === 'toggle-special-price-btn') this.toggleSpecialPrice(); 
-                if (e.target.classList.contains('edit-sale-btn')) this.editSale(e.target.dataset.id); 
-                if (e.target.classList.contains('delete-sale-btn')) { this.deleteSale(e.target.dataset.id); this.renderSalesHistory(); } 
-                if (e.target.classList.contains('seller-delete-sale-btn')) {
-                    const saleId = e.target.dataset.id;
-                    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการขายนี้? สต็อกสินค้าจะถูกคืนเข้าระบบ')) {
-                        this.deleteSale(saleId);
-                        this.renderSellerSalesHistoryWithFilter();
-                    }
-                }
-                if (e.target.id === 'clear-product-form-btn') { document.getElementById('product-form').reset(); document.getElementById('product-id').value = ''; } 
-                if (e.target.classList.contains('edit-product-btn')) this.editProduct(e.target.dataset.id); 
-                if (e.target.classList.contains('delete-product-btn')) this.deleteProduct(e.target.dataset.id);
-                if (e.target.id === 'clear-store-form-btn') { document.getElementById('store-form').reset(); document.getElementById('store-id').value = ''; }
-                if (e.target.classList.contains('edit-store-btn')) this.editStore(e.target.dataset.id);
-                if (e.target.classList.contains('delete-store-btn')) this.deleteStore(e.target.dataset.id);
-                if (e.target.id === 'clear-user-form-btn') this.setupUserForm();
-                if (e.target.classList.contains('edit-user-btn')) this.editUser(e.target.dataset.id); 
-                if (e.target.classList.contains('delete-user-btn')) this.deleteUser(e.target.dataset.id); 
-                
-                if (e.target.classList.contains('edit-stock-in-btn')) this.editStockIn(e.target.dataset.id);
-                if (e.target.classList.contains('delete-stock-in-btn')) this.deleteStockIn(e.target.dataset.id);
-                if (e.target.id === 'clear-stock-in-form-btn') this.clearStockInForm();
-                
-                if (e.target.classList.contains('edit-stock-out-btn')) this.editStockOut(e.target.dataset.id);
-                if (e.target.classList.contains('delete-stock-out-btn')) this.deleteStockOut(e.target.dataset.id);
-                if (e.target.id === 'clear-stock-out-form-btn') this.clearStockOutForm();
+ attachEventListeners(){ 
+    document.getElementById('login-form').addEventListener('submit', (e) => { 
+        e.preventDefault(); 
+        this.login(document.getElementById('username').value, document.getElementById('password').value); 
+    }); 
 
-                // แก้ไข: เปลี่ยนจาก CSV เป็น XLSX
-                if (e.target.id === 'export-sales-history-excel-btn') {
-                    this.exportSalesHistoryToXlsx();
-                }
+    document.getElementById('logout-btn').addEventListener('click', () => this.logout()); 
+        
+    const mainApp = document.getElementById('main-app');
 
-                const collapsibleBar = e.target.closest('.collapsible-bar');
-                if (collapsibleBar) {
-                    const targetId = collapsibleBar.dataset.target;
-                    const content = document.getElementById(targetId);
-                    if (content) {
-                        collapsibleBar.classList.toggle('active');
-                        content.classList.toggle('active');
-                        const arrow = collapsibleBar.querySelector('.arrow');
-                        if (arrow) {
-                           arrow.style.transform = content.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
-                        }
-                    }
-                }
-                
-                if (e.target.id === 'load-from-file-btn') document.getElementById('data-file-input').click();
-                if (e.target.id === 'save-to-file-btn' || e.target.id === 'save-to-file-btn-seller') this.saveBackupToFile(); 
-                if (e.target.id === 'save-to-browser-btn' || e.target.id === 'save-to-browser-btn-seller') this.manualSaveToBrowser(); 
-                
-                if (e.target.id === 'open-reset-modal-btn') this.openResetModal();
+    mainApp.addEventListener('submit', (e) => { 
+        if (e.target.id === 'add-to-cart-form') { e.preventDefault(); this.addToCart(e); }
+        if (e.target.id === 'product-form') { e.preventDefault(); this.saveProduct(e); } 
+        if (e.target.id === 'store-form') { e.preventDefault(); this.saveStore(e); } 
+        if (e.target.id === 'stock-in-form') { e.preventDefault(); this.saveStockIn(e); }
+        if (e.target.id === 'stock-out-form') { e.preventDefault(); this.saveStockOut(e); }
+        if (e.target.id === 'report-filter-form') { e.preventDefault(); this.renderReport(e); } 
+        if (e.target.id === 'user-form') { e.preventDefault(); this.saveUser(e); }
+        if (e.target.id === 'seller-sales-filter-form') { e.preventDefault(); this.renderSellerSalesHistoryWithFilter(); }
+        if (e.target.id === 'seller-detailed-report-form') { e.preventDefault(); this.runSellerDetailedReport(); }
+        if (e.target.id === 'seller-credit-report-form') { e.preventDefault(); this.runSellerCreditSummary(); }
+        if (e.target.id === 'seller-transfer-report-form') { e.preventDefault(); this.runSellerTransferSummary(); }
+        if (e.target.id === 'backup-password-form') { e.preventDefault(); this.saveBackupPassword(e); }
+    });
 
-                if (e.target.id === 'generate-stock-report-btn') this.renderStockSummaryReport();
-                if (e.target.id === 'generate-yesterday-stock-report-btn') this.renderYesterdayStockSummaryReport();
-                if (e.target.id === 'recalculate-stock-btn') this.handleRecalculateStock();
+    mainApp.addEventListener('click', (e) => { 
+        if (e.target.id === 'process-sale-btn') this.processSale(); 
+        if (e.target.classList.contains('remove-from-cart-btn')) this.removeFromCart(e.target.dataset.index); 
+        if (e.target.id === 'toggle-special-price-btn') this.toggleSpecialPrice(); 
+        if (e.target.classList.contains('edit-sale-btn')) this.editSale(e.target.dataset.id); 
+        if (e.target.classList.contains('delete-sale-btn')) { this.deleteSale(e.target.dataset.id); this.renderSalesHistory(); } 
 
-                if (e.target.id === 'my-summary-today-btn') this.summarizeMyToday(); 
-                if (e.target.id === 'my-summary-all-btn') this.summarizeMyAll(); 
-                if (e.target.id === 'my-summary-by-day-btn') this.summarizeMyDay(); 
-                if (e.target.id === 'my-summary-by-range-btn') this.summarizeMyRange();
-
-                // New/Refactored Admin Summary Buttons
-                if (e.target.id === 'admin-summary-today-btn') this.runAdminSummaryToday();
-                if (e.target.id === 'admin-summary-all-btn') this.runAdminSummaryAll();
-                if (e.target.id === 'admin-summary-by-day-btn') this.runAdminSummaryByDay();
-                if (e.target.id === 'generate-detailed-report-btn') this.runAdminDetailedReport();
-                if (e.target.id === 'generate-credit-summary-btn') this.runAdminCreditSummary();
-                if (e.target.id === 'generate-transfer-summary-btn') this.runAdminTransferSummary();
-                if (e.target.id === 'generate-aggregated-summary-btn') this.runAdminSummaryByCustomRange();
-
-                // Summary output buttons
-                if (e.target.classList.contains('btn-display')) App.handleSummaryOutput('display');
-                if (e.target.classList.contains('btn-excel')) App.handleSummaryOutput('excel');
-                if (e.target.classList.contains('btn-pdf')) App.handleSummaryOutput('pdf');
-                if (e.target.classList.contains('btn-cancel')) App.closeSummaryOutputModal();
-            }); 
-		
-            document.body.addEventListener('change', (e) => {
-                if (e.target.id === 'show-password-login') {
-                    document.getElementById('password').type = e.target.checked ? 'text' : 'password';
-                }
-                if (e.target.id === 'show-password-user-form') {
-                    document.getElementById('user-password').type = e.target.checked ? 'text' : 'password';
-                    document.getElementById('user-password-confirm').type = e.target.checked ? 'text' : 'password';
-                }
-                if (e.target.id === 'show-backup-password') {
-                    document.getElementById('backup-password').type = e.target.checked ? 'text' : 'password';
-                    document.getElementById('backup-password-confirm').type = e.target.checked ? 'text' : 'password';
-                }
-            });
-
-	        mainApp.addEventListener('change', (e) => { 
-                if(e.target.name === 'payment-method') this.togglePaymentDetailFields(); 
-                if (e.target.id === 'user-role') { 
-                    const productDiv = document.getElementById('user-product-assignment-container'); 
-                    const salesDiv = document.getElementById('user-sales-period-container'); 
-                    const storeDiv = document.getElementById('user-store-assignment-container');
-                    const commissionDiv = document.getElementById('user-commission-settings-container');
-                    const historyDiv = document.getElementById('user-history-view-container');
-                    const sellerFields = [productDiv, salesDiv, storeDiv, commissionDiv, historyDiv];
-
-                    if (e.target.value === 'seller') { 
-                        sellerFields.forEach(c => c.style.display = 'grid'); 
-                        this.renderUserStoreAssignment(document.getElementById('user-store-select')?.value);
-                        this.renderUserProductAssignment(); 
-                    } else { 
-                        sellerFields.forEach(c => c.style.display = 'none');
-                    } 
-                } 
-                if (e.target.id === 'data-file-input') this.promptLoadFromFile(e); 
-                if (e.target.id === 'pos-product') this.updateSpecialPriceInfo(); 
-                
-                if (['report-start-date', 'report-end-date', 'report-seller'].includes(e.target.id)) {
-                    this.renderReport(e);
-                }
-
-                if (e.target.id === 'reset-products-checkbox') {
-                    if (e.target.checked) {
-                        document.getElementById('reset-sales-checkbox').checked = true;
-                        document.getElementById('reset-stockins-checkbox').checked = true;
-                    }
-                }
-                
-                if (e.target.id === 'pos-date' || e.target.id === 'pos-time') {
-                    const dateInput = document.getElementById('pos-date');
-                    const timeInput = document.getElementById('pos-time');
-                    const isBackdating = dateInput.value || timeInput.value;
-                    dateInput.classList.toggle('backdating-active', isBackdating);
-                    timeInput.classList.toggle('backdating-active', isBackdating);
-                }
-
-                 if (e.target.name === 'seller-filter-type') {
-                    const byDateDiv = document.getElementById('seller-filter-by-date-div');
-                    const byRangeDiv = document.getElementById('seller-filter-by-range-div');
-                    switch (e.target.value) {
-                        case 'today':
-                            byDateDiv.style.display = 'none';
-                            byRangeDiv.style.display = 'none';
-                            break;
-                        case 'by_date':
-                            byDateDiv.style.display = 'block';
-                            byRangeDiv.style.display = 'none';
-                            break;
-                        case 'by_range':
-                            byDateDiv.style.display = 'none';
-                            byRangeDiv.style.display = 'flex';
-                            break;
-                    }
-                }
-                
-                if (e.target.id === 'stock-in-product') {
-                    const productId = e.target.value;
-                    const costInput = document.getElementById('stock-in-cost');
-                    const priceInput = document.getElementById('stock-in-price');
-                    if (productId) {
-                        const product = this.data.products.find(p => p.id == productId);
-                        if (product) {
-                            costInput.value = product.costPrice;
-                            priceInput.value = product.sellingPrice;
-                        }
-                    } else {
-                        costInput.value = '';
-                        priceInput.value = '';
-                    }
-                }
-            }); 
-            
-            // เพิ่ม event listener สำหรับปุ่มส่งออก Excel
-            const exportExcelBtn = document.getElementById('export-sales-history-excel-btn');
-            if (exportExcelBtn) {
-                exportExcelBtn.addEventListener('click', () => {
-                    this.exportSalesHistoryToXlsx();
-                });
+        if (e.target.classList.contains('seller-delete-sale-btn')) {
+            const saleId = e.target.dataset.id;
+            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการขายนี้? สต็อกสินค้าจะถูกคืนเข้าระบบ')) {
+                this.deleteSale(saleId);
+                this.renderSellerSalesHistoryWithFilter();
             }
-            
-            document.getElementById('cancel-reset-btn').addEventListener('click', () => this.closeResetModal());
-            document.getElementById('confirm-selective-reset-btn').addEventListener('click', () => this.handleSelectiveReset());
-        },
-    };
-    
-    window.App = App;
-    App.init();
-});
+        }
+
+        if (e.target.id === 'clear-product-form-btn') { 
+            document.getElementById('product-form').reset(); 
+            document.getElementById('product-id').value = ''; 
+        } 
+
+        if (e.target.classList.contains('edit-product-btn')) this.editProduct(e.target.dataset.id); 
+        if (e.target.classList.contains('delete-product-btn')) this.deleteProduct(e.target.dataset.id);
+
+        if (e.target.id === 'clear-store-form-btn') { 
+            document.getElementById('store-form').reset(); 
+            document.getElementById('store-id').value = ''; 
+        }
+
+        if (e.target.classList.contains('edit-store-btn')) this.editStore(e.target.dataset.id);
+        if (e.target.classList.contains('delete-store-btn')) this.deleteStore(e.target.dataset.id);
+
+        if (e.target.id === 'clear-user-form-btn') this.setupUserForm();
+        if (e.target.classList.contains('edit-user-btn')) this.editUser(e.target.dataset.id); 
+        if (e.target.classList.contains('delete-user-btn')) this.deleteUser(e.target.dataset.id); 
+        
+        if (e.target.classList.contains('edit-stock-in-btn')) this.editStockIn(e.target.dataset.id);
+        if (e.target.classList.contains('delete-stock-in-btn')) this.deleteStockIn(e.target.dataset.id);
+        if (e.target.id === 'clear-stock-in-form-btn') this.clearStockInForm();
+        
+        if (e.target.classList.contains('edit-stock-out-btn')) this.editStockOut(e.target.dataset.id);
+        if (e.target.classList.contains('delete-stock-out-btn')) this.deleteStockOut(e.target.dataset.id);
+        if (e.target.id === 'clear-stock-out-form-btn') this.clearStockOutForm();
+
+        if (e.target.id === 'export-sales-history-excel-btn') {
+            this.exportSalesHistoryToXlsx();
+        }
+
+        const collapsibleBar = e.target.closest('.collapsible-bar');
+        if (collapsibleBar) {
+            const targetId = collapsibleBar.dataset.target;
+            const content = document.getElementById(targetId);
+            if (content) {
+                collapsibleBar.classList.toggle('active');
+                content.classList.toggle('active');
+                const arrow = collapsibleBar.querySelector('.arrow');
+                if (arrow) {
+                    arrow.style.transform = content.classList.contains('active') 
+                        ? 'rotate(90deg)' 
+                        : 'rotate(0deg)';
+                }
+            }
+        }
+    });
+
+    document.body.addEventListener('change', (e) => {
+        if (e.target.id === 'show-password-login') {
+            document.getElementById('password').type = e.target.checked ? 'text' : 'password';
+        }
+        if (e.target.id === 'show-password-user-form') {
+            document.getElementById('user-password').type = e.target.checked ? 'text' : 'password';
+            document.getElementById('user-password-confirm').type = e.target.checked ? 'text' : 'password';
+        }
+        if (e.target.id === 'show-backup-password') {
+            document.getElementById('backup-password').type = e.target.checked ? 'text' : 'password';
+            document.getElementById('backup-password-confirm').type = e.target.checked ? 'text' : 'password';
+        }
+    });
+
+    mainApp.addEventListener('change', (e) => { 
+        if(e.target.name === 'payment-method') this.togglePaymentDetailFields(); 
+
+        if (e.target.id === 'user-role') { 
+            const productDiv = document.getElementById('user-product-assignment-container'); 
+            const salesDiv = document.getElementById('user-sales-period-container'); 
+            const storeDiv = document.getElementById('user-store-assignment-container');
+            const commissionDiv = document.getElementById('user-commission-settings-container');
+            const historyDiv = document.getElementById('user-history-view-container');
+            const sellerFields = [productDiv, salesDiv, storeDiv, commissionDiv, historyDiv];
+
+            if (e.target.value === 'seller') { 
+                sellerFields.forEach(c => c.style.display = 'grid'); 
+                this.renderUserStoreAssignment(document.getElementById('user-store-select')?.value);
+                this.renderUserProductAssignment(); 
+            } else { 
+                sellerFields.forEach(c => c.style.display = 'none');
+            } 
+        } 
+
+        if (e.target.id === 'data-file-input') this.promptLoadFromFile(e); 
+        if (e.target.id === 'pos-product') this.updateSpecialPriceInfo(); 
+        
+        if (['report-start-date', 'report-end-date', 'report-seller'].includes(e.target.id)) {
+            this.renderReport(e);
+        }
+
+        if (e.target.id === 'reset-products-checkbox') {
+            if (e.target.checked) {
+                document.getElementById('reset-sales-checkbox').checked = true;
+                document.getElementById('reset-stockins-checkbox').checked = true;
+                document.getElementById('reset-stockouts-checkbox').checked = true;
+            }
+        }
+    });
+
+    // ---------------------------------------------------
+    // 🚀 เพิ่ม Event: Enter เพื่อกดปุ่ม “ยืนยันการขาย”
+    // ---------------------------------------------------
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+
+            const posPage = document.getElementById('page-pos');
+            if (posPage && posPage.style.display !== "none") {
+                const confirmBtn = document.getElementById('process-sale-btn');
+                if (confirmBtn) confirmBtn.click();
+            }
+        }
+    });
+
+},  // ⬅ ปิด attachEventListeners()
+
+
+}; // ⬅ ปิดอ็อบเจ็กต์ App
+
+
+// ---------------------------------------------------
+// 🚀 เริ่มต้นระบบ
+// ---------------------------------------------------
+window.App = App;
+App.init();
+
+}); // ⬅ ปิด wrapper (เช่น DOMContentLoaded)
