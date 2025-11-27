@@ -13,34 +13,35 @@
   <link rel="apple-touch-icon" href="./192.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <link rel="stylesheet" href="styles.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
 </head>
 <body>
     <div class="main-wrapper">
         <div id="login-screen">
             <h1>บัญชีขาย</h1>
-            <p>กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
-            <form id="login-form">
+            <p>กรุณาเข้าสู่ระบบ</p>
+            <form id="login-form" style="display: inline-grid; max-width: 350px;">
                 <label for="username">ชื่อผู้ใช้:</label>
                 <input type="text" id="username" required>
-                
                 <label for="password">รหัสผ่าน:</label>
                 <input type="password" id="password" required>
                 
-                <div class="checkbox-group">
-                    <label for="show-password-login">
+                <div style="grid-column: 1 / -1; text-align: left; margin: 0 0 10px 0;">
+                    <label style="font-weight: normal; cursor: pointer;">
                         <input type="checkbox" id="show-password-login">
                         แสดงรหัสผ่าน
                     </label>
                 </div>
                 
-                <div class="checkbox-group">
-                    <label for="remember-me">
+                <div style="grid-column: 1 / -1; text-align: left; margin: 5px 0 10px 0;">
+                    <label style="font-weight: normal; cursor: pointer;">
                         <input type="checkbox" id="remember-me">
-                        จดจำการเข้าสู่ระบบ
+                        จดจำการเข้าสู่ระบบในครั้งถัดไป
                     </label>
                 </div>
 
@@ -63,52 +64,52 @@
             </div>
 
             <div class="section-header header-pos" onclick="App.showPage('page-pos')">
-                <span>ขายสินค้า (POS)</span><span class="arrow">▶</span>
+                <span><i class="fas fa-cash-register"></i>ขายสินค้า (POS)</span><span class="arrow">▶</span>
             </div>
             <div id="page-pos" class="section-content"></div>
 
             <div class="section-header header-products admin-only" onclick="App.showPage('page-products')">
-                <span>จัดการสินค้า</span><span class="arrow">▶</span>
+                <span><i class="fas fa-boxes"></i>จัดการสินค้า</span><span class="arrow">▶</span>
             </div>
             <div id="page-products" class="section-content admin-only"></div>
 
             <div class="section-header header-stock admin-only" onclick="App.showPage('page-stock-in')">
-                <span>นำเข้าสินค้า</span><span class="arrow">▶</span>
+                <span><i class="fas fa-arrow-down"></i>นำเข้าสินค้า</span><span class="arrow">▶</span>
             </div>
             <div id="page-stock-in" class="section-content admin-only"></div>
 
             <div class="section-header header-stock-out admin-only" onclick="App.showPage('page-stock-out')">
-                <span>ปรับสต็อก (นำออก)</span><span class="arrow">▶</span>
+                <span><i class="fas fa-arrow-up"></i>ปรับสต็อก (นำออก)</span><span class="arrow">▶</span>
             </div>
             <div id="page-stock-out" class="section-content admin-only"></div>
 
             <div class="section-header header-history admin-only" onclick="App.showPage('page-sales-history')">
-                <span>รายการขายย้อนหลัง</span><span class="arrow">▶</span>
+                <span><i class="fas fa-history"></i>รายการขายย้อนหลัง</span><span class="arrow">▶</span>
             </div>
             <div id="page-sales-history" class="section-content admin-only"></div>
 
             <div class="section-header header-reports admin-only" onclick="App.showPage('page-reports')">
-                <span>รายงานกำไร/ขาดทุน</span><span class="arrow">▶</span>
+                <span><i class="fas fa-chart-line"></i>รายงานกำไร/ขาดทุน</span><span class="arrow">▶</span>
             </div>
             <div id="page-reports" class="section-content admin-only"></div>
 
             <div class="section-header header-summary admin-only" onclick="App.showPage('page-summary')">
-                <span>สรุปข้อมูล</span><span class="arrow">▶</span>
+                <span><i class="fas fa-chart-pie"></i>สรุปข้อมูล</span><span class="arrow">▶</span>
             </div>
             <div id="page-summary" class="section-content admin-only"></div>
             
             <div class="section-header header-stores admin-only" onclick="App.showPage('page-stores')">
-                <span>จัดการร้านค้า</span><span class="arrow">▶</span>
+                <span><i class="fas fa-store"></i>จัดการร้านค้า</span><span class="arrow">▶</span>
             </div>
             <div id="page-stores" class="section-content admin-only"></div>
 
             <div class="section-header header-users admin-only" onclick="App.showPage('page-users')">
-                <span>จัดการผู้ใช้</span><span class="arrow">▶</span>
+                <span><i class="fas fa-users"></i>จัดการผู้ใช้</span><span class="arrow">▶</span>
             </div>
             <div id="page-users" class="section-content admin-only"></div>
 
             <div class="section-header header-data" onclick="App.showPage('page-data')">
-                <span>จัดการข้อมูล</span><span class="arrow">▶</span>
+                <span><i class="fas fa-database"></i>จัดการข้อมูล</span><span class="arrow">▶</span>
             </div>
             <div id="page-data" class="section-content"></div>
         </div>
