@@ -3368,244 +3368,632 @@
         },
 
 // --- DYNAMIC HTML INJECTION (KEEP THIS AS IT WAS IN INDEX.HTML) ---
-        fillPages(){ 
-            document.getElementById('page-pos').innerHTML = `<h2>ขายสินค้า (Point of Sale)</h2><div class="pos-layout"><div><form id="add-to-cart-form" style="max-width:none;"><label for="pos-date-time-group">วันที่/เวลาขาย:</label><div id="pos-date-time-group" class="date-time-group"><input type="date" id="pos-date"><input type="time" id="pos-time"></div><label for="pos-product">เลือกสินค้า:</label><select id="pos-product" required></select><label for="pos-quantity">จำนวน:</label><input type="number" id="pos-quantity" value="1" min="1" required><div id="special-price-container" style="display: none; grid-column: 1 / -1; grid-template-columns: 150px 1fr; align-items: center; gap: 15px;"><label for="special-price">ราคาขายใหม่:</label><div><input type="number" id="special-price" placeholder="กรอกราคาต่อหน่วย" min="0" step="any"><span id="current-price-info" style="font-size: 0.9em; color: #555; margin-left: 10px;"></span></div></div><div class="form-actions"><button type="submit" class="success">เพิ่มลงตะกร้า</button><button type="button" id="toggle-special-price-btn">ใช้ราคาพิเศษ</button></div></form><h3>รายการในตะกร้า</h3><div class="table-container"><table id="cart-table"><thead><tr><th>สินค้า</th><th>ราคาฯ</th><th>จำนวน</th><th>รวม</th><th>ลบ</th></tr></thead><tbody></tbody></table></div></div><div id="cart-summary"><div id="payment-method-container"><h4>ประเภทการชำระเงิน</h4><div class="payment-options-wrapper"><label><input type="radio" name="payment-method" value="เงินสด" checked> เงินสด</label><label><input type="radio" name="payment-method" value="เงินโอน"> เงินโอน</label><label><input type="radio" name="payment-method" value="เครดิต"> เครดิต</label></div><div id="transfer-fields-container"><div style="margin-top:5px;"><label for="transfer-name" style="text-align:left;font-weight:bold;">ชื่อผู้โอน:</label><input type="text" id="transfer-name"></div></div><div id="credit-fields-container"><div style="margin-top:5px;"><label for="credit-buyer-name" style="text-align:left;font-weight:bold;">ชื่อผู้ซื้อ (เครดิต):</label><input type="text" id="credit-buyer-name"></div><div style="margin-top:5px;"><label for="credit-due-days" style="text-align:left;font-weight:bold;">จำนวนวันเครดิต :</label><input type="number" id="credit-due-days" min="0" placeholder="เช่น 7, 15, 30"></div></div></div><div class="cart-action-row"><span class="cart-total-label">สรุปยอด:</span><div id="cart-total">฿0.00</div><button id="process-sale-btn">ยืนยันการขาย</button></div></div></div>`; 
-            
-            document.getElementById('page-products').innerHTML = `<h2>จัดการสินค้า</h2> <p style="text-align:center; margin-top:-10px; margin-bottom:15px; font-size:0.9em;">ในหน้านี้ใช้สำหรับสร้างและแก้ไข <b>ชื่อสินค้า</b> และ <b>หน่วยนับ</b> เท่านั้น<br>ราคาทุนและราคาขาย จะถูกกำหนดในหน้า "นำเข้าสินค้า"</p><form id="product-form"> <input type="hidden" id="product-id"> <label for="product-name">ชื่อสินค้า:</label> <input type="text" id="product-name" required> <label for="product-unit">หน่วย:</label> <input type="text" id="product-unit" placeholder="เช่น ชิ้น, กล่อง" required> <div class="form-actions"> <button type="submit" class="success">บันทึกสินค้า</button> <button type="button" id="clear-product-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button> </div> </form> <div class="table-container"><table id="product-table"> <thead> <tr><th>ชื่อสินค้า</th><th>สต็อก</th><th>หน่วย</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`; 
-            
-            document.getElementById('page-stock-in').innerHTML = `<h2>บันทึกการนำเข้าสินค้า</h2> <p style="text-align:center; margin-top:-10px; margin-bottom:15px; font-size:0.9em;">เมื่อบันทึกการนำเข้า ราคาทุนและราคาขายล่าสุดของสินค้าจะถูกอัปเดตตามข้อมูลที่กรอกในหน้านี้</p><form id="stock-in-form"> <label for="stock-in-product">เลือกสินค้า:</label> <select id="stock-in-product" required></select> <label for="stock-in-quantity">จำนวน:</label> <input type="number" id="stock-in-quantity" min="1" required> <label for="stock-in-cost">ราคาทุนต่อหน่วย:</label> <input type="number" id="stock-in-cost" min="0" step="0.01" required> <label for="stock-in-price">ราคาขายต่อหน่วย:</label> <input type="number" id="stock-in-price" min="0" step="0.01" required> <div class="form-actions"> <button type="submit" class="success">บันทึก</button> <button type="button" id="clear-stock-in-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม / ยกเลิกแก้ไข</button></div> </form> <h3>ประวัติการนำเข้า</h3> <div class="table-container"><table id="stock-in-history-table"> <thead> <tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>ทุนต่อหน่วย</th><th>ยอดรวม</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`; 
-            
-            document.getElementById('page-stock-out').innerHTML = `<h2>ปรับสต็อก (นำออก)</h2> <form id="stock-out-form"> <label for="stock-out-product">เลือกสินค้า:</label> <select id="stock-out-product" required></select> <label for="stock-out-quantity">จำนวนที่นำออก:</label> <input type="number" id="stock-out-quantity" min="1" required> <label for="stock-out-reason">เหตุผล:</label> <input type="text" id="stock-out-reason" placeholder="เช่น หมดอายุ, ชำรุด, นับสต็อก" required> <div class="form-actions"> <button type="submit" class="success">บันทึก</button> <button type="button" id="clear-stock-out-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม / ยกเลิกแก้ไข</button> </div> </form> <h3>ประวัติการนำออกล่าสุด</h3> <div class="table-container"><table id="stock-out-history-table"> <thead> <tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>เหตุผล</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`;
-            document.getElementById('page-sales-history').innerHTML = `
-                <h2>รายการขายย้อนหลัง</h2>
-                <div id="sales-history-export-form">
-    <label>ตั้งแต่วันที่: <input type="date" id="export-sales-start-date"></label>
-    <label>ถึงวันที่: <input type="date" id="export-sales-end-date"></label>
-    <button type="button" id="export-sales-history-excel-btn">ส่งออกเป็น Excel</button> </div>
+ fillPages(){ 
+                document.getElementById('page-pos').innerHTML = `
+        <h2>ขายสินค้า (Point of Sale)</h2>
+        <div class="pos-layout">
+            <div>
+                <form id="add-to-cart-form" style="max-width:none;">
+          
+                    <label for="pos-date-time-group">วันที่/เวลาขาย:</label>
+                    <div id="pos-date-time-group" class="date-time-group">
+                        <input type="date" id="pos-date">
+                        <input type="time" id="pos-time">
+              
+                    </div>
+                    <label for="pos-product">เลือกสินค้า:</label>
+                    <select id="pos-product" required></select>
+                    <label for="pos-quantity">จำนวน:</label>
+                    <input type="number" id="pos-quantity" value="1" min="1" required>
+   
+                    <div id="special-price-container" style="display: none; grid-column: 1 / -1;
+ grid-template-columns: 150px 1fr; align-items: center; gap: 15px;">
+                        <label for="special-price">ราคาขายใหม่:</label>
+                        <div>
+                            <input type="number" id="special-price" placeholder="กรอกราคาต่อหน่วย" min="0" step="any">
+           
+                            <span id="current-price-info" style="font-size: 0.9em;
+ color: #555; margin-left: 10px;"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="success">เพิ่มลงตะกร้า</button>
+     
+                        <button type="button" id="toggle-special-price-btn">ใช้ราคาพิเศษ</button>
+                    </div>
+                </form>
+                <h3>รายการในตะกร้า</h3>
                 <div class="table-container">
-                    <table id="sales-history-table">
-                        <thead>
-                            <tr>
-                                <th>วันที่</th><th>เวลา</th><th>รายการสินค้า</th><th>ยอดขายรวม</th><th>กำไรรวม</th><th>ประเภทชำระ</th><th>คนขาย</th><th>ร้านค้า</th><th>จัดการ</th>
-                            </tr>
-                        </thead>
+        
+                    <table id="cart-table">
+                        <thead><tr><th>สินค้า</th><th>ราคาฯ</th><th>จำนวน</th><th>รวม</th><th>ลบ</th></tr></thead>
                         <tbody></tbody>
                     </table>
-                </div>`;
-            document.getElementById('page-reports').innerHTML = `<h2>รายงานกำไร/ขาดทุน</h2> <form id="report-filter-form"> <label>ตั้งแต่วันที่:<input type="date" id="report-start-date"></label> <label>ถึงวันที่:<input type="date" id="report-end-date"></label> <label>คนขาย:<select id="report-seller"><option value="all">ทั้งหมด</option></select></label> <button type="submit" id="report-generate-btn">สร้างรายงาน</button> </form> <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; text-align: center;"> <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px;"> <h3>ยอดขายรวม</h3><p id="report-total-sales" style="font-size: 1.4em; font-weight: bold;">฿0.00</p> </div> <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px;"> <h3>ต้นทุนรวม</h3><p id="report-total-cost" style="font-size: 1.4em; font-weight: bold;">฿0.00</p> </div> <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px;"> <h3>กำไรสุทธิ</h3><p id="report-net-profit" style="font-size: 1.4em; font-weight: bold; color: var(--success-color);">฿0.00</p> </div> </div>`; 
-            document.getElementById('page-summary').innerHTML = `
-                <h2>สรุปข้อมูล (สำหรับแอดมิน)</h2>
-                <div class="summary-section" style="margin-bottom: 10px;">
-                    <h3 style="text-align:center; border:none; margin-bottom: 10px; font-size:1.1em;">1. เลือกผู้ขาย (จำเป็นสำหรับทุกรายงาน)</h3>
-                    <div class="summary-form-inline" style="justify-content: center;">
-                        <label for="summary-seller-select">ผู้ขาย:</label>
-                        <select id="summary-seller-select" style="text-align: left; max-width: 400px;"></select>
+                </div>
+   
+            </div>
+            <div id="cart-summary">
+                <div id="payment-method-container">
+                    <h4>ประเภทการชำระเงิน</h4>
+                    <div class="payment-options-wrapper">
+                   
+                        <label><input type="radio" name="payment-method" value="เงินสด" checked> เงินสด</label>
+                        <label><input type="radio" name="payment-method" value="เงินโอน"> เงินโอน</label>
+                        <label><input type="radio" name="payment-method" value="เครดิต"> เครดิต</label>
+                    </div>
+           
+                    <div id="transfer-fields-container">
+                        <div style="margin-top:5px;"><label for="transfer-name" style="text-align:left;font-weight:bold;">ชื่อผู้โอน:</label><input type="text" id="transfer-name"></div>
+                    </div>
+                    <div id="credit-fields-container">
+                   
+                        <div style="margin-top:5px;"><label for="credit-buyer-name" style="text-align:left;font-weight:bold;">ชื่อผู้ซื้อ (เครดิต):</label><input type="text" id="credit-buyer-name"></div>
+                        <div style="margin-top:5px;"><label for="credit-due-days" style="text-align:left;font-weight:bold;">จำนวนวันเครดิต :</label><input type="number" id="credit-due-days" min="0" placeholder="เช่น 7, 15, 30"></div>
                     </div>
                 </div>
-
-                <div class="collapsible-bar active" data-target="admin-quick-summary-content" style="background-color: #00B0F0;"><span>สรุปภาพรวมแบบรวดเร็ว</span><span class="arrow" style="transform: rotate(90deg);">▶</span></div>
-                <div id="admin-quick-summary-content" class="collapsible-content active">
-                    <div style="text-align:center; padding:5px 0;">
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px;">
-                            <button id="admin-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button>
-                            <button id="admin-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมด</button>
-                        </div>
-                        <div class="summary-form-inline" style="justify-content: center; flex-direction: column; gap:8px; align-items: stretch; border-top: 1px solid #ddd; padding-top: 10px;">
-                            <label>สรุปยอดขายตามวันที่เลือก: <input type="date" id="admin-summary-date" style="width: auto;"></label>
-                            <button id="admin-summary-by-day-btn" style="background-color: #03a9f4; max-width: 300px; margin: auto;">สร้างรายงานตามวันที่</button>
-                        </div>
-                    </div>
+                
+                <div class="cart-action-row">
+                    <span class="cart-total-label">สรุปยอด:</span>
+                    <div id="cart-total">฿0.00</div>
+                    <button id="process-sale-btn">ยืนยันการขาย</button>
                 </div>
+            </div>
+      
+        </div>`; 
 
-                <div class="collapsible-bar" data-target="admin-detailed-reports-content" style="background-color: #00B050;"><span>รายงานขั้นสูง (ตามช่วงเวลา)</span><span class="arrow">▶</span></div>
-                <div id="admin-detailed-reports-content" class="collapsible-content">
-                    <div class="summary-section" id="admin-report-filters" style="border:none; padding: 5px 0;">
-                        <h4 style="text-align:center; margin-top:0; font-size:1em;">กำหนดช่วงเวลา</h4>
-                        <div class="summary-form-inline" style="justify-content: center;">
-                            <label>จากวันที่:</label>
-                            <input type="date" id="summary-custom-start-date" required>
-                            <label>ถึงวันที่:</label>
-                            <input type="date" id="summary-custom-end-date" required>
-                        </div>
+    // หน้าจัดการสินค้า
+    document.getElementById('page-products').innerHTML = `
+        <h2>จัดการสินค้า</h2> 
+        <p style="text-align:center; margin-top:-10px; margin-bottom:15px; font-size:0.9em;">ในหน้านี้ใช้สำหรับสร้างและแก้ไข <b>ชื่อสินค้า</b> และ <b>หน่วยนับ</b> เท่านั้น<br>ราคาทุนและราคาขาย จะถูกกำหนดในหน้า "นำเข้าสินค้า"</p>
+        <form id="product-form"> 
+            <input type="hidden" id="product-id"> 
+            <label for="product-name">ชื่อสินค้า:</label> 
+            <input type="text" id="product-name" required> 
+      
+            <label for="product-unit">หน่วย:</label> 
+            <input type="text" id="product-unit" placeholder="เช่น ชิ้น, กล่อง" required> 
+            <div class="form-actions"> 
+                <button type="submit" class="success">บันทึกสินค้า</button> 
+                <button type="button" id="clear-product-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button> 
+            </div> 
+    
+        </form> 
+        <div class="table-container">
+            <table id="product-table"> 
+                <thead><tr><th>ชื่อสินค้า</th><th>สต็อก</th><th>หน่วย</th><th>จัดการ</th></tr></thead> 
+                <tbody></tbody> 
+            </table>
+        </div>`;
+
+    // หน้านำเข้าสินค้า
+    document.getElementById('page-stock-in').innerHTML = `
+        <h2>บันทึกการนำเข้าสินค้า</h2> 
+        <p style="text-align:center; margin-top:-10px; margin-bottom:15px; font-size:0.9em;">เมื่อบันทึกการนำเข้า ราคาทุนและราคาขายล่าสุดของสินค้าจะถูกอัปเดตตามข้อมูลที่กรอกในหน้านี้</p>
+        <form id="stock-in-form"> 
+            <label for="stock-in-product">เลือกสินค้า:</label> 
+            <select id="stock-in-product" required></select> 
+            <label for="stock-in-quantity">จำนวน:</label> 
+            <input type="number" id="stock-in-quantity" 
+             min="1" required> 
+            <label for="stock-in-cost">ราคาทุนต่อหน่วย:</label> 
+            <input type="number" id="stock-in-cost" min="0" step="0.01" required> 
+            <label for="stock-in-price">ราคาขายต่อหน่วย:</label> 
+            <input type="number" id="stock-in-price" min="0" step="0.01" required> 
+            <div class="form-actions"> 
+                <button type="submit" 
+                class="success">บันทึก</button> 
+                <button type="button" id="clear-stock-in-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม / ยกเลิกแก้ไข</button>
+            </div> 
+        </form> 
+        <h3>ประวัติการนำเข้า</h3> 
+        <div class="table-container">
+            <table id="stock-in-history-table"> 
+                <thead><tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>ทุนต่อหน่วย</th><th>ยอดรวม</th><th>จัดการ</th></tr></thead> 
+    
+                <tbody></tbody> 
+            </table>
+        </div>`;
+
+    // หน้าปรับสต็อก (นำออก)
+    document.getElementById('page-stock-out').innerHTML = `
+        <h2>ปรับสต็อก (นำออก)</h2> 
+        <form id="stock-out-form"> 
+            <label for="stock-out-product">เลือกสินค้า:</label> 
+            <select id="stock-out-product" required></select> 
+            <label for="stock-out-quantity">จำนวนที่นำออก:</label> 
+            <input type="number" id="stock-out-quantity" min="1" required> 
+         
+            <label for="stock-out-reason">เหตุผล:</label> 
+            <input type="text" id="stock-out-reason" placeholder="เช่น หมดอายุ, ชำรุด, นับสต็อก" required> 
+            <div class="form-actions"> 
+                <button type="submit" class="success">บันทึก</button> 
+                <button type="button" id="clear-stock-out-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม / ยกเลิกแก้ไข</button> 
+            </div> 
+    
+        </form> 
+        <h3>ประวัติการนำออกล่าสุด</h3> 
+        <div class="table-container">
+            <table id="stock-out-history-table"> 
+                <thead><tr><th>วันที่</th><th>เวลา</th><th>สินค้า</th><th>จำนวน</th><th>เหตุผล</th><th>จัดการ</th></tr></thead> 
+                <tbody></tbody> 
+            </table>
+        </div>`;
+
+    // หน้าประวัติการขาย
+    document.getElementById('page-sales-history').innerHTML = `
+        <h2>รายการขายย้อนหลัง</h2>
+        <div id="sales-history-export-form">
+            <label>ตั้งแต่วันที่: <input type="date" id="export-sales-start-date"></label>
+            <label>ถึงวันที่: <input type="date" id="export-sales-end-date"></label>
+            <button type="button" id="export-sales-history-excel-btn">ส่งออกเป็น Excel</button> 
+        </div>
+        <div class="table-container">
+         
+            <table id="sales-history-table">
+                <thead><tr><th>วันที่</th><th>เวลา</th><th>รายการสินค้า</th><th>ยอดขายรวม</th><th>กำไรรวม</th><th>ประเภทชำระ</th><th>คนขาย</th><th>ร้านค้า</th><th>จัดการ</th></tr></thead>
+                <tbody></tbody>
+            </table>
+        </div>`;
+
+    // หน้ารายงานกำไร/ขาดทุน
+    document.getElementById('page-reports').innerHTML = `
+        <h2>รายงานกำไร/ขาดทุน</h2> 
+        <form id="report-filter-form"> 
+            <label>ตั้งแต่วันที่:<input type="date" id="report-start-date"></label> 
+            <label>ถึงวันที่:<input type="date" id="report-end-date"></label> 
+            <label>คนขาย:<select id="report-seller"><option value="all">ทั้งหมด</option></select></label> 
+            <button type="submit" id="report-generate-btn">สร้างรายงาน</button> 
+        </form> 
+ 
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-top: 15px; text-align: center;"> 
+            <div style="background: #f9f9f9; border: 1px solid var(--border-color); padding: 10px; border-radius: 5px;"> <h3>ยอดขายรวม</h3><p id="report-total-sales" style="font-size: 1.4em; font-weight: bold;">฿0.00</p> </div> 
+            <div style="background: #f9f9f9; border: 1px solid var(--border-color);
+ padding: 10px; border-radius: 5px;"> <h3>ต้นทุนรวม</h3><p id="report-total-cost" style="font-size: 1.4em; font-weight: bold;">฿0.00</p> </div> 
+            <div style="background: #f9f9f9;
+ border: 1px solid var(--border-color); padding: 10px; border-radius: 5px;"> <h3>กำไรสุทธิ</h3><p id="report-net-profit" style="font-size: 1.4em; font-weight: bold;
+ color: var(--success-color);">฿0.00</p> </div> 
+        </div>`; 
+
+    // หน้าสรุปข้อมูล (Admin)
+    document.getElementById('page-summary').innerHTML = `
+        <h2>สรุปข้อมูล (สำหรับแอดมิน)</h2>
+        <div class="summary-section" style="margin-bottom: 10px;">
+            <h3 style="text-align:center;
+ border:none; margin-bottom: 10px; font-size:1.1em;">1. เลือกผู้ขาย (จำเป็นสำหรับทุกรายงาน)</h3>
+            <div class="summary-form-inline" style="justify-content: center;">
+                <label for="summary-seller-select">ผู้ขาย:</label>
+                <select id="summary-seller-select" style="text-align: left;
+ max-width: 400px;"></select>
+            </div>
+        </div>
+
+        <div class="collapsible-bar active" data-target="admin-quick-summary-content" style="background-color: #00B0F0;"><span>สรุปภาพรวมแบบรวดเร็ว</span><span class="arrow" style="transform: rotate(90deg);">▶</span></div>
+        <div id="admin-quick-summary-content" class="collapsible-content active">
+            <div style="text-align:center;
+ padding:5px 0;">
+                <div style="display: flex;
+ flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 15px;">
+                    <button id="admin-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button>
+                    <button id="admin-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมด</button>
+                </div>
+                <div class="summary-form-inline" style="justify-content: center;
+ flex-direction: column; gap:8px; align-items: stretch; border-top: 1px solid #ddd; padding-top: 10px;">
+                    <label>สรุปยอดขายตามวันที่เลือก: <input type="date" id="admin-summary-date" style="width: auto;"></label>
+                    <button id="admin-summary-by-day-btn" style="background-color: #03a9f4;
+ max-width: 300px; margin: auto;">สร้างรายงานตามวันที่</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="collapsible-bar" data-target="admin-detailed-reports-content" style="background-color: #00B050;"><span>รายงานขั้นสูง (ตามช่วงเวลา)</span><span class="arrow">▶</span></div>
+        <div id="admin-detailed-reports-content" class="collapsible-content">
+            <div class="summary-section" id="admin-report-filters" style="border:none;
+ padding: 5px 0;">
+                <h4 style="text-align:center;
+ margin-top:0; font-size:1em;">กำหนดช่วงเวลา</h4>
+                <div class="summary-form-inline" style="justify-content: center;">
+                    <label>จากวันที่:</label>
+                    <input type="date" id="summary-custom-start-date" required>
+                    <label>ถึงวันที่:</label>
+                
+                    <input type="date" id="summary-custom-end-date" required>
+                </div>
+            </div>
+            <div class="report-action-buttons" style="gap:10px;">
+                 <div class="report-action-item">
+                    <p><strong>สรุปภาพรวมตามช่วงเวลา</strong><br><small>(สรุปยอดขาย, กำไร/คอมมิชชั่น, จำนวนสินค้า)</small></p>
+          
+                    <button type="button" id="generate-aggregated-summary-btn" style="background-color: #673ab7;">สร้างรายงานสรุปภาพรวม</button>
+                </div>
+                <div class="report-action-item">
+                    <p><strong>แจกแจงรายละเอียดการขาย</strong><br><small>(แสดงรายการขายทั้งหมดในช่วงเวลาที่เลือก)</small></p>
+                    <div id="summary-payment-types" style="display: flex;
+ gap: 10px; flex-wrap: wrap; padding: 8px; background-color: #eef5ff; border-radius: 6px; justify-content: center; margin-bottom: 8px;
+ font-size:0.9em;">
+                        <label style="font-weight:normal;"><input type="checkbox" value="เงินสด" checked> เงินสด</label>
+                        <label style="font-weight:normal;"><input type="checkbox" value="เงินโอน" checked> เงินโอน</label>
+                        <label style="font-weight:normal;"><input type="checkbox" value="เครดิต" checked> เครดิต</label>
+          
                     </div>
-                    <div class="report-action-buttons" style="gap:10px;">
-                         <div class="report-action-item">
-                            <p><strong>สรุปภาพรวมตามช่วงเวลา</strong><br><small>(สรุปยอดขาย, กำไร/คอมมิชชั่น, จำนวนสินค้า)</small></p>
-                            <button type="button" id="generate-aggregated-summary-btn" style="background-color: #673ab7;">สร้างรายงานสรุปภาพรวม</button>
-                        </div>
-                        <div class="report-action-item">
-                            <p><strong>แจกแจงรายละเอียดการขาย</strong><br><small>(แสดงรายการขายทั้งหมดในช่วงเวลาที่เลือก)</small></p>
-                            <div id="summary-payment-types" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 8px; background-color: #eef5ff; border-radius: 6px; justify-content: center; margin-bottom: 8px; font-size:0.9em;">
-                                <label style="font-weight:normal;"><input type="checkbox" value="เงินสด" checked> เงินสด</label>
-                                <label style="font-weight:normal;"><input type="checkbox" value="เงินโอน" checked> เงินโอน</label>
-                                <label style="font-weight:normal;"><input type="checkbox" value="เครดิต" checked> เครดิต</label>
-                            </div>
-                            <button type="button" id="generate-detailed-report-btn" class="success">สร้างรายงานแจกแจง</button>
-                        </div>
-                        <div class="report-action-item">
-                            <p><strong>สรุปข้อมูลลูกหนี้ (เครดิต)</strong></p>
-                            <button type="button" id="generate-credit-summary-btn" class="danger">สร้างรายงานลูกหนี้</button>
-                        </div>
-                        <div class="report-action-item">
-                            <p><strong>สรุปข้อมูลเงินโอน</strong></p>
-                            <button type="button" id="generate-transfer-summary-btn" style="background-color: #007bff;">สร้างรายงานเงินโอน</button>
-                        </div>
-                    </div>
-                </div>`;
-            document.getElementById('page-stores').innerHTML = `<h2>จัดการร้านค้า</h2> <form id="store-form"> <input type="hidden" id="store-id"> <label for="store-name">ชื่อร้านค้า:</label> <input type="text" id="store-name" required> <div class="form-actions"> <button type="submit" class="success">บันทึกร้านค้า</button> <button type="button" id="clear-store-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button> </div> </form> <div class="table-container"><table id="store-table"> <thead> <tr><th>ชื่อร้านค้า</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`;
+                    <button type="button" id="generate-detailed-report-btn" class="success">สร้างรายงานแจกแจง</button>
+                </div>
+                <div class="report-action-item">
+                    <p><strong>สรุปข้อมูลลูกหนี้ (เครดิต)</strong></p>
             
-            document.getElementById('page-users').innerHTML = `<h2>จัดการผู้ใช้</h2> 
-                <form id="user-form"> 
-                    <input type="hidden" id="user-id"> 
-                    <div class="form-group"><label for="user-username">ชื่อผู้ใช้:</label><input type="text" id="user-username" required></div>
-                    <div class="form-group"><label for="user-password">รหัสผ่านใหม่:</label><input type="password" id="user-password" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
-                    <div class="form-group"><label for="user-password-confirm">ยืนยันรหัสผ่าน:</label><input type="password" id="user-password-confirm" placeholder="เว้นว่างไว้ถ้าไม่ต้องการเปลี่ยน"></div>
-                    <div class="form-group">
-                        <label style="font-weight:normal; display:block; cursor:pointer;">
-                            <input type="checkbox" id="show-password-user-form"> แสดงรหัสผ่าน
-                        </label>
-                    </div>
-                    <div class="form-group"><label for="user-role">ประเภท:</label><select id="user-role" required> <option value="seller">Seller</option> <option value="admin">Admin</option> </select></div>
-                    <div id="user-store-assignment-container" class="form-group"></div>
-                    <div id="user-commission-settings-container" class="form-group"> 
-                        <h4>ตั้งค่าคอมมิชชั่น</h4>
-                        <div class="form-group"><label for="user-commission-rate">อัตรา (%):</label><input type="number" id="user-commission-rate" min="0" max="100" step="any" placeholder="เช่น 3, 5.5"></div>
-                        <div class="form-group">
-                            <label>คิดจากยอดขาย:</label>
-                            <div id="user-commission-sources"> 
-                                <label><input type="checkbox" id="user-commission-cash"> เงินสด</label> 
-                                <label><input type="checkbox" id="user-commission-transfer"> เงินโอน</label> 
-                                <label><input type="checkbox" id="user-commission-credit"> เครดิต</label> 
-                            </div>
-                        </div>
-                    </div> 
-                    <div id="user-history-view-container" class="form-group"> 
-                        <h4>ตั้งค่าการแสดงผลประวัติ</h4>
-                        <div class="form-group"><label for="user-visible-days">จำนวนวันที่ดูประวัติขายได้:</label><input type="number" id="user-visible-days" min="0" placeholder="0=วันนี้, 1=วันนี้และเมื่อวาน (เว้นว่าง=ทั้งหมด)"></div>
-                    </div> 
-                    <div id="user-sales-period-container" class="form-group">
-                        <h4>กำหนดระยะเวลาที่สามารถขายได้</h4> 
-                        <div class="form-group"><label for="user-sales-start-date">วันที่เริ่มขาย:</label><input type="date" id="user-sales-start-date"></div>
-                        <div class="form-group"><label for="user-sales-end-date">วันที่สิ้นสุด:</label><input type="date" id="user-sales-end-date"></div>
-                    </div> 
-                    <div id="user-product-assignment-container" class="form-group"> 
-                        <h4>กำหนดสินค้าที่สามารถขายได้</h4> 
-                        <div id="user-product-assignment" style="max-height: 150px; overflow-y: auto; border: 1px solid #BFBFBF; padding: 10px; border-radius: 10px;"></div> 
-                    </div> 
-                    <div class="form-actions"> <button type="submit" class="success">บันทึกผู้ใช้</button> <button type="button" id="clear-user-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button> </div> 
-                </form> 
-                <div class="table-container"><table id="user-table"> <thead> <tr><th>ชื่อผู้ใช้</th><th>ประเภท</th><th>ร้านค้า</th><th>สินค้าที่ขายได้</th><th>ระยะเวลาที่ขายได้</th><th>จัดการ</th></tr> </thead> <tbody></tbody> </table></div>`;
-
-            document.getElementById('page-data').innerHTML = `<h2>จัดการข้อมูล</h2>
-            <div class="data-management-section admin-only data-restore-section"><h3>โหลดข้อมูลจากไฟล์ (Restore)</h3><p style="color: var(--danger-color); font-size:0.9em;"><b>คำเตือน:</b> การโหลดข้อมูลจากไฟล์จะรวมข้อมูลเข้ากับข้อมูลปัจจุบัน ข้อมูลที่ซ้ำกันจะถูกทับด้วยข้อมูลจากไฟล์!</p><input type="file" id="data-file-input" style="display: none;" accept=".json,application/json"><button type="button" id="load-from-file-btn" style="background-color: #E97132;">เลือกไฟล์สำรอง (.json)</button></div>
-            <div class="data-management-section admin-only">
-                <h3>ตั้งรหัสผ่านสำหรับไฟล์สำรอง</h3>
-                <p style="font-size:0.9em;">รหัสผ่านนี้จะใช้เข้ารหัสไฟล์สำรองข้อมูลที่สร้างโดยแอดมินโดยอัตโนมัติ</p>
-                <form id="backup-password-form" style="max-width: 400px;">
-                    <div class="form-group"><label for="backup-password">รหัสผ่านใหม่ (เว้นว่างเพื่อลบ):</label><input type="password" id="backup-password" placeholder="พิมพ์รหัสผ่านที่นี่"></div>
-                    <div class="form-group"><label for="backup-password-confirm">ยืนยันรหัสผ่านใหม่:</label><input type="password" id="backup-password-confirm" placeholder="พิมพ์รหัสผ่านอีกครั้ง"></div>
-                    <div class="form-group">
-                         <label style="font-weight: normal; cursor: pointer;">
-                            <input type="checkbox" id="show-backup-password"> แสดงรหัสผ่าน
-                        </label>
-                    </div>
-                    <div class="form-actions" style="justify-content: center;">
-                        <button type="submit" class="success">บันทึกรหัสผ่าน</button>
-                    </div>
-                </form>
-                <p id="password-status" style="font-weight: bold; margin-top: 10px; font-size:0.9em;"></p>
-            </div>
-            <div class="data-management-section admin-only"><h3>สำรองข้อมูล (Backup)</h3><p style="font-size:0.9em;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn" style="background-color: #007bff;">บันทึกชั่วคราวลงในเบราว์เซอร์</button></div>
-            <div class="data-management-section admin-only" style="border-color: var(--danger-color);"><h3 style="color: var(--danger-color);">รีเซ็ตข้อมูล (*** การกระทำนี้ไม่สามารถย้อนกลับได้ ***)</h3><p style="font-size:0.9em;">เลือกเพื่อล้างข้อมูลเฉพาะส่วนที่ต้องการ</p><button id="open-reset-modal-btn" class="danger">เปิดหน้าต่างรีเซ็ตข้อมูล</button></div>
-            <div class="collapsible-bar admin-only" data-target="admin-stock-report-content" style="background-color: #00B050;"><span>รายงานสต็อกสินค้า</span><span class="arrow">▶</span></div>
-            <div id="admin-stock-report-content" class="collapsible-content admin-only">
-                <div style="text-align:center; padding: 5px;">
-                    <p style="font-size:0.9em;">รายงานนี้จะเปรียบเทียบสต็อกที่คำนวณได้จากประวัติ (นำเข้า - ขาย - ปรับออก) กับสต็อกที่บันทึกไว้ปัจจุบัน</p>
-                    <button id="generate-stock-report-btn" class="success">สร้างรายงานสต็อก (ปัจจุบัน)</button>
-                    <button id="generate-yesterday-stock-report-btn" style="background-color: #007bff;">รายงานสต็อก (สิ้นวันก่อนหน้า)</button>
-                    <button id="recalculate-stock-btn" class="danger">คำนวณสต็อกใหม่ทั้งหมด</button>
+                    <button type="button" id="generate-credit-summary-btn" class="danger">สร้างรายงานลูกหนี้</button>
                 </div>
-                <div id="stock-summary-report-container" style="margin-top: 10px;"></div>
+                <div class="report-action-item">
+                    <p><strong>สรุปข้อมูลเงินโอน</strong></p>
+                    <button type="button" id="generate-transfer-summary-btn" style="background-color: #007bff;">สร้างรายงานเงินโอน</button>
+           
+                </div>
             </div>
+        </div>`;
 
-             <div class="collapsible-bar seller-only" data-target="seller-backup-content"><span>บันทึกข้อมูล (Backup)</span><span class="arrow">▶</span></div>
-            <div id="seller-backup-content" class="collapsible-content seller-only"><div style="text-align:center; padding-top: 5px;"><p style="margin-top:0; font-size:0.9em;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn-seller" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn-seller" style="background-color: #007bff;">บันทึกข้อมูลชั่วคราวในเบราว์เซอร์</button></div></div>
+    // หน้าจัดการร้านค้า
+    document.getElementById('page-stores').innerHTML = `
+        <h2>จัดการร้านค้า</h2> 
+        <form id="store-form"> 
+            <input type="hidden" id="store-id"> 
+            <label for="store-name">ชื่อร้านค้า:</label> 
+            <input type="text" id="store-name" required> 
+            <div class="form-actions"> 
+             
+                <button type="submit" class="success">บันทึกร้านค้า</button> 
+                <button type="button" id="clear-store-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button> 
+            </div> 
+        </form> 
+        <div class="table-container">
+            <table id="store-table"> 
+                <thead><tr><th>ชื่อร้านค้า</th><th>จัดการ</th></tr></thead> 
+          
+                <tbody></tbody> 
+            </table>
+        </div>`;
+
+    // หน้าจัดการผู้ใช้
+    document.getElementById('page-users').innerHTML = `
+    <h2>จัดการผู้ใช้</h2> 
+
+    <form id="user-form" class="user-form-center">
+
+        <input type="hidden" id="user-id">
+
+<div class="user-two-columns" style="grid-column: 1 / -1;">
+    
+    <div class="field-group">
+        <label for="user-username">ชื่อผู้ใช้:</label>
+        <input type="text" id="user-username" required>
+    </div>
+
+    <div class="field-group">
+        <label for="user-role">ประเภท:</label>
+        <select id="user-role" 
+ required>
+            <option value="seller">Seller</option>
+            <option value="admin">Admin</option>
+        </select>
+    </div>
+
+</div>
+
+
+<div class="user-two-columns" style="grid-column: 1 / -1;">
+    <div class="field-group">
+        <label for="user-password">รหัสผ่านใหม่:</label>
+        <input type="password" id="user-password" placeholder="กำหนดรหัสผ่านสำหรับผู้ใช้ใหม่">
+    </div>
+
+    <div class="field-group">
+        <label for="user-password-confirm">ยืนยันรหัสผ่าน:</label>
+   
+        <input type="password" id="user-password-confirm" placeholder="ยืนยันรหัสผ่าน">
+    </div>
+</div>
+
+<div class="form-group" style="display:flex;
+ justify-content:center; align-items:center; gap:6px;">
+
+    <input type="checkbox" id="show-password-user-form" style="width:18px;
+ height:18px;">
+
+    <label for="show-password-user-form" 
+           style="cursor:pointer; font-weight:normal; margin:0;
+ display:flex; align-items:center;">
+        แสดงรหัสผ่าน
+    </label>
+
+</div>
+
+        <div id="user-store-assignment-container" class="form-group"></div>
+
+<div id="user-commission-settings-container" class="form-group">
+
+    <div style="display:flex;
+ align-items:center; gap:10px;">
+
+        <h4 style="margin:0;
+ white-space:nowrap;">ตั้งค่าคอมมิชชั่น:</h4>
+
+        <label for="user-commission-rate" style="margin:0;
+ white-space:nowrap;">
+            อัตรา (%):
+        </label>
+
+        <input type="number" 
+               id="user-commission-rate" 
+               min="0" 
+               max="100" 
+               step="any" 
+     
+               placeholder="เช่น 3, 5.5"
+               style="flex:1;">
+
+    </div>
+
+</div>
+
+
+
+<div class="form-group" style="display:flex;
+ align-items:center; justify-content:center; gap:10px; flex-wrap:wrap;">
+
+    <label style="margin:0; white-space:nowrap;">
+        คิดจากยอดขาย:
+    </label>
+
+    <div id="user-commission-sources" 
+         style="display:flex;
+ align-items:center; gap:15px; flex-wrap:wrap;">
+
+        <label style="display:flex; align-items:center; gap:5px;
+ white-space:nowrap;">
+            <input type="checkbox" id="user-commission-cash"> เงินสด
+        </label>
+
+        <label style="display:flex;
+ align-items:center; gap:5px; white-space:nowrap;">
+            <input type="checkbox" id="user-commission-transfer"> โอน
+        </label>
+
+        <label style="display:flex;
+ align-items:center; gap:5px; white-space:nowrap;">
+            <input type="checkbox" id="user-commission-credit"> เครดิต
+        </label>
+
+    </div>
+</div>
+
+
+        <div id="user-sales-period-container" class="form-group">
+            <h4>กำหนดระยะเวลาที่สามารถขายได้</h4>
+
+            <div class="user-two-columns">
+                <div class="field-group">
+      
+                    <label for="user-sales-start-date">วันที่เริ่มขาย:</label>
+                    <input type="date" id="user-sales-start-date">
+                </div>
+
+                <div class="field-group">
+                    <label for="user-sales-end-date">วันที่สิ้นสุด:</label>
+         
+                    <input type="date" id="user-sales-end-date">
+                </div>
+            </div>
+        </div>
+
+        <div id="user-product-assignment-container" class="form-group">
+            <h4>กำหนดสินค้าที่สามารถขายได้</h4>
+            <div id="user-product-assignment"
+     
+             style="max-height:150px; overflow-y:auto; border:1px solid #BFBFBF; padding:10px;
+ border-radius:10px;">
+            </div>
+        </div>
+
+<div id="user-history-view-container" class="form-group">
+    <h4>จำนวนวันที่ดูประวัติขายได้</h4>
+
+    <input type="number" id="user-visible-days" min="0"
+           placeholder="เว้นว่างคือดูได้ทั้งหมด 0=วันนี้, 1=เมื่อวานด้วย"
+           style="width:100%;
+ box-sizing:border-box;">
+</div>
+
+
+
+        <div class="form-actions">
+            <button type="submit" class="success">บันทึกผู้ใช้</button>
+            <button type="button" id="clear-user-form-btn" style="background-color:#6c757d;">เคลียร์ฟอร์ม</button>
+        </div>
+
+    </form>
+
+    <div class="table-container">
+        <table id="user-table">
+            <thead>
+                <tr>
+      
+                    <th>ชื่อผู้ใช้</th>
+                    <th>ประเภท</th>
+                    <th>ร้านค้า</th>
+                    <th>สินค้าที่ขายได้</th>
+                    <th>ระยะเวลาที่ขายได้</th>
+      
+                    <th>จัดการ</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+`;
+
+    // หน้าจัดการข้อมูล
+    document.getElementById('page-data').innerHTML = `
+    <h2>จัดการข้อมูล</h2>
+    <div class="data-management-section admin-only data-restore-section">
+        <h3>โหลดข้อมูลจากไฟล์ (Restore)</h3>
+ 
+        <p style="color: var(--danger-color);
+ font-size:0.9em;"><b>คำเตือน:</b> การโหลดข้อมูลจากไฟล์จะรวมข้อมูลเข้ากับข้อมูลปัจจุบัน ข้อมูลที่ซ้ำกันจะถูกทับด้วยข้อมูลจากไฟล์!</p>
+        <input type="file" id="data-file-input" style="display: none;" accept=".json,application/json">
+        <button type="button" id="load-from-file-btn" style="background-color: #E97132;">เลือกไฟล์สำรอง (.json)</button>
+    </div>
+    <div class="data-management-section admin-only">
+        <h3>ตั้งรหัสผ่านสำหรับไฟล์สำรอง</h3>
+        <p style="font-size:0.9em;">รหัสผ่านนี้จะใช้เข้ารหัสไฟล์สำรองข้อมูลที่สร้างโดยแอดมินโดยอัตโนมัติ</p>
+        <form id="backup-password-form" style="max-width: 400px;">
+            <div class="form-group"><label for="backup-password">รหัสผ่านใหม่ (เว้นว่างเพื่อลบ):</label><input type="password" id="backup-password" placeholder="พิมพ์รหัสผ่านที่นี่"></div>
             
-            <div class="collapsible-bar seller-only" data-target="seller-summary-content"><span>รายงานสรุป (สำหรับผู้ใช้ปัจจุบัน)</span><span class="arrow">▶</span></div>
-            <div id="seller-summary-content" class="collapsible-content seller-only"><div style="text-align:center;"><div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;"><button id="my-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button><button id="my-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมดของฉัน</button></div><div class="summary-form-inline" style="margin-top: 10px; justify-content: center; flex-direction: column; gap:8px; align-items: stretch;"><label>เลือกวันที่: <input type="date" id="my-summary-date" style="width:100%;"></label><button id="my-summary-by-day-btn" style="background-color: #03a9f4;">สรุปยอดขายวันที่เลือก</button></div><div class="summary-form-inline" style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd; justify-content: center; flex-direction: column; gap:8px; align-items: stretch;"><div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;"><label>จากวันที่: <input type="date" id="my-summary-start-date"></label><label>ถึงวันที่: <input type="date" id="my-summary-end-date"></label></div><button id="my-summary-by-range-btn" style="background-color: #ff9800;">สรุปยอดขายตามช่วงวันที่</button></div></div></div>
-            <div class="collapsible-bar seller-only" data-target="seller-detailed-report-content" style="background-color: #ED01ED;"><span>แจกแจงรายละเอียดการขาย</span><span class="arrow">▶</span></div>
-            <div id="seller-detailed-report-content" class="collapsible-content seller-only">
-                <form id="seller-detailed-report-form" class="summary-section" style="display: grid; grid-template-columns: 1fr; gap: 15px; max-width: 800px; margin: auto; padding: 10px;">
-                    <div>
-                        <h4 style="text-align: left; margin-bottom: 5px; padding-left: 5px; font-size:1em;">1. เลือกประเภทการชำระ</h4>
-                        <div id="seller-report-payment-types" style="display: flex; gap: 10px; flex-wrap: wrap; padding: 8px; background-color: #eef5ff; border-radius: 6px; justify-content: center; font-size:0.9em;">
-                            <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" value="เงินสด" checked> เงินสด</label>
-                            <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" value="เงินโอน" checked> เงินโอน</label>
-                            <label style="font-weight: normal; cursor: pointer;"><input type="checkbox" value="เครดิต" checked> เครดิต</label>
-                        </div>
-                    </div>
+            <div class="form-group"><label for="backup-password-confirm">ยืนยันรหัสผ่านใหม่:</label><input type="password" id="backup-password-confirm" placeholder="พิมพ์รหัสผ่านอีกครั้ง"></div>
+            <div class="form-group">
+                 <label style="font-weight: normal;
+ cursor: pointer;">
+                    <input type="checkbox" id="show-backup-password"> แสดงรหัสผ่าน
+                </label>
+            </div>
+            <div class="form-actions" style="justify-content: center;">
+                <button type="submit" class="success">บันทึกรหัสผ่าน</button>
+            </div>
+ 
+        </form>
+        <p id="password-status" style="font-weight: bold;
+ margin-top: 10px; font-size:0.9em;"></p>
+    </div>
+    <div class="data-management-section admin-only">
+        <h3>สำรองข้อมูล (Backup)</h3>
+        <p style="font-size:0.9em;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p>
+        <button id="save-to-file-btn" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button>
+        <button id="save-to-browser-btn" style="background-color: #007bff;">บันทึกชั่วคราวลงในเบราว์เซอร์</button>
+    </div>
+    <div class="data-management-section admin-only" style="border-color: var(--danger-color);">
+        <h3 style="color: var(--danger-color);">รีเซ็ตข้อมูล (*** การกระทำนี้ไม่สามารถย้อนกลับได้ ***)</h3>
+        <p style="font-size:0.9em;">เลือกเพื่อล้างข้อมูลเฉพาะส่วนที่ต้องการ</p>
+     
+        <button id="open-reset-modal-btn" class="danger">เปิดหน้าต่างรีเซ็ตข้อมูล</button>
+    </div>
+    <div class="collapsible-bar admin-only" data-target="admin-stock-report-content" style="background-color: #00B050;"><span>รายงานสต็อกสินค้า</span><span class="arrow">▶</span></div>
+    <div id="admin-stock-report-content" class="collapsible-content admin-only">
+        <div style="text-align:center;
+ padding: 5px;">
+            <p style="font-size:0.9em;">รายงานนี้จะเปรียบเทียบสต็อกที่คำนวณได้จากประวัติ (นำเข้า - ขาย - ปรับออก) กับสต็อกที่บันทึกไว้ปัจจุบัน</p>
+            <button id="generate-stock-report-btn" class="success">สร้างรายงานสต็อก (ปัจจุบัน)</button>
+            <button id="generate-yesterday-stock-report-btn" style="background-color: #007bff;">รายงานสต็อก (สิ้นวันก่อนหน้า)</button>
+            <button id="recalculate-stock-btn" class="danger">คำนวณสต็อกใหม่ทั้งหมด</button>
+        </div>
+        <div id="stock-summary-report-container" style="margin-top: 10px;"></div>
+    </div>
 
-                    <div>
-                        <h4 style="text-align: left; margin-bottom: 5px; padding-left: 5px; font-size:1em;">2. เลือกช่วงเวลา</h4>
-                        <div class="summary-form-inline" style="justify-content: space-around; gap:10px;">
-                            <label style="font-weight: normal;">จากวันที่: <input type="date" id="seller-report-start-date" required></label>
-                            <label style="font-weight: normal;">ถึงวันที่: <input type="date" id="seller-report-end-date" required></label>
-                        </div>
-                    </div>
+     <div class="collapsible-bar seller-only" data-target="seller-backup-content"><span> 
+บันทึกข้อมูล (Backup)</span><span class="arrow">▶</span></div>
+    <div id="seller-backup-content" class="collapsible-content seller-only"><div style="text-align:center; padding-top: 5px;"><p style="margin-top:0;
+ font-size:0.9em;">สำรองข้อมูลทั้งหมด (ผู้ใช้, สินค้า, ประวัติการขาย) ลงในไฟล์ JSON เพื่อเก็บไว้หรือย้ายไปยังเครื่องอื่น</p><button id="save-to-file-btn-seller" class="success">บันทึกข้อมูลทั้งหมดลงไฟล์</button><button id="save-to-browser-btn-seller" style="background-color: #007bff;">บันทึกข้อมูลชั่วคราวในเบราว์เซอร์</button></div></div>
+    
+    <div class="collapsible-bar seller-only" data-target="seller-summary-content"><span>รายงานสรุป (สำหรับผู้ใช้ปัจจุบัน)</span><span class="arrow">▶</span></div>
+    <div id="seller-summary-content" class="collapsible-content seller-only"><div style="text-align:center;"><div style="display: flex;
+ flex-wrap: wrap; gap: 8px; justify-content: center;"><button id="my-summary-today-btn" style="background-color: var(--warning-color);">สรุปยอดขายวันนี้</button><button id="my-summary-all-btn" style="background-color: #673ab7;">สรุปทั้งหมดของฉัน</button></div><div class="summary-form-inline" style="margin-top: 10px; justify-content: center;
+ flex-direction: column; gap:8px; align-items: stretch;"><label>เลือกวันที่: <input type="date" id="my-summary-date" style="width:100%;"></label><button id="my-summary-by-day-btn" style="background-color: #03a9f4;">สรุปยอดขายวันที่เลือก</button></div><div class="summary-form-inline" style="margin-top: 10px; padding-top: 10px;
+ border-top: 1px solid #ddd; justify-content: center; flex-direction: column; gap:8px; align-items: stretch;"><div style="display: flex; gap: 8px; justify-content: center;
+ flex-wrap: wrap;"><label>จากวันที่: <input type="date" id="my-summary-start-date"></label><label>ถึงวันที่: <input type="date" id="my-summary-end-date"></label></div><button id="my-summary-by-range-btn" style="background-color: #ff9800;">สรุปยอดขายตามช่วงวันที่</button></div></div></div>
+    <div class="collapsible-bar seller-only" data-target="seller-detailed-report-content" style="background-color: #ED01ED;"><span>แจกแจงรายละเอียดการขาย</span><span class="arrow">▶</span></div>
+    <div id="seller-detailed-report-content" class="collapsible-content seller-only">
+        <form id="seller-detailed-report-form" class="summary-section" style="display: grid;
+ grid-template-columns: 1fr; gap: 15px; max-width: 800px; margin: auto; padding: 10px;">
+            <div>
+                <h4 style="text-align: left;
+ margin-bottom: 5px; padding-left: 5px; font-size:1em;">1. เลือกประเภทการชำระ</h4>
+                <div id="seller-report-payment-types" style="display: flex;
+ gap: 10px; flex-wrap: wrap; padding: 8px; background-color: #eef5ff; border-radius: 6px; justify-content: center;
+ font-size:0.9em;">
+                    <label style="font-weight: normal;
+ cursor: pointer;"><input type="checkbox" value="เงินสด" checked> เงินสด</label>
+                    <label style="font-weight: normal;
+ cursor: pointer;"><input type="checkbox" value="เงินโอน" checked> เงินโอน</label>
+                    <label style="font-weight: normal;
+ cursor: pointer;"><input type="checkbox" value="เครดิต" checked> เครดิต</label>
+                </div>
+            </div>
 
-                    <div class="form-actions">
-                        <button type="submit" class="success" style="width: 100%; max-width: 300px; padding: 10px; font-size: 1.1em;">3. สร้างรายงาน</button>
-                    </div>
-                </form>
+            <div>
+                <h4 style="text-align: left;
+ margin-bottom: 5px; padding-left: 5px; font-size:1em;">2. เลือกช่วงเวลา</h4>
+                <div class="summary-form-inline" style="justify-content: space-around;
+ gap:10px;">
+                    <label style="font-weight: normal;">จากวันที่: <input type="date" id="seller-report-start-date" required></label>
+                    <label style="font-weight: normal;">ถึงวันที่: <input type="date" id="seller-report-end-date" required></label>
+                </div>
             </div>
-            <div class="collapsible-bar seller-only" data-target="seller-credit-report-content" style="background-color: #d32f2f;"><span>สรุปข้อมูลลูกหนี้ (เครดิต)</span><span class="arrow">▶</span></div>
-            <div id="seller-credit-report-content" class="collapsible-content seller-only">
-                <form id="seller-credit-report-form" class="summary-section" style="padding: 10px; margin: 0 auto; border: none;">
-                    <h4 style="text-align: center; margin-top:0; font-size:1em;">เลือกช่วงเวลาที่ต้องการสรุป</h4>
-                    <div class="summary-form-inline" style="justify-content: space-around; gap:10px;">
-                        <label style="font-weight: normal;">จากวันที่: <input type="date" id="seller-credit-start-date" required></label>
-                        <label style="font-weight: normal;">ถึงวันที่: <input type="date" id="seller-credit-end-date" required></label>
-                    </div>
-                    <div class="form-actions" style="margin-top: 10px;">
-                        <button type="submit" class="danger" style="width: 100%; max-width: 300px; padding: 10px;">สร้างรายงานลูกหนี้</button>
-                    </div>
-                </form>
+
+            <div class="form-actions">
+       
+                <button type="submit" class="success" style="width: 100%; max-width: 300px; padding: 10px;
+ font-size: 1.1em;">3. สร้างรายงาน</button>
             </div>
-            <div class="collapsible-bar seller-only" data-target="seller-transfer-report-content" style="background-color: #1976d2;"><span>สรุปข้อมูลเงินโอน</span><span class="arrow">▶</span></div>
-            <div id="seller-transfer-report-content" class="collapsible-content seller-only">
-                <form id="seller-transfer-report-form" class="summary-section" style="padding: 10px; margin: 0 auto; border: none;">
-                    <h4 style="text-align: center; margin-top:0; font-size:1em;">เลือกช่วงเวลาที่ต้องการสรุป</h4>
-                    <div class="summary-form-inline" style="justify-content: space-around; gap:10px;">
-                        <label style="font-weight: normal;">จากวันที่: <input type="date" id="seller-transfer-start-date" required></label>
-                        <label style="font-weight: normal;">ถึงวันที่: <input type="date" id="seller-transfer-end-date" required></label>
-                    </div>
-                    <div class="form-actions" style="margin-top: 10px;">
-                        <button type="submit" style="background-color: #007bff; width: 100%; max-width: 300px; padding: 10px;">สร้างรายงานเงินโอน</button>
-                    </div>
-                </form>
+        </form>
+    </div>
+    <div class="collapsible-bar seller-only" data-target="seller-credit-report-content" style="background-color: #d32f2f;"><span>สรุปข้อมูลลูกหนี้ (เครดิต)</span><span class="arrow">▶</span></div>
+    <div id="seller-credit-report-content" class="collapsible-content seller-only">
+        <form id="seller-credit-report-form" class="summary-section" style="padding: 10px;
+ margin: 0 auto; border: none;">
+            <h4 style="text-align: center; margin-top:0;
+ font-size:1em;">เลือกช่วงเวลาที่ต้องการสรุป</h4>
+            <div class="summary-form-inline" style="justify-content: space-around;
+ gap:10px;">
+                <label style="font-weight: normal;">จากวันที่: <input type="date" id="seller-credit-start-date" required></label>
+                <label style="font-weight: normal;">ถึงวันที่: <input type="date" id="seller-credit-end-date" required></label>
             </div>
-            <div class="collapsible-bar seller-only active" data-target="seller-sales-history-container"><span>ค้นหารายการขาย</span><span class="arrow" style="transform: rotate(90deg);">▶</span></div>
-            <div id="seller-sales-history-container" class="collapsible-content seller-only active">
-                <form id="seller-sales-filter-form" style="max-width: none; background-color: #eef5ff; padding: 10px; border-radius: 6px;">
-                    <div style="grid-column: 1/-1; display:flex; flex-wrap:wrap; gap: 15px; justify-content:center; align-items:center; margin-bottom: 8px;">
-                        <label><input type="radio" name="seller-filter-type" value="today" checked> วันนี้</label>
-                        <label><input type="radio" name="seller-filter-type" value="by_date"> เลือกวัน</label>
-                        <label><input type="radio" name="seller-filter-type" value="by_range"> เลือกช่วง</label>
-                    </div>
-                    <div id="seller-date-inputs" style="grid-column: 1/-1; display:flex; flex-wrap:wrap; gap: 10px; justify-content:center; align-items:flex-end;">
-                        <div id="seller-filter-by-date-div" style="display:none;"><label>เลือกวันที่:<input type="date" id="seller-filter-date"></label></div>
-			<div id="seller-filter-by-range-div" style="display:none; display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
-                           <label>จาก:<input type="date" id="seller-filter-start-date"></label>
-                           <label>ถึง:<input type="date" id="seller-filter-end-date"></label>
-                        </div>
-                    </div>
-                    <div class="form-actions" style="margin-top: 10px;">
-                        <button type="submit" style="background-color:#008CBA; padding: 8px 15px;">แสดงรายการ</button>
-                    </div>
-                </form>
-                <div class="table-container" style="margin-top:10px;"><table id="seller-sales-history-table"><thead><tr><th>วันที่</th><th>เวลา</th><th>รายการสินค้า</th><th>ยอดขาย</th><th>ประเภทชำระ</th><th>จัดการ</th></tr></thead><tbody></tbody></table></div>
-            </div>`;
+            <div class="form-actions" style="margin-top: 10px;">
+                <button type="submit" class="danger" style="width: 100%;
+ max-width: 300px; padding: 10px;">สร้างรายงานลูกหนี้</button>
+            </div>
+        </form>
+    </div>
+    <div class="collapsible-bar seller-only" data-target="seller-transfer-report-content" style="background-color: #1976d2;"><span>สรุปข้อมูลเงินโอน</span><span class="arrow">▶</span></div>
+    <div id="seller-transfer-report-content" class="collapsible-content seller-only">
+        <form id="seller-transfer-report-form" class="summary-section" style="padding: 10px;
+ margin: 0 auto; border: none;">
+            <h4 style="text-align: center; margin-top:0;
+ font-size:1em;">เลือกช่วงเวลาที่ต้องการสรุป</h4>
+            <div class="summary-form-inline" style="justify-content: space-around;
+ gap:10px;">
+                <label style="font-weight: normal;">จากวันที่: <input type="date" id="seller-transfer-start-date" required></label>
+                <label style="font-weight: normal;">ถึงวันที่: <input type="date" id="seller-transfer-end-date" required></label>
+            </div>
+            <div class="form-actions" style="margin-top: 10px;">
+                <button type="submit" style="background-color: #007bff;
+ width: 100%; max-width: 300px; padding: 10px;">สร้างรายงานเงินโอน</button>
+            </div>
+        </form>
+    </div>
+    <div class="collapsible-bar seller-only active" data-target="seller-sales-history-container"><span>ค้นหารายการขาย</span><span class="arrow" style="transform: rotate(90deg);">▶</span></div>
+    <div id="seller-sales-history-container" class="collapsible-content seller-only active">
+        <form id="seller-sales-filter-form" style="max-width: none;
+ background-color: #eef5ff; padding: 10px; border-radius: 6px;">
+            <div style="grid-column: 1/-1;
+ display:flex; flex-wrap:wrap; gap: 15px; justify-content:center; align-items:center; margin-bottom: 8px;">
+                <label><input type="radio" name="seller-filter-type" value="today" checked> วันนี้</label>
+                <label><input type="radio" name="seller-filter-type" value="by_date"> เลือกวัน</label>
+                <label><input type="radio" name="seller-filter-type" value="by_range"> เลือกช่วง</label>
+            </div>
+            <div id="seller-date-inputs" style="grid-column: 1/-1;
+ display:flex; flex-wrap:wrap; gap: 10px; justify-content:center; align-items:flex-end;">
+                <div id="seller-filter-by-date-div" style="display:none;"><label>เลือกวันที่:<input type="date" id="seller-filter-date"></label></div>
+    <div id="seller-filter-by-range-div" style="display:none;
+ display:flex; gap:8px; flex-wrap:wrap; justify-content:center;">
+                   <label>จาก:<input type="date" id="seller-filter-start-date"></label>
+                   <label>ถึง:<input type="date" id="seller-filter-end-date"></label>
+                </div>
+            </div>
+            <div class="form-actions" style="margin-top: 10px;">
+            
+                <button type="submit" style="background-color:#008CBA; padding: 8px 15px;">แสดงรายการ</button>
+            </div>
+        </form>
+        <div class="table-container" style="margin-top:10px;"><table id="seller-sales-history-table"><thead><tr><th>วันที่</th><th>เวลา</th><th>รายการสินค้า</th><th>ยอดขาย</th><th>ประเภทชำระ</th><th>จัดการ</th></tr></thead><tbody></tbody></table></div>
+    </div>`;
         },
+
 
         // --- EVENT LISTENERS ---
         attachEventListeners(){ 
