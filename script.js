@@ -2,7 +2,7 @@
             // [PWA] Service Worker Registration
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('./service-worker.js')
+                    navigator.serviceWorker.register('service-worker.js') // <--- ปรับปรุงแล้ว
                         .then(registration => console.log('ServiceWorker registration successful'))
                         .catch(err => console.log('ServiceWorker registration failed: ', err));
                 });
@@ -232,7 +232,7 @@
                     modal.style.display = 'flex';
                     this.setupSummaryPopupControls(); // Setup controls every time modal opens
                 },
-                setupSummaryPopupControls() {
+    setupSummaryPopupControls() {
                     const modalContentContainer = document.querySelector("#summaryModal .modal-content-container");
                     const modalBody = document.getElementById("modalBodyContent");
                     if (!modalBody || !modalContentContainer) return;
@@ -275,35 +275,94 @@
 
                     // --- Save as Image Button Logic ---
                     const saveBtn = document.getElementById("saveSummaryAsImageBtn");
-                    const newSaveBtn = saveBtn.cloneNode(true); // Clone to remove old listeners
+                    // Clone to remove old listeners before re-attaching
+                    const newSaveBtn = saveBtn.cloneNode(true); 
                     saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
 
-                    newSaveBtn.addEventListener("click", () => {
-                        const controlsElement = modalContentContainer.querySelector('.modal-controls');
+  newSaveBtn.addEventListener("click", () => {
+                        // 1. ระบุ Element และเตรียมการ
+                        const pinkFrame = modalBody; // กำหนดให้ modalBodyContent เป็น Element เป้าหมาย
+                        if (!pinkFrame) {
+                            this.showToast('ไม่พบเนื้อหาสรุปสำหรับบันทึก', 'error');
+                            return;
+                        }
 
+                        const controlsElement = modalContentContainer.querySelector('.modal-controls');
                         if (controlsElement) controlsElement.style.display = 'none';
 
-                        // เพิ่มสไตล์ชั่วคราวก่อนถ่ายภาพ
-                        modalContentContainer.style.backgroundColor = '#FAFAD2';
-                        modalContentContainer.style.padding = '10px 5px';
+                        // บันทึก style เดิมของ modalBody และ modalContentContainer
+                        const originalStyles = {
+                            modalContentContainerMargin: modalContentContainer.style.margin,
+                            modalContentContainerBoxSizing: modalContentContainer.style.boxSizing,
+                            modalContentContainerMaxWidth: modalContentContainer.style.maxWidth,
+                            modalBodyMaxHeight: pinkFrame.style.maxHeight,
+                            modalBodyOverflowY: pinkFrame.style.overflowY,
+                            modalBodyBoxSizing: pinkFrame.style.boxSizing,
+                            modalBodyPadding: pinkFrame.style.padding
+                        };
 
-                        html2canvas(modalContentContainer, {
+                        // 2. ปรับ Style เพื่อให้แน่ใจว่า Canvas จับภาพได้ทั้งหมด (อ้างอิงหลักการจากไฟล์ 01.txt)
+                        // Note: ไฟล์ 01.txt ใช้การปรับ margin และ content-box เพื่อเพิ่มขอบขาว
+                        // ในโค้ดใหม่ เราจะเน้นที่การยกเลิกข้อจำกัดด้านความสูงและการ Scroll
+
+                        // ยกเลิกข้อจำกัดความสูงและการ Scroll เพื่อจับภาพเต็ม
+                        pinkFrame.style.maxHeight = 'none';
+                        pinkFrame.style.overflowY = 'visible';
+                        pinkFrame.style.boxSizing = 'content-box';
+                        
+                        // ปรับให้กรอบนอกกว้างเต็มที่เพื่อรองรับเนื้อหา
+                        modalContentContainer.style.maxWidth = 'none';
+                        modalContentContainer.style.margin = '2px';
+                        modalContentContainer.style.boxSizing = 'content-box';
+
+                        // 3. ใช้ html2canvas แปลง Element เป็น Canvas
+                        html2canvas(pinkFrame, { // จับภาพที่ modalBodyContent
+                            scale: 2, // ลด scale ลงเพื่อความเร็วในการประมวลผล แต่ยังคงคุณภาพ
                             useCORS: true,
-                            scale: 4,
-                            backgroundColor: '#FAFAD2'
+                            allowTaint: true,
+                            backgroundColor: '#FAFAD2', // ใช้สีพื้นหลังตามที่กำหนดในโค้ดเดิม
+                            logging: false
                         }).then(canvas => {
+                            // 4. สร้าง Canvas ใหม่เพื่อเพิ่มขอบสีขาวรอบๆ ภาพ (ตามหลักการไฟล์ 01.txt)
+                            const finalCanvas = document.createElement('canvas');
+                            const finalCtx = finalCanvas.getContext('2d');
+                            const borderSize = 2; // ขอบขาว 2px
+
+                            finalCanvas.width = canvas.width + (borderSize * 2);
+                            finalCanvas.height = canvas.height + (borderSize * 2);
+
+                            // วาดพื้นหลังสีขาว
+                            finalCtx.fillStyle = '#FFFFFF';
+                            finalCtx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+                            // วาดภาพที่ได้จาก html2canvas ลงบน Canvas สุดท้าย
+                            finalCtx.drawImage(canvas, borderSize, borderSize);
+
+                            // 5. เตรียมชื่อไฟล์และดาวน์โหลด
                             const link = document.createElement('a');
                             const fileName = `POS_Summary_${this.currentUser.username}_${Date.now()}.png`;
                             link.download = fileName;
-                            link.href = canvas.toDataURL("image/png");
+                            link.href = finalCanvas.toDataURL("image/png");
                             link.click();
+                            this.showToast('บันทึกรูปภาพเรียบร้อยแล้ว', 'success');
+
                         }).catch(err => {
                             console.error("Error creating image:", err);
-                            this.showToast("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้", "error");
+                            this.showToast("ขออภัย, ไม่สามารถบันทึกเป็นรูปภาพได้: " + err.message, "error");
                         }).finally(() => {
+                            // 6. คืนค่า Style เดิมทั้งหมด
                             if (controlsElement) controlsElement.style.display = '';
 
-                            // คืนค่าสไตล์ให้กลับเป็นเหมือนเดิม
+                            pinkFrame.style.maxHeight = originalStyles.modalBodyMaxHeight;
+                            pinkFrame.style.overflowY = originalStyles.modalBodyOverflowY;
+                            pinkFrame.style.boxSizing = originalStyles.modalBodyBoxSizing;
+                            pinkFrame.style.padding = originalStyles.modalBodyPadding;
+
+                            modalContentContainer.style.margin = originalStyles.modalContentContainerMargin;
+                            modalContentContainer.style.boxSizing = originalStyles.modalContentContainerBoxSizing;
+                            modalContentContainer.style.maxWidth = originalStyles.modalContentContainerMaxWidth;
+                            
+                            // คืนค่าสไตล์ที่ตั้งในโค้ดเดิมที่ไม่จำเป็นต้องใช้แล้ว
                             modalContentContainer.style.backgroundColor = '';
                             modalContentContainer.style.padding = '';
                         });
@@ -1288,7 +1347,8 @@
                         }
                     });
 
-                    let footerRows = `<tr style="font-weight: bold; background-color: #f0f0f0;">
+                    // สร้างส่วนสรุป (Footer Rows) เหมือนเดิม
+                    let footerRows = `<tr style="font-weight: bold; background-color: #f0f0f0; border-top: 2px solid #333;">
                         <td colspan="3" style="text-align: right;">ยอดรวมทั้งหมด:</td>
                         <td>${this.formatNumberSmart(totalSales)}</td>
                         ${isAdminReport ? `<td style="color:${totalProfit >= 0 ? 'green' : 'red'};">${this.formatNumberSmart(totalProfit)}</td>` : ''}
@@ -1337,6 +1397,9 @@
 
                     const tableClass = isAdminReport ? 'detailed-sales-table admin-view' : 'detailed-sales-table';
 
+                    /* แก้ไข: นำ footerRows ไปต่อท้าย tableRows ใน <tbody> โดยตรง 
+                       และลบแท็ก <tfoot> ออก เพื่อไม่ให้ Browser สั่งพิมพ์ซ้ำทุกหน้า
+                    */
                     return `
                         <div style="text-align:center;">
                             <h2>${title}</h2>
@@ -1355,10 +1418,8 @@
                                     </thead>
                                     <tbody>
                                         ${tableRows}
+                                        ${footerRows} 
                                     </tbody>
-                                    <tfoot>
-                                        ${footerRows}
-                                    </tfoot>
                                 </table>
                             </div>
                         </div>
@@ -1826,8 +1887,8 @@
                             <div style="text-align:center;">
                                 <div>
                                     <h2>${title}</h2>
-                                    <p style="font-size:0.8em; color:#555; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>
-                                    <p style="font-size:0.9em; color:#333; font-weight:bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
+                                    <p style="font-size:0.8em; color: #0088ff; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>
+                                    <p style="font-size:0.9em; color: #0088ff; font-weight:bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
                                 </div>
                                 <hr>
                                 <h2>ภาพรวมทั้งหมด</h2>
@@ -1927,9 +1988,9 @@
                         allSellersHtml += `
                             <div style="text-align:center; ${!isSingleSellerReport ? 'margin-top: 20px;' : ''}">
                                 <h2>${sectionTitle}</h2>
-                                ${isSingleSellerReport ? `<p style="font-size:0.8em; color:#555; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>` : ''}
-                                <p style="font-size: 0.9em; color: #333; font-weight: bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
-                                <p style="margin-bottom: 8px;"><strong>ยอดขายรวม : ${formatCurrency(sellerData.totalSales)} บาท</strong> <br><span style="font-size:0.9em; color:#555;">(เงินสด : ${formatCurrency(sellerData.totalCash)} | เงินโอน : ${formatCurrency(sellerData.totalTransfer)} | เครดิต : ${formatCurrency(sellerData.totalCredit)})</span></p>
+                                ${isSingleSellerReport ? `<p style="font-size:0.8em; color: #0088ff; margin-bottom: 0;">สรุปโดย : ${this.currentUser.username} | สรุปเมื่อ : ${summaryTimestamp}</p>` : ''}
+                                <p style="font-size: 0.9em; color: #0088ff; font-weight: bold; margin-bottom: 8px;">วันที่ขายสินค้า : ${dateDisplayString}</p>
+                                <p style="margin-bottom: 8px;"><strong>ยอดขายรวม : ${formatCurrency(sellerData.totalSales)} บาท</strong> <br><span style="font-size:0.9em; color: #0088ff;">(เงินสด : ${formatCurrency(sellerData.totalCash)} | เงินโอน : ${formatCurrency(sellerData.totalTransfer)} | เครดิต : ${formatCurrency(sellerData.totalCredit)})</span></p>
                                 ${!isSingleDayReport ? `<p><strong>จำนวนวันขายทั้งหมด : ${summaryResult.totalSellingDays} วัน</strong></p>` : ''}
                                 ${profitOrCommissionHtml}
                                 <table class="product-summary-table">
@@ -2144,7 +2205,7 @@
                 },
 
                 // --- POS (POINT OF SALE) ---
-                renderPos(payload = null) {
+renderPos(payload = null) {
                     this.editingSaleContext = null;
                     const productSelect = document.getElementById('pos-product');
                     if (!productSelect) return;
@@ -2154,13 +2215,16 @@
                         const assignedIds = this.currentUser.assignedProductIds || [];
                         availableProducts = availableProducts.filter(p => assignedIds.includes(p.id));
                     }
+                    // กรองเฉพาะสินค้าที่มีสต็อก > 0
                     const productsInStock = availableProducts.filter(p => p.stock > 0);
 
+                    // --- [ปรับปรุง] การจัดการสินค้าชิ้นเดียวของผู้ขาย ---
                     if (this.currentUser.role === 'seller' && productsInStock.length === 1) {
                         const singleProduct = productsInStock[0];
                         productSelect.innerHTML = `<option value="${singleProduct.id}">${singleProduct.name} (คงเหลือ: ${this.formatNumberSmart(singleProduct.stock)})</option>`;
                         productSelect.disabled = true;
                         productSelect.classList.add('single-product-seller');
+                        productSelect.value = singleProduct.id; // ตั้งค่าเริ่มต้นให้เลือกสินค้านี้
                     } else {
                         productSelect.innerHTML = '<option value="">--- เลือกสินค้า ---</option>';
                         productsInStock.forEach(p => {
@@ -2169,8 +2233,14 @@
                         productSelect.disabled = false;
                         productSelect.classList.remove('single-product-seller');
                     }
+                    // --- [สิ้นสุดปรับปรุง] ---
 
-                    if (payload) { // For editing a sale
+                    // --- กำหนดค่าเริ่มต้นสำหรับ Date/Time ---
+                    const now = new Date();
+                    const dateString = now.toISOString().split('T')[0];
+                    const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                    
+                    if (payload) { // โหมดแก้ไขรายการขาย
                         this.editingSaleContext = {
                             sellerId: payload.sellerId,
                             sellerName: payload.sellerName,
@@ -2217,9 +2287,15 @@
                         const d = new Date(payload.date);
                         document.getElementById('pos-time').value = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
                     } else {
+                        const dateInput = document.getElementById('pos-date');
+                        const timeInput = document.getElementById('pos-time');
+                        
+                        // กำหนดค่าเริ่มต้นเป็น วันที่/เวลาปัจจุบัน
+                        if (!dateInput.value) { dateInput.value = dateString; }
+                        if (!timeInput.value) { timeInput.value = timeString; }
+                        
+                        // หากเป็นการเริ่มทำรายการใหม่ (ตะกร้าว่าง)
                         if (this.cart.length === 0) {
-                            document.getElementById('pos-date').value = '';
-                            document.getElementById('pos-time').value = '';
                             document.querySelector('input[name="payment-method"][value="เงินสด"]').checked = true;
                             document.getElementById('pos-date').classList.remove('backdating-active');
                             document.getElementById('pos-time').classList.remove('backdating-active');
@@ -2294,7 +2370,7 @@
                     this.updateSpecialPriceInfo();
                 },
                 removeFromCart(index) { this.cart.splice(index, 1); this.renderCart(); },
-                processSale() {
+processSale() {
                     if (this.cart.length === 0) {
                         this.showToast('ตะกร้าว่างเปล่า');
                         return;
@@ -2331,8 +2407,7 @@
                         let saleDate = new Date();
                         const dateInput = document.getElementById('pos-date').value;
                         const timeInput = document.getElementById('pos-time').value;
-                        const isBackdatedSale = dateInput || timeInput;
-
+                        
                         if (dateInput) {
                             const [year, month, day] = dateInput.split('-');
                             saleDate.setFullYear(parseInt(year), parseInt(month) - 1, parseInt(day));
@@ -2408,15 +2483,15 @@
                         this.cart = [];
                         this.editingSaleContext = null;
 
-                        if (isBackdatedSale) {
-                            this.renderCart();
-                            document.getElementById('pos-product').value = '';
-                            document.getElementById('pos-quantity').value = 1;
-                            document.getElementById('special-price').value = '';
-                            this.updateSpecialPriceInfo();
-                        } else {
-                            this.renderPos();
-                        }
+                        // --- [ปรับปรุง] การจัดการหลังการขายสำเร็จ ---
+                        // เรียก renderPos() เสมอ เพื่อรีเฟรชสินค้า, อัปเดตสต็อก, และคงสถานะ Single Product
+                        this.renderPos();
+                        
+                        // เคลียร์ค่า Quantity และ Special Price หลังการขายเสร็จสิ้น
+                        document.getElementById('pos-quantity').value = 1;
+                        document.getElementById('special-price').value = '';
+                        this.updateSpecialPriceInfo();
+                        // --- [สิ้นสุดปรับปรุง] ---
 
                         this.showToast('✓ บันทึกการขายสำเร็จ!');
                     } catch (e) {
@@ -3367,8 +3442,7 @@
             container.innerHTML = selectHTML; 
         },
 
-// --- DYNAMIC HTML INJECTION (KEEP THIS AS IT WAS IN INDEX.HTML) ---
- fillPages(){ 
+fillPages(){ 
                 document.getElementById('page-pos').innerHTML = `
         <h2>ขายสินค้า (Point of Sale)</h2>
         <div class="pos-layout">
@@ -3994,211 +4068,282 @@
     </div>`;
         },
 
+ attachEventListeners(){ 
+    document.getElementById('login-form').addEventListener('submit', (e) => { 
+        e.preventDefault(); 
+        this.login(document.getElementById('username').value, document.getElementById('password').value); 
+    }); 
 
-        // --- EVENT LISTENERS ---
-        attachEventListeners(){ 
-            document.getElementById('login-form').addEventListener('submit', (e) => { e.preventDefault(); this.login(document.getElementById('username').value, document.getElementById('password').value); }); 
-            document.getElementById('logout-btn').addEventListener('click', () => this.logout()); 
-            
-            const mainApp = document.getElementById('main-app');
-            mainApp.addEventListener('submit', (e) => { 
-                if (e.target.id === 'add-to-cart-form') { e.preventDefault(); this.addToCart(e); }
-                if (e.target.id === 'product-form') { e.preventDefault(); this.saveProduct(e); } 
-                if (e.target.id === 'store-form') { e.preventDefault(); this.saveStore(e); } 
-                if (e.target.id === 'stock-in-form') { e.preventDefault(); this.saveStockIn(e); }
-                if (e.target.id === 'stock-out-form') { e.preventDefault(); this.saveStockOut(e); }
-                if (e.target.id === 'report-filter-form') { e.preventDefault(); this.renderReport(e); } 
-                if (e.target.id === 'user-form') { e.preventDefault(); this.saveUser(e); }
-                if (e.target.id === 'seller-sales-filter-form') { e.preventDefault(); this.renderSellerSalesHistoryWithFilter(); }
-                if (e.target.id === 'seller-detailed-report-form') { e.preventDefault(); this.runSellerDetailedReport(); }
-                if (e.target.id === 'seller-credit-report-form') { e.preventDefault(); this.runSellerCreditSummary(); }
-                if (e.target.id === 'seller-transfer-report-form') { e.preventDefault(); this.runSellerTransferSummary(); }
-                if (e.target.id === 'backup-password-form') { e.preventDefault(); this.saveBackupPassword(e); }
-            }); 
-            mainApp.addEventListener('click', (e) => { 
-                if (e.target.id === 'process-sale-btn') this.processSale(); 
-                if (e.target.classList.contains('remove-from-cart-btn')) this.removeFromCart(e.target.dataset.index); 
-                if (e.target.id === 'toggle-special-price-btn') this.toggleSpecialPrice(); 
-                if (e.target.classList.contains('edit-sale-btn')) this.editSale(e.target.dataset.id); 
-                if (e.target.classList.contains('delete-sale-btn')) { this.deleteSale(e.target.dataset.id); this.renderSalesHistory(); } 
-                if (e.target.classList.contains('seller-delete-sale-btn')) {
-                    const saleId = e.target.dataset.id;
-                    if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการขายนี้? สต็อกสินค้าจะถูกคืนเข้าระบบ')) {
-                        this.deleteSale(saleId);
-                        this.renderSellerSalesHistoryWithFilter();
-                    }
-                }
-                if (e.target.id === 'clear-product-form-btn') { document.getElementById('product-form').reset(); document.getElementById('product-id').value = ''; } 
-                if (e.target.classList.contains('edit-product-btn')) this.editProduct(e.target.dataset.id); 
-                if (e.target.classList.contains('delete-product-btn')) this.deleteProduct(e.target.dataset.id);
-                if (e.target.id === 'clear-store-form-btn') { document.getElementById('store-form').reset(); document.getElementById('store-id').value = ''; }
-                if (e.target.classList.contains('edit-store-btn')) this.editStore(e.target.dataset.id);
-                if (e.target.classList.contains('delete-store-btn')) this.deleteStore(e.target.dataset.id);
-                if (e.target.id === 'clear-user-form-btn') this.setupUserForm();
-                if (e.target.classList.contains('edit-user-btn')) this.editUser(e.target.dataset.id); 
-                if (e.target.classList.contains('delete-user-btn')) this.deleteUser(e.target.dataset.id); 
-                
-                if (e.target.classList.contains('edit-stock-in-btn')) this.editStockIn(e.target.dataset.id);
-                if (e.target.classList.contains('delete-stock-in-btn')) this.deleteStockIn(e.target.dataset.id);
-                if (e.target.id === 'clear-stock-in-form-btn') this.clearStockInForm();
-                
-                if (e.target.classList.contains('edit-stock-out-btn')) this.editStockOut(e.target.dataset.id);
-                if (e.target.classList.contains('delete-stock-out-btn')) this.deleteStockOut(e.target.dataset.id);
-                if (e.target.id === 'clear-stock-out-form-btn') this.clearStockOutForm();
+    document.getElementById('logout-btn').addEventListener('click', () => this.logout()); 
+        
+    const mainApp = document.getElementById('main-app');
 
-                // แก้ไข: เปลี่ยนจาก CSV เป็น XLSX
-                if (e.target.id === 'export-sales-history-excel-btn') {
-                    this.exportSalesHistoryToXlsx();
-                }
+    mainApp.addEventListener('submit', (e) => { 
+        if (e.target.id === 'add-to-cart-form') { e.preventDefault(); this.addToCart(e); }
+        if (e.target.id === 'product-form') { e.preventDefault(); this.saveProduct(e); } 
+        if (e.target.id === 'store-form') { e.preventDefault(); this.saveStore(e); } 
+        if (e.target.id === 'stock-in-form') { e.preventDefault(); this.saveStockIn(e); }
+        if (e.target.id === 'stock-out-form') { e.preventDefault(); this.saveStockOut(e); }
+        if (e.target.id === 'report-filter-form') { e.preventDefault(); this.renderReport(e); } 
+        if (e.target.id === 'user-form') { e.preventDefault(); this.saveUser(e); }
+        if (e.target.id === 'seller-sales-filter-form') { e.preventDefault(); this.renderSellerSalesHistoryWithFilter(); }
+        if (e.target.id === 'seller-detailed-report-form') { e.preventDefault(); this.runSellerDetailedReport(); }
+        if (e.target.id === 'seller-credit-report-form') { e.preventDefault(); this.runSellerCreditSummary(); }
+        if (e.target.id === 'seller-transfer-report-form') { e.preventDefault(); this.runSellerTransferSummary(); }
+        if (e.target.id === 'backup-password-form') { e.preventDefault(); this.saveBackupPassword(e); }
+    });
 
-                const collapsibleBar = e.target.closest('.collapsible-bar');
-                if (collapsibleBar) {
-                    const targetId = collapsibleBar.dataset.target;
-                    const content = document.getElementById(targetId);
-                    if (content) {
-                        collapsibleBar.classList.toggle('active');
-                        content.classList.toggle('active');
-                        const arrow = collapsibleBar.querySelector('.arrow');
-                        if (arrow) {
-                           arrow.style.transform = content.classList.contains('active') ? 'rotate(90deg)' : 'rotate(0deg)';
-                        }
-                    }
-                }
-                
-                if (e.target.id === 'load-from-file-btn') document.getElementById('data-file-input').click();
-                if (e.target.id === 'save-to-file-btn' || e.target.id === 'save-to-file-btn-seller') this.saveBackupToFile(); 
-                if (e.target.id === 'save-to-browser-btn' || e.target.id === 'save-to-browser-btn-seller') this.manualSaveToBrowser(); 
-                
-                if (e.target.id === 'open-reset-modal-btn') this.openResetModal();
-
-                if (e.target.id === 'generate-stock-report-btn') this.renderStockSummaryReport();
-                if (e.target.id === 'generate-yesterday-stock-report-btn') this.renderYesterdayStockSummaryReport();
-                if (e.target.id === 'recalculate-stock-btn') this.handleRecalculateStock();
-
-                if (e.target.id === 'my-summary-today-btn') this.summarizeMyToday(); 
-                if (e.target.id === 'my-summary-all-btn') this.summarizeMyAll(); 
-                if (e.target.id === 'my-summary-by-day-btn') this.summarizeMyDay(); 
-                if (e.target.id === 'my-summary-by-range-btn') this.summarizeMyRange();
-
-                // New/Refactored Admin Summary Buttons
-                if (e.target.id === 'admin-summary-today-btn') this.runAdminSummaryToday();
-                if (e.target.id === 'admin-summary-all-btn') this.runAdminSummaryAll();
-                if (e.target.id === 'admin-summary-by-day-btn') this.runAdminSummaryByDay();
-                if (e.target.id === 'generate-detailed-report-btn') this.runAdminDetailedReport();
-                if (e.target.id === 'generate-credit-summary-btn') this.runAdminCreditSummary();
-                if (e.target.id === 'generate-transfer-summary-btn') this.runAdminTransferSummary();
-                if (e.target.id === 'generate-aggregated-summary-btn') this.runAdminSummaryByCustomRange();
-
-                // Summary output buttons
-                if (e.target.classList.contains('btn-display')) App.handleSummaryOutput('display');
-                if (e.target.classList.contains('btn-excel')) App.handleSummaryOutput('excel');
-                if (e.target.classList.contains('btn-pdf')) App.handleSummaryOutput('pdf');
-                if (e.target.classList.contains('btn-cancel')) App.closeSummaryOutputModal();
-            }); 
-		
-            document.body.addEventListener('change', (e) => {
-                if (e.target.id === 'show-password-login') {
-                    document.getElementById('password').type = e.target.checked ? 'text' : 'password';
-                }
-                if (e.target.id === 'show-password-user-form') {
-                    document.getElementById('user-password').type = e.target.checked ? 'text' : 'password';
-                    document.getElementById('user-password-confirm').type = e.target.checked ? 'text' : 'password';
-                }
-                if (e.target.id === 'show-backup-password') {
-                    document.getElementById('backup-password').type = e.target.checked ? 'text' : 'password';
-                    document.getElementById('backup-password-confirm').type = e.target.checked ? 'text' : 'password';
-                }
-            });
-
-	        mainApp.addEventListener('change', (e) => { 
-                if(e.target.name === 'payment-method') this.togglePaymentDetailFields(); 
-                if (e.target.id === 'user-role') { 
-                    const productDiv = document.getElementById('user-product-assignment-container'); 
-                    const salesDiv = document.getElementById('user-sales-period-container'); 
-                    const storeDiv = document.getElementById('user-store-assignment-container');
-                    const commissionDiv = document.getElementById('user-commission-settings-container');
-                    const historyDiv = document.getElementById('user-history-view-container');
-                    const sellerFields = [productDiv, salesDiv, storeDiv, commissionDiv, historyDiv];
-
-                    if (e.target.value === 'seller') { 
-                        sellerFields.forEach(c => c.style.display = 'grid'); 
-                        this.renderUserStoreAssignment(document.getElementById('user-store-select')?.value);
-                        this.renderUserProductAssignment(); 
-                    } else { 
-                        sellerFields.forEach(c => c.style.display = 'none');
-                    } 
-                } 
-                if (e.target.id === 'data-file-input') this.promptLoadFromFile(e); 
-                if (e.target.id === 'pos-product') this.updateSpecialPriceInfo(); 
-                
-                if (['report-start-date', 'report-end-date', 'report-seller'].includes(e.target.id)) {
-                    this.renderReport(e);
-                }
-
-                if (e.target.id === 'reset-products-checkbox') {
-                    if (e.target.checked) {
-                        document.getElementById('reset-sales-checkbox').checked = true;
-                        document.getElementById('reset-stockins-checkbox').checked = true;
-                    }
-                }
-                
-                if (e.target.id === 'pos-date' || e.target.id === 'pos-time') {
-                    const dateInput = document.getElementById('pos-date');
-                    const timeInput = document.getElementById('pos-time');
-                    const isBackdating = dateInput.value || timeInput.value;
-                    dateInput.classList.toggle('backdating-active', isBackdating);
-                    timeInput.classList.toggle('backdating-active', isBackdating);
-                }
-
-                 if (e.target.name === 'seller-filter-type') {
-                    const byDateDiv = document.getElementById('seller-filter-by-date-div');
-                    const byRangeDiv = document.getElementById('seller-filter-by-range-div');
-                    switch (e.target.value) {
-                        case 'today':
-                            byDateDiv.style.display = 'none';
-                            byRangeDiv.style.display = 'none';
-                            break;
-                        case 'by_date':
-                            byDateDiv.style.display = 'block';
-                            byRangeDiv.style.display = 'none';
-                            break;
-                        case 'by_range':
-                            byDateDiv.style.display = 'none';
-                            byRangeDiv.style.display = 'flex';
-                            break;
-                    }
-                }
-                
-                if (e.target.id === 'stock-in-product') {
-                    const productId = e.target.value;
-                    const costInput = document.getElementById('stock-in-cost');
-                    const priceInput = document.getElementById('stock-in-price');
-                    if (productId) {
-                        const product = this.data.products.find(p => p.id == productId);
-                        if (product) {
-                            costInput.value = product.costPrice;
-                            priceInput.value = product.sellingPrice;
-                        }
-                    } else {
-                        costInput.value = '';
-                        priceInput.value = '';
-                    }
-                }
-            }); 
-            
-            // เพิ่ม event listener สำหรับปุ่มส่งออก Excel
-            const exportExcelBtn = document.getElementById('export-sales-history-excel-btn');
-            if (exportExcelBtn) {
-                exportExcelBtn.addEventListener('click', () => {
-                    this.exportSalesHistoryToXlsx();
-                });
-            }
-            
-            document.getElementById('cancel-reset-btn').addEventListener('click', () => this.closeResetModal());
-            document.getElementById('confirm-selective-reset-btn').addEventListener('click', () => this.handleSelectiveReset());
-        },
-    };
+mainApp.addEventListener('click', (e) => { 
+    // --- 1. POS Operations ---
+    if (e.target.id === 'process-sale-btn') {
+        this.processSale(); 
+    }
+    if (e.target.classList.contains('remove-from-cart-btn')) {
+        this.removeFromCart(e.target.dataset.index); 
+    }
+    if (e.target.id === 'toggle-special-price-btn') {
+        this.toggleSpecialPrice(); 
+    }
     
-    window.App = App;
-    App.init();
+    // --- 2. Sales History (Admin/Seller) ---
+    if (e.target.classList.contains('edit-sale-btn')) {
+        this.editSale(e.target.dataset.id); 
+    }
+    if (e.target.classList.contains('delete-sale-btn')) { 
+        this.deleteSale(e.target.dataset.id); 
+        this.renderSalesHistory(); 
+    } 
+    if (e.target.classList.contains('seller-delete-sale-btn')) {
+        const saleId = e.target.dataset.id;
+        if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการขายนี้? สต็อกสินค้าจะถูกคืนเข้าระบบ')) {
+            this.deleteSale(saleId);
+            this.renderSellerSalesHistoryWithFilter();
+        }
+    }
+
+    // --- 3. Data Management (Backup/Restore/Reset/Stock) ---
+    // ปุ่มโหลดไฟล์ที่ซ่อนอยู่ (Admin)
+    if (e.target.id === 'load-from-file-btn') {
+        document.getElementById('data-file-input').click(); 
+    }
+    // ปุ่มสำรองข้อมูลทั้งหมด (Admin/Seller)
+    if (e.target.id === 'save-to-file-btn' || e.target.id === 'save-to-file-btn-seller') {
+        this.saveBackupToFile();
+    }
+    // ปุ่มบันทึกชั่วคราว (Admin/Seller)
+    if (e.target.id === 'save-to-browser-btn' || e.target.id === 'save-to-browser-btn-seller') {
+        this.manualSaveToBrowser();
+    }
+    // ปุ่มรีเซ็ตข้อมูล (Admin)
+    if (e.target.id === 'open-reset-modal-btn') {
+        this.openResetModal();
+    }
+    if (e.target.id === 'cancel-reset-btn') {
+        this.closeResetModal();
+    }
+    if (e.target.id === 'confirm-selective-reset-btn') {
+        this.handleSelectiveReset();
+    }
+    // ปุ่มรายงานสต็อก (Admin)
+    if (e.target.id === 'generate-stock-report-btn') {
+        this.renderStockSummaryReport();
+    }
+    if (e.target.id === 'generate-yesterday-stock-report-btn') {
+        this.renderYesterdayStockSummaryReport();
+    }
+    if (e.target.id === 'recalculate-stock-btn') {
+        this.handleRecalculateStock();
+    }
+    
+    // --- 4. Product Management ---
+    if (e.target.id === 'clear-product-form-btn') { 
+        document.getElementById('product-form').reset(); 
+        document.getElementById('product-id').value = ''; 
+    } 
+    if (e.target.classList.contains('edit-product-btn')) {
+        this.editProduct(e.target.dataset.id); 
+    }
+    if (e.target.classList.contains('delete-product-btn')) {
+        this.deleteProduct(e.target.dataset.id);
+    }
+
+    // --- 5. Stock-In Management ---
+    if (e.target.classList.contains('edit-stock-in-btn')) {
+        this.editStockIn(e.target.dataset.id);
+    }
+    if (e.target.classList.contains('delete-stock-in-btn')) {
+        this.deleteStockIn(e.target.dataset.id);
+    }
+    if (e.target.id === 'clear-stock-in-form-btn') {
+        this.clearStockInForm();
+    }
+    
+    // --- 6. Stock-Out Management ---
+    if (e.target.classList.contains('edit-stock-out-btn')) {
+        this.editStockOut(e.target.dataset.id);
+    }
+    if (e.target.classList.contains('delete-stock-out-btn')) {
+        this.deleteStockOut(e.target.dataset.id);
+    }
+    if (e.target.id === 'clear-stock-out-form-btn') {
+        this.clearStockOutForm();
+    }
+
+    // --- 7. Store Management ---
+    if (e.target.id === 'clear-store-form-btn') { 
+        document.getElementById('store-form').reset(); 
+        document.getElementById('store-id').value = ''; 
+    }
+    if (e.target.classList.contains('edit-store-btn')) {
+        this.editStore(e.target.dataset.id);
+    }
+    if (e.target.classList.contains('delete-store-btn')) {
+        this.deleteStore(e.target.dataset.id);
+    }
+
+    // --- 8. User Management ---
+    if (e.target.id === 'clear-user-form-btn') {
+        this.setupUserForm();
+    }
+    if (e.target.classList.contains('edit-user-btn')) {
+        this.editUser(e.target.dataset.id); 
+    }
+    if (e.target.classList.contains('delete-user-btn')) {
+        this.deleteUser(e.target.dataset.id); 
+    }
+    
+    // --- 9. Summary & Reporting Buttons (Admin) ---
+    if (e.target.id === 'export-sales-history-excel-btn') {
+        this.exportSalesHistoryToXlsx();
+    }
+    if (e.target.id === 'admin-summary-today-btn') {
+        this.runAdminSummaryToday();
+    }
+    if (e.target.id === 'admin-summary-by-day-btn') {
+        this.runAdminSummaryByDay();
+    }
+    if (e.target.id === 'admin-summary-all-btn') {
+        this.runAdminSummaryAll();
+    }
+    if (e.target.id === 'generate-aggregated-summary-btn') {
+        this.runAdminSummaryByCustomRange();
+    }
+    if (e.target.id === 'generate-detailed-report-btn') {
+        this.runAdminDetailedReport();
+    }
+    if (e.target.id === 'generate-credit-summary-btn') {
+        this.runAdminCreditSummary();
+    }
+    if (e.target.id === 'generate-transfer-summary-btn') {
+        this.runAdminTransferSummary();
+    }
+
+    // --- 10. Summary & Reporting Buttons (Seller) ---
+    if (e.target.id === 'my-summary-today-btn') {
+        this.summarizeMyToday();
+    }
+    if (e.target.id === 'my-summary-by-day-btn') {
+        this.summarizeMyDay();
+    }
+    if (e.target.id === 'my-summary-by-range-btn') {
+        this.summarizeMyRange();
+    }
+    if (e.target.id === 'my-summary-all-btn') {
+        this.summarizeMyAll();
+    }
+
+    // --- 11. Collapsible Section Toggles ---
+    const collapsibleBar = e.target.closest('.collapsible-bar');
+    if (collapsibleBar) {
+        const targetId = collapsibleBar.dataset.target;
+        const content = document.getElementById(targetId);
+        if (content) {
+            collapsibleBar.classList.toggle('active');
+            content.classList.toggle('active');
+            const arrow = collapsibleBar.querySelector('.arrow');
+            if (arrow) {
+                arrow.style.transform = content.classList.contains('active') 
+                    ? 'rotate(90deg)' 
+                    : 'rotate(0deg)';
+            }
+        }
+    }
 });
+    document.body.addEventListener('change', (e) => {
+        if (e.target.id === 'show-password-login') {
+            document.getElementById('password').type = e.target.checked ? 'text' : 'password';
+        }
+        if (e.target.id === 'show-password-user-form') {
+            document.getElementById('user-password').type = e.target.checked ? 'text' : 'password';
+            document.getElementById('user-password-confirm').type = e.target.checked ? 'text' : 'password';
+        }
+        if (e.target.id === 'show-backup-password') {
+            document.getElementById('backup-password').type = e.target.checked ? 'text' : 'password';
+            document.getElementById('backup-password-confirm').type = e.target.checked ? 'text' : 'password';
+        }
+    });
+
+    mainApp.addEventListener('change', (e) => { 
+        if(e.target.name === 'payment-method') this.togglePaymentDetailFields(); 
+
+        if (e.target.id === 'user-role') { 
+            const productDiv = document.getElementById('user-product-assignment-container'); 
+            const salesDiv = document.getElementById('user-sales-period-container'); 
+            const storeDiv = document.getElementById('user-store-assignment-container');
+            const commissionDiv = document.getElementById('user-commission-settings-container');
+            const historyDiv = document.getElementById('user-history-view-container');
+            const sellerFields = [productDiv, salesDiv, storeDiv, commissionDiv, historyDiv];
+
+            if (e.target.value === 'seller') { 
+                sellerFields.forEach(c => c.style.display = 'grid'); 
+                this.renderUserStoreAssignment(document.getElementById('user-store-select')?.value);
+                this.renderUserProductAssignment(); 
+            } else { 
+                sellerFields.forEach(c => c.style.display = 'none');
+            } 
+        } 
+
+        if (e.target.id === 'data-file-input') this.promptLoadFromFile(e); 
+        if (e.target.id === 'pos-product') this.updateSpecialPriceInfo(); 
+        
+        if (['report-start-date', 'report-end-date', 'report-seller'].includes(e.target.id)) {
+            this.renderReport(e);
+        }
+
+        if (e.target.id === 'reset-products-checkbox') {
+            if (e.target.checked) {
+                document.getElementById('reset-sales-checkbox').checked = true;
+                document.getElementById('reset-stockins-checkbox').checked = true;
+                document.getElementById('reset-stockouts-checkbox').checked = true;
+            }
+        }
+    });
+
+    // ---------------------------------------------------
+    // 🚀 เพิ่ม Event: Enter เพื่อกดปุ่ม “ยืนยันการขาย”
+    // ---------------------------------------------------
+    document.addEventListener('keydown', (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault();
+
+            const posPage = document.getElementById('page-pos');
+            if (posPage && posPage.style.display !== "none") {
+                const confirmBtn = document.getElementById('process-sale-btn');
+                if (confirmBtn) confirmBtn.click();
+            }
+        }
+    });
+
+},  // ⬅ ปิด attachEventListeners()
+
+
+}; // ⬅ ปิดอ็อบเจ็กต์ App
+
+
+// ---------------------------------------------------
+// 🚀 เริ่มต้นระบบ
+// ---------------------------------------------------
+window.App = App;
+App.init();
+
+}); // ⬅ ปิด wrapper (เช่น DOMContentLoaded)
