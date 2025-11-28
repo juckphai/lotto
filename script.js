@@ -4094,74 +4094,181 @@ fillPages(){
     });
 
 mainApp.addEventListener('click', (e) => { 
-    if (e.target.id === 'process-sale-btn') this.processSale(); 
-    if (e.target.classList.contains('remove-from-cart-btn')) this.removeFromCart(e.target.dataset.index); 
-    if (e.target.id === 'toggle-special-price-btn') this.toggleSpecialPrice(); 
-    if (e.target.classList.contains('edit-sale-btn')) this.editSale(e.target.dataset.id); 
-    if (e.target.classList.contains('delete-sale-btn')) { this.deleteSale(e.target.dataset.id); this.renderSalesHistory(); } 
+    // --- 1. POS Operations ---
+    if (e.target.id === 'process-sale-btn') {
+        this.processSale(); 
+    }
+    if (e.target.classList.contains('remove-from-cart-btn')) {
+        this.removeFromCart(e.target.dataset.index); 
+    }
+    if (e.target.id === 'toggle-special-price-btn') {
+        this.toggleSpecialPrice(); 
+    }
+    
+    // --- 2. Sales History (Admin/Seller) ---
+    if (e.target.classList.contains('edit-sale-btn')) {
+        this.editSale(e.target.dataset.id); 
+    }
+    if (e.target.classList.contains('delete-sale-btn')) { 
+        this.deleteSale(e.target.dataset.id); 
+        this.renderSalesHistory(); 
+    } 
+    if (e.target.classList.contains('seller-delete-sale-btn')) {
+        const saleId = e.target.dataset.id;
+        if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการขายนี้? สต็อกสินค้าจะถูกคืนเข้าระบบ')) {
+            this.deleteSale(saleId);
+            this.renderSellerSalesHistoryWithFilter();
+        }
+    }
 
-    // เพิ่มการจัดการปุ่มโหลดไฟล์ที่ถูกซ่อนอยู่ (แก้ไขตามที่ร้องขอ)
+    // --- 3. Data Management (Backup/Restore/Reset/Stock) ---
+    // ปุ่มโหลดไฟล์ที่ซ่อนอยู่ (Admin)
     if (e.target.id === 'load-from-file-btn') {
         document.getElementById('data-file-input').click(); 
     }
+    // ปุ่มสำรองข้อมูลทั้งหมด (Admin/Seller)
+    if (e.target.id === 'save-to-file-btn' || e.target.id === 'save-to-file-btn-seller') {
+        this.saveBackupToFile();
+    }
+    // ปุ่มบันทึกชั่วคราว (Admin/Seller)
+    if (e.target.id === 'save-to-browser-btn' || e.target.id === 'save-to-browser-btn-seller') {
+        this.manualSaveToBrowser();
+    }
+    // ปุ่มรีเซ็ตข้อมูล (Admin)
+    if (e.target.id === 'open-reset-modal-btn') {
+        this.openResetModal();
+    }
+    if (e.target.id === 'cancel-reset-btn') {
+        this.closeResetModal();
+    }
+    if (e.target.id === 'confirm-selective-reset-btn') {
+        this.handleSelectiveReset();
+    }
+    // ปุ่มรายงานสต็อก (Admin)
+    if (e.target.id === 'generate-stock-report-btn') {
+        this.renderStockSummaryReport();
+    }
+    if (e.target.id === 'generate-yesterday-stock-report-btn') {
+        this.renderYesterdayStockSummaryReport();
+    }
+    if (e.target.id === 'recalculate-stock-btn') {
+        this.handleRecalculateStock();
+    }
+    
+    // --- 4. Product Management ---
+    if (e.target.id === 'clear-product-form-btn') { 
+        document.getElementById('product-form').reset(); 
+        document.getElementById('product-id').value = ''; 
+    } 
+    if (e.target.classList.contains('edit-product-btn')) {
+        this.editProduct(e.target.dataset.id); 
+    }
+    if (e.target.classList.contains('delete-product-btn')) {
+        this.deleteProduct(e.target.dataset.id);
+    }
 
-        if (e.target.classList.contains('seller-delete-sale-btn')) {
-            const saleId = e.target.dataset.id;
-            if (confirm('คุณแน่ใจหรือไม่ว่าต้องการลบรายการขายนี้? สต็อกสินค้าจะถูกคืนเข้าระบบ')) {
-                this.deleteSale(saleId);
-                this.renderSellerSalesHistoryWithFilter();
+    // --- 5. Stock-In Management ---
+    if (e.target.classList.contains('edit-stock-in-btn')) {
+        this.editStockIn(e.target.dataset.id);
+    }
+    if (e.target.classList.contains('delete-stock-in-btn')) {
+        this.deleteStockIn(e.target.dataset.id);
+    }
+    if (e.target.id === 'clear-stock-in-form-btn') {
+        this.clearStockInForm();
+    }
+    
+    // --- 6. Stock-Out Management ---
+    if (e.target.classList.contains('edit-stock-out-btn')) {
+        this.editStockOut(e.target.dataset.id);
+    }
+    if (e.target.classList.contains('delete-stock-out-btn')) {
+        this.deleteStockOut(e.target.dataset.id);
+    }
+    if (e.target.id === 'clear-stock-out-form-btn') {
+        this.clearStockOutForm();
+    }
+
+    // --- 7. Store Management ---
+    if (e.target.id === 'clear-store-form-btn') { 
+        document.getElementById('store-form').reset(); 
+        document.getElementById('store-id').value = ''; 
+    }
+    if (e.target.classList.contains('edit-store-btn')) {
+        this.editStore(e.target.dataset.id);
+    }
+    if (e.target.classList.contains('delete-store-btn')) {
+        this.deleteStore(e.target.dataset.id);
+    }
+
+    // --- 8. User Management ---
+    if (e.target.id === 'clear-user-form-btn') {
+        this.setupUserForm();
+    }
+    if (e.target.classList.contains('edit-user-btn')) {
+        this.editUser(e.target.dataset.id); 
+    }
+    if (e.target.classList.contains('delete-user-btn')) {
+        this.deleteUser(e.target.dataset.id); 
+    }
+    
+    // --- 9. Summary & Reporting Buttons (Admin) ---
+    if (e.target.id === 'export-sales-history-excel-btn') {
+        this.exportSalesHistoryToXlsx();
+    }
+    if (e.target.id === 'admin-summary-today-btn') {
+        this.runAdminSummaryToday();
+    }
+    if (e.target.id === 'admin-summary-by-day-btn') {
+        this.runAdminSummaryByDay();
+    }
+    if (e.target.id === 'admin-summary-all-btn') {
+        this.runAdminSummaryAll();
+    }
+    if (e.target.id === 'generate-aggregated-summary-btn') {
+        this.runAdminSummaryByCustomRange();
+    }
+    if (e.target.id === 'generate-detailed-report-btn') {
+        this.runAdminDetailedReport();
+    }
+    if (e.target.id === 'generate-credit-summary-btn') {
+        this.runAdminCreditSummary();
+    }
+    if (e.target.id === 'generate-transfer-summary-btn') {
+        this.runAdminTransferSummary();
+    }
+
+    // --- 10. Summary & Reporting Buttons (Seller) ---
+    if (e.target.id === 'my-summary-today-btn') {
+        this.summarizeMyToday();
+    }
+    if (e.target.id === 'my-summary-by-day-btn') {
+        this.summarizeMyDay();
+    }
+    if (e.target.id === 'my-summary-by-range-btn') {
+        this.summarizeMyRange();
+    }
+    if (e.target.id === 'my-summary-all-btn') {
+        this.summarizeMyAll();
+    }
+
+    // --- 11. Collapsible Section Toggles ---
+    const collapsibleBar = e.target.closest('.collapsible-bar');
+    if (collapsibleBar) {
+        const targetId = collapsibleBar.dataset.target;
+        const content = document.getElementById(targetId);
+        if (content) {
+            collapsibleBar.classList.toggle('active');
+            content.classList.toggle('active');
+            const arrow = collapsibleBar.querySelector('.arrow');
+            if (arrow) {
+                arrow.style.transform = content.classList.contains('active') 
+                    ? 'rotate(90deg)' 
+                    : 'rotate(0deg)';
             }
         }
-
-        if (e.target.id === 'clear-product-form-btn') { 
-            document.getElementById('product-form').reset(); 
-            document.getElementById('product-id').value = ''; 
-        } 
-
-        if (e.target.classList.contains('edit-product-btn')) this.editProduct(e.target.dataset.id); 
-        if (e.target.classList.contains('delete-product-btn')) this.deleteProduct(e.target.dataset.id);
-
-        if (e.target.id === 'clear-store-form-btn') { 
-            document.getElementById('store-form').reset(); 
-            document.getElementById('store-id').value = ''; 
-        }
-
-        if (e.target.classList.contains('edit-store-btn')) this.editStore(e.target.dataset.id);
-        if (e.target.classList.contains('delete-store-btn')) this.deleteStore(e.target.dataset.id);
-
-        if (e.target.id === 'clear-user-form-btn') this.setupUserForm();
-        if (e.target.classList.contains('edit-user-btn')) this.editUser(e.target.dataset.id); 
-        if (e.target.classList.contains('delete-user-btn')) this.deleteUser(e.target.dataset.id); 
-        
-        if (e.target.classList.contains('edit-stock-in-btn')) this.editStockIn(e.target.dataset.id);
-        if (e.target.classList.contains('delete-stock-in-btn')) this.deleteStockIn(e.target.dataset.id);
-        if (e.target.id === 'clear-stock-in-form-btn') this.clearStockInForm();
-        
-        if (e.target.classList.contains('edit-stock-out-btn')) this.editStockOut(e.target.dataset.id);
-        if (e.target.classList.contains('delete-stock-out-btn')) this.deleteStockOut(e.target.dataset.id);
-        if (e.target.id === 'clear-stock-out-form-btn') this.clearStockOutForm();
-
-        if (e.target.id === 'export-sales-history-excel-btn') {
-            this.exportSalesHistoryToXlsx();
-        }
-
-        const collapsibleBar = e.target.closest('.collapsible-bar');
-        if (collapsibleBar) {
-            const targetId = collapsibleBar.dataset.target;
-            const content = document.getElementById(targetId);
-            if (content) {
-                collapsibleBar.classList.toggle('active');
-                content.classList.toggle('active');
-                const arrow = collapsibleBar.querySelector('.arrow');
-                if (arrow) {
-                    arrow.style.transform = content.classList.contains('active') 
-                        ? 'rotate(90deg)' 
-                        : 'rotate(0deg)';
-                }
-            }
-        }
-    });
-
+    }
+});
     document.body.addEventListener('change', (e) => {
         if (e.target.id === 'show-password-login') {
             document.getElementById('password').type = e.target.checked ? 'text' : 'password';
