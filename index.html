@@ -3,32 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>บัญชีขาย</title>
+    <title>ระบบ POS บัญชีขาย</title>
 
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4a90e2"/>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="บัญชีขาย">
-  <link rel="apple-touch-icon" href="./192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90e2"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="บัญชีขาย">
+    <link rel="apple-touch-icon" href="./192.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <link rel="stylesheet" href="styles.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <style>
+        .online-status {
+            width: 10px;
+            height: 10px;
+            background-color: #ccc; /* Grey = Offline/Unknown */
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+            box-shadow: 0 0 2px #000;
+            vertical-align: middle;
+        }
+        .online-status.active {
+            background-color: #00ff00; /* Green = Online */
+            box-shadow: 0 0 5px #00ff00;
+        }
+        .online-status.error {
+            background-color: #ff0000; /* Red = Error */
+        }
+    </style>
 </head>
 <body>
     <div class="main-wrapper">
+        
         <div id="login-screen">
             <h1>บัญชีขาย</h1>
             <p>กรุณาเข้าสู่ระบบเพื่อดำเนินการต่อ</p>
             <form id="login-form">
                 <label for="username">ชื่อผู้ใช้:</label>
-                <input type="text" id="username" required>
+                <input type="text" id="username" required autocomplete="username">
                 
                 <label for="password">รหัสผ่าน:</label>
-                <input type="password" id="password" required>
+                <input type="password" id="password" required autocomplete="current-password">
                 
                 <div class="checkbox-group">
                     <label for="show-password-login">
@@ -55,6 +83,7 @@
             <div class="top-bar">
                 <h1 style="font-size: 16px; font-style: normal;">
                     บัญชีขาย <span id="store-display-name" style="color: #FFD700; font-style: normal;"></span>
+                    <span id="connection-status" class="online-status" title="สถานะการเชื่อมต่อ"></span>
                 </h1>
                 <div id="user-info-container">
                     <span id="user-info"></span>
@@ -112,6 +141,11 @@
             </div>
             <div id="page-data" class="section-content"></div>
         </div>
+
+        <footer class="app-footer">
+            &copy; 140169 pos system offline. All Rights Reserved.
+        </footer>
+        
     </div>
 
     <div id="toast-notification"></div>
@@ -119,6 +153,7 @@
     <div id="summaryModal" class="modal-overlay">
         <div class="modal-content-container">
             <div id="modalBodyContent"></div>
+            
             <div class="modal-controls">
                 <button id="saveSummaryAsImageBtn" class="modal-close-btn" style="background-color: #007bff; margin-bottom: 15px;">บันทึกเป็นรูปภาพ</button>
                 <div class="control-group">
@@ -167,6 +202,76 @@
     </div>
 
     <div id="print-container"></div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc, onSnapshot, enableIndexedDbPersistence, collection } from "https://www.gstatic.com/firebasejs/9.21.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDKEQVWfw0tULXvJF525jD5YXpdwyosFzU",
+          authDomain: "pos-system-b5e73.firebaseapp.com",
+          projectId: "pos-system-b5e73",
+          storageBucket: "pos-system-b5e73.firebasestorage.app",
+          messagingSenderId: "40551826282",
+          appId: "1:40551826282:web:70d49178ed79b6304b1b13",
+          measurementId: "G-Z85ZBPMC64"
+        };
+
+        window._initFirebaseModule = async function() {
+            try {
+                const app = initializeApp(firebaseConfig);
+                const auth = getAuth(app);
+                const db = getFirestore(app);
+
+                // Enable offline persistence
+                try { 
+                    await enableIndexedDbPersistence(db);
+                    console.log('Firebase Persistence Enabled'); 
+                } catch (err) {
+                    console.log('Persistence Error/Already Enabled:', err.code);
+                }
+
+                await signInAnonymously(auth);
+                return { app, auth, db };
+            } catch (e) {
+                console.error("Firebase Init Error:", e);
+                return null;
+            }
+        };
+
+        window.firebase_tools_getDoc = async function(db, collectionName, docId) {
+            try {
+                const docRef = doc(db, collectionName, docId);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    return { exists: true, data: docSnap.data() };
+                } else {
+                    return { exists: false, data: null };
+                }
+            } catch (e) {
+                console.error("Error getting document:", e);
+                throw e;
+            }
+        };
+
+        window.firebase_tools_setDoc = async function(db, collectionName, docId, data, merge = false) {
+            try {
+                const docRef = doc(db, collectionName, docId);
+                await setDoc(docRef, data, { merge: merge }); 
+            } catch (e) {
+                console.error("Error writing document:", e);
+                throw e;
+            }
+        };
+
+        window.firebase_tools_onSnapshot = function(db, collectionName, docId, callback) {
+            const docRef = doc(db, collectionName, docId);
+            return onSnapshot(docRef, { includeMetadataChanges: true }, (doc) => {
+                if(doc.exists()) callback({ data: doc.data(), metadata: doc.metadata });
+            });
+        };
+    </script>
     
     <script src="script.js"></script>
 </body>

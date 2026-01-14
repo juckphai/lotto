@@ -1,13 +1,14 @@
 {
-  "name": "บัญชีขาย",
-  "short_name": "บัญชีขาย",
+  "name": "พี่ต้อย",
+  "short_name": "พี่ต้อย",
   "description": "แอปพลิเคชันจัดการการขายและสต็อกสินค้า",
-  "start_url": ".",
-  "id": "/",
+  "start_url": "./index.html",
+  "id": "lnwsaleaccount",
   "display": "standalone",
   "background_color": "#FAFAD2",
   "theme_color": "#4a90e2",
-  "orientation": "any",
+  "orientation": "portrait-primary",
+  "categories": ["business", "productivity"],
   "launch_handler": {
     "client_mode": "focus-existing"
   },
@@ -29,6 +30,22 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "./screenshot-mobile.png",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "หน้าจอขายสินค้า POS"
+    },
+    {
+      "src": "./screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "ระบบจัดการสต็อกและรายงาน"
     }
   ]
 }

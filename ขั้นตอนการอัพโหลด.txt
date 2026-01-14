@@ -1,0 +1,26 @@
+1.  cd C:\Users\manph\Desktop\kung
+2.  firebase deploy --project kunggi-phu
+3.  firebase deploy
+account-juck
+firebase deploy --project lnwacount
+Coke-and-Cake-account
+firebase deploy --project coke-and-cake-account
+C:\Users\manph\Desktop\2222>firebase login
+Already logged in as lnwuunws@gmail.com
+firebase deploy --project coke-and-cake-account
+firebase deploy --project account-ad664
+firebase deploy --project account-juck
+firebase deploy --project ac-juck
+firebase deploy --project kunggi-phu
+firebase logout
+firebase deploy --project co-manpai-atvt
+firebase deploy --project account-ad664
+firebase deploy --project atvt-juck
+firebase deploy --project account-juck
+firebase deploy --project coke-and-cake-account
+firebase deploy --project kunggi-phu
+cd C:\Users\manph\Desktop\2222  ++ บัญชีรวม
+cd C:\Users\manph\Desktop\3333  ++ บัญชีแยก
+cd C:\Users\manph\Desktop\5555  ++  แยกกิจกรรม
+cd C:\Users\manph\Desktop\4444  +++ รวมกิจกรรม
+firebase deploy --project co-manphai-ac
